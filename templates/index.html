@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ExamGuard — Secure Online Examination</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400;500&family=Instrument+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #050d1a; --surface: #0a1628; --surface2: #0f1f3d;
+      --blue: #1d6fff; --blue-dim: rgba(29,111,255,0.12);
+      --cyan: #00d4ff; --cyan-dim: rgba(0,212,255,0.1);
+      --gold: #f5c542; --gold-dim: rgba(245,197,66,0.1);
+      --red: #ff4444; --green: #00e676;
+      --text: #e8f0fe; --text-muted: #5a7a9e; --text-mid: #8ba5c8;
+      --border: rgba(29,111,255,0.15); --border-light: rgba(255,255,255,0.05);
+      --glow: 0 0 40px rgba(29,111,255,0.2);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      background: var(--bg); color: var(--text);
+      min-height: 100vh; overflow-x: hidden;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(29,111,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(29,111,255,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+    }
+    body::after {
+      content: ''; position: fixed; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(29,111,255,0.15), transparent);
+      pointer-events: none;
+    }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 48px;
+      background: rgba(5,13,26,0.8); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.3rem;
+      letter-spacing: -0.02em; color: var(--text);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .nav-logo .shield {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--blue), var(--cyan));
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+    }
+    .nav-logo span { color: var(--cyan); }
+    .nav-links { display: flex; align-items: center; gap: 8px; }
+    .nav-btn {
+      padding: 8px 20px; border-radius: 8px; font-size: 0.85rem;
+      font-family: 'Instrument Sans', sans-serif; font-weight: 500;
+      cursor: pointer; transition: all 0.2s; border: none; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .nav-btn.ghost { background: transparent; color: var(--text-mid); border: 1px solid var(--border); }
+    .nav-btn.ghost:hover { background: var(--blue-dim); color: var(--text); border-color: var(--blue); }
+    .nav-btn.solid { background: var(--blue); color: white; }
+    .nav-btn.solid:hover { background: #2d7fff; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(29,111,255,0.4); }
+    .hero {
+      position: relative; z-index: 5;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 120px 48px 80px; text-align: center;
+    }
+    .hero-inner { max-width: 760px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px; border-radius: 100px;
+      background: var(--blue-dim); border: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+      color: var(--cyan); letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 32px;
+      animation: fadeDown 0.6s ease both;
+    }
+    .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--cyan); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+    .hero-title {
+      font-family: 'Syne', sans-serif; font-weight: 800;
+      font-size: clamp(2.8rem, 6vw, 5rem);
+      line-height: 1.05; letter-spacing: -0.03em;
+      margin-bottom: 24px;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    .hero-title .accent { color: var(--cyan); position: relative; display: inline-block; }
+    .hero-title .accent::after {
+      content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+      height: 3px; background: linear-gradient(90deg, var(--blue), var(--cyan));
+      border-radius: 2px;
+    }
+    .hero-sub {
+      font-size: 1.1rem; color: var(--text-mid); line-height: 1.7;
+      max-width: 540px; margin: 0 auto 48px;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+    .hero-actions {
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+      flex-wrap: wrap;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+    .btn-hero {
+      padding: 14px 32px; border-radius: 12px; font-size: 0.95rem;
+      font-family: 'Instrument Sans', sans-serif; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; border: none; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-hero.primary {
+      background: linear-gradient(135deg, var(--blue), #5599ff);
+      color: white; box-shadow: 0 4px 30px rgba(29,111,255,0.35);
+    }
+    .btn-hero.primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(29,111,255,0.5); }
+    .btn-hero.secondary {
+      background: var(--surface); color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-hero.secondary:hover { background: var(--surface2); border-color: var(--blue); }
+    .roles {
+      position: relative; z-index: 5;
+      padding: 80px 48px; max-width: 1100px; margin: 0 auto;
+    }
+    .section-label {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+      color: var(--blue); letter-spacing: 0.15em; text-transform: uppercase;
+      margin-bottom: 16px; text-align: center;
+    }
+    .section-title {
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 2rem;
+      text-align: center; margin-bottom: 48px; letter-spacing: -0.02em;
+    }
+    .roles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .role-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 40px; position: relative; overflow: hidden;
+      cursor: pointer; transition: all 0.3s; text-decoration: none; color: inherit;
+      display: block;
+    }
+    .role-card::before {
+      content: ''; position: absolute; inset: 0; opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .role-card.teacher::before { background: radial-gradient(circle at 30% 50%, rgba(29,111,255,0.1), transparent 60%); }
+    .role-card.student::before { background: radial-gradient(circle at 70% 50%, rgba(0,212,255,0.08), transparent 60%); }
+    .role-card:hover { border-color: var(--blue); transform: translateY(-4px); box-shadow: var(--glow); }
+    .role-card:hover::before { opacity: 1; }
+    .role-icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; margin-bottom: 20px;
+    }
+    .role-card.teacher .role-icon { background: var(--blue-dim); border: 1px solid var(--border); }
+    .role-card.student .role-icon { background: var(--cyan-dim); border: 1px solid rgba(0,212,255,0.15); }
+    .role-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.4rem; margin-bottom: 8px; }
+    .role-desc { color: var(--text-mid); font-size: 0.9rem; line-height: 1.6; margin-bottom: 24px; }
+    .role-features { list-style: none; margin-bottom: 32px; }
+    .role-features li {
+      font-size: 0.85rem; color: var(--text-mid); padding: 6px 0;
+      display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .role-features li:last-child { border: none; }
+    .role-features li::before { content: '→'; color: var(--blue); font-size: 0.8rem; }
+    .role-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.85rem; font-weight: 600; color: var(--blue);
+      font-family: 'JetBrains Mono', monospace; transition: gap 0.2s;
+    }
+    .role-card:hover .role-cta { gap: 12px; }
+    .features {
+      position: relative; z-index: 5;
+      padding: 80px 48px; max-width: 1100px; margin: 0 auto;
+    }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .feat-card {
+      background: var(--surface); border: 1px solid var(--border-light);
+      border-radius: 16px; padding: 28px; transition: all 0.3s;
+    }
+    .feat-card:hover { border-color: var(--border); background: var(--surface2); }
+    .feat-icon { font-size: 1.8rem; margin-bottom: 14px; }
+    .feat-title { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 1rem; margin-bottom: 8px; }
+    .feat-text { font-size: 0.83rem; color: var(--text-mid); line-height: 1.6; }
+
+    /* STATUS BANNER - shows 40-50% complete */
+    .dev-banner {
+      position: relative; z-index: 10;
+      background: linear-gradient(135deg, rgba(245,197,66,0.1), rgba(29,111,255,0.1));
+      border-top: 1px solid rgba(245,197,66,0.25);
+      border-bottom: 1px solid rgba(245,197,66,0.25);
+      padding: 12px 48px;
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+      flex-wrap: wrap;
+    }
+    .dev-banner-label {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+      color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .dev-progress {
+      flex: 1; max-width: 300px; height: 6px;
+      background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden;
+    }
+    .dev-progress-fill {
+      height: 100%; width: 45%;
+      background: linear-gradient(90deg, var(--blue), var(--gold));
+      border-radius: 3px;
+      animation: progressPulse 3s ease-in-out infinite;
+    }
+    @keyframes progressPulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+    .dev-pct {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+      color: var(--gold); font-weight: 500;
+    }
+
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(5,13,26,0.85); backdrop-filter: blur(10px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s;
+      padding: 20px;
+    }
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 24px; padding: 48px; width: 100%; max-width: 440px;
+      transform: translateY(20px); transition: transform 0.3s;
+      position: relative;
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-close {
+      position: absolute; top: 20px; right: 20px;
+      background: none; border: none; color: var(--text-muted);
+      font-size: 1.2rem; cursor: pointer; padding: 4px 8px; border-radius: 6px;
+      transition: all 0.2s;
+    }
+    .modal-close:hover { background: var(--surface2); color: var(--text); }
+    .modal-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: var(--blue-dim); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; margin-bottom: 20px;
+    }
+    .modal-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.5rem; margin-bottom: 6px; }
+    .modal-sub { color: var(--text-mid); font-size: 0.875rem; margin-bottom: 32px; }
+    .form-group { margin-bottom: 16px; }
+    .form-label {
+      display: block; font-size: 0.78rem; font-weight: 600;
+      color: var(--text-mid); letter-spacing: 0.05em; text-transform: uppercase;
+      margin-bottom: 8px; font-family: 'JetBrains Mono', monospace;
+    }
+    .form-input {
+      width: 100%; padding: 12px 16px; border-radius: 10px;
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem;
+      outline: none; transition: all 0.2s;
+    }
+    .form-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(29,111,255,0.1); }
+    .form-select {
+      width: 100%; padding: 12px 16px; border-radius: 10px;
+      background: var(--surface2); border: 1px solid var(--border);
+      color: var(--text); font-family: 'Instrument Sans', sans-serif; font-size: 0.9rem;
+      outline: none; transition: all 0.2s; cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235a7a9e' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 16px center;
+    }
+    .form-select:focus { border-color: var(--blue); }
+    .btn-submit {
+      width: 100%; padding: 14px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--blue), #5599ff);
+      color: white; font-family: 'Syne', sans-serif; font-weight: 700;
+      font-size: 0.95rem; border: none; cursor: pointer;
+      transition: all 0.2s; margin-top: 8px;
+      box-shadow: 0 4px 20px rgba(29,111,255,0.3);
+    }
+    .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 6px 30px rgba(29,111,255,0.45); }
+    .form-divider {
+      text-align: center; color: var(--text-muted); font-size: 0.8rem;
+      margin: 20px 0; position: relative;
+    }
+    .form-divider::before, .form-divider::after {
+      content: ''; position: absolute; top: 50%; width: 40%;
+      height: 1px; background: var(--border);
+    }
+    .form-divider::before { left: 0; }
+    .form-divider::after { right: 0; }
+    .form-link { color: var(--blue); cursor: pointer; text-decoration: none; font-size: 0.85rem; }
+    .form-link:hover { text-decoration: underline; }
+    .error-msg {
+      background: rgba(255,68,68,0.1); border: 1px solid rgba(255,68,68,0.2);
+      border-radius: 8px; padding: 10px 14px;
+      font-size: 0.82rem; color: #ff6b6b; margin-bottom: 16px;
+      display: none;
+    }
+    .error-msg.show { display: block; }
+    .hint-box {
+      background: rgba(0,212,255,0.06); border: 1px solid rgba(0,212,255,0.15);
+      border-radius: 8px; padding: 10px 14px;
+      font-size: 0.78rem; color: var(--text-muted); margin-bottom: 16px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    footer {
+      position: relative; z-index: 5;
+      text-align: center; padding: 32px 48px;
+      border-top: 1px solid var(--border-light);
+      color: var(--text-muted); font-size: 0.78rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
+    @media (max-width: 768px) {
+      nav { padding: 16px 20px; }
+      .hero { padding: 100px 20px 60px; }
+      .roles, .features { padding: 60px 20px; }
+      .roles-grid { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr; }
+      .modal { padding: 32px 24px; }
+      .dev-banner { padding: 12px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- DEV PROGRESS BANNER -->
+  <div class="dev-banner" style="margin-top:72px">
+    <div class="dev-banner-label">🚧 Development Progress</div>
+    <div class="dev-progress"><div class="dev-progress-fill"></div></div>
+    <div class="dev-pct">45% Complete</div>
+    <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-muted)">
+      Core CV pipeline ✓ · UI/UX ✓ · Auth (partial) · DB integration (planned)
+    </div>
+  </div>
+
+  <nav>
+    <div class="nav-logo">
+      <div class="shield">🛡</div>
+      Exam<span>Guard</span>
+    </div>
+    <div class="nav-links">
+      <a href="#features" class="nav-btn ghost">Features</a>
+      <button class="nav-btn ghost" onclick="openModal('student')">Student Login</button>
+      <button class="nav-btn solid" onclick="openModal('teacher')">Teacher Portal</button>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        AI-Powered Exam Monitoring System
+      </div>
+      <h1 class="hero-title">
+        Secure exams.<br>
+        <span class="accent">Smart proctoring.</span>
+      </h1>
+      <p class="hero-sub">
+        ExamGuard monitors online examinations using real-time computer vision and behavioral analysis — giving teachers insight, not verdicts.
+      </p>
+      <div class="hero-actions">
+        <button class="btn-hero primary" onclick="openModal('teacher')">
+          🎓 Teacher Portal →
+        </button>
+        <button class="btn-hero secondary" onclick="openModal('student')">
+          📝 Take an Exam
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="roles">
+    <div class="section-label">// who uses examguard</div>
+    <h2 class="section-title">Choose your role</h2>
+    <div class="roles-grid">
+      <a href="#" class="role-card teacher" onclick="event.preventDefault(); openModal('teacher')">
+        <div class="role-icon">🎓</div>
+        <div class="role-name">Teacher / Instructor</div>
+        <p class="role-desc">Create and manage exams, monitor students in real-time, and review detailed session reports.</p>
+        <ul class="role-features">
+          <li>Create &amp; manage exam questions</li>
+          <li>Live student monitoring dashboard</li>
+          <li>Real-time violation alerts</li>
+          <li>Downloadable session reports</li>
+          <li>Student management &amp; enrollment</li>
+        </ul>
+        <div class="role-cta">Enter Teacher Portal →</div>
+      </a>
+      <a href="#" class="role-card student" onclick="event.preventDefault(); openModal('student')">
+        <div class="role-icon" style="font-size:1.6rem">📝</div>
+        <div class="role-name">Student</div>
+        <p class="role-desc">Access your assigned exams securely with webcam monitoring in a fair, transparent environment.</p>
+        <ul class="role-features">
+          <li>View assigned exams</li>
+          <li>Take monitored online exams</li>
+          <li>Real-time environment checks</li>
+          <li>Webcam consent &amp; setup guide</li>
+          <li>View exam results after review</li>
+        </ul>
+        <div class="role-cta" style="color:var(--cyan)">Start Exam →</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="features" id="features">
+    <div class="section-label">// capabilities</div>
+    <h2 class="section-title">What ExamGuard detects</h2>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon">👤</div>
+        <div class="feat-title">Face Absence Detection</div>
+        <div class="feat-text">Flags when no face is detected for more than 5 seconds. Instant alerts sent to the monitoring dashboard.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">👥</div>
+        <div class="feat-title">Multiple Person Detection</div>
+        <div class="feat-text">Detects when more than one person appears in the webcam frame. Critical severity alert.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">👁</div>
+        <div class="feat-title">Gaze Deviation Tracking</div>
+        <div class="feat-text">Uses 468-point face mesh to track eye and head direction. Flags sustained looking away.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🪟</div>
+        <div class="feat-title">Tab Switch Detection</div>
+        <div class="feat-text">Browser Visibility API detects when students leave the exam tab. Immediate high-severity alert.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">💡</div>
+        <div class="feat-title">Lighting Quality Check</div>
+        <div class="feat-text">OpenCV brightness and contrast analysis ensures webcam conditions are adequate for monitoring.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <div class="feat-title">Risk Scoring</div>
+        <div class="feat-text">Weighted behavioral scoring system generates Low / Medium / High risk assessments for instructor review.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    ExamGuard · AI-Powered Exam Monitoring · Built with Flask + MediaPipe + OpenCV
+    · For educational use only · Always requires human review
+  </footer>
+
+  <div class="modal-overlay" id="loginModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-icon" id="modalIcon">🎓</div>
+      <div class="modal-title" id="modalTitle">Teacher Login</div>
+      <div class="modal-sub" id="modalSub">Sign in to access the teacher portal</div>
+
+      <div class="hint-box" id="demoHint">
+        🔑 Demo credentials — Teacher: <strong>teacher@school.edu</strong> / <strong>teacher123</strong><br>
+        Student: <strong>student@school.edu</strong> / <strong>student123</strong>
+      </div>
+
+      <div class="error-msg" id="errorMsg">Invalid credentials. Please try again.</div>
+
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" id="loginEmail" placeholder="you@school.edu"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" id="loginPassword" placeholder="••••••••"/>
+      </div>
+      <div id="studentIdGroup" class="form-group" style="display:none">
+        <label class="form-label">Student ID</label>
+        <input type="text" class="form-input" id="studentId" placeholder="e.g. STU-2024-001"/>
+      </div>
+
+      <button class="btn-submit" id="loginBtn" onclick="handleLogin()">Sign In</button>
+
+      <div class="form-divider">or</div>
+      <div style="text-align:center;font-size:0.85rem;color:var(--text-mid)">
+        <span id="switchText">New teacher?</span>
+        <a class="form-link" id="switchLink" onclick="toggleRegister()"> Create an account</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentRole = 'teacher';
+    let isRegister = false;
+
+    function openModal(role) {
+      currentRole = role;
+      isRegister = false;
+      const modal = document.getElementById('loginModal');
+      const icon = document.getElementById('modalIcon');
+      const title = document.getElementById('modalTitle');
+      const sub = document.getElementById('modalSub');
+      const studentGroup = document.getElementById('studentIdGroup');
+      const switchText = document.getElementById('switchText');
+
+      if (role === 'teacher') {
+        icon.textContent = '🎓';
+        title.textContent = 'Teacher Login';
+        sub.textContent = 'Sign in to access the teacher portal';
+        studentGroup.style.display = 'none';
+        switchText.textContent = 'New teacher?';
+        document.getElementById('loginEmail').value = 'teacher@school.edu';
+        document.getElementById('loginPassword').value = 'teacher123';
+      } else {
+        icon.textContent = '📝';
+        title.textContent = 'Student Login';
+        sub.textContent = 'Sign in to access your assigned exams';
+        studentGroup.style.display = 'block';
+        switchText.textContent = 'New student?';
+        document.getElementById('loginEmail').value = 'student@school.edu';
+        document.getElementById('loginPassword').value = 'student123';
+      }
+
+      document.getElementById('loginBtn').textContent = 'Sign In';
+      modal.classList.add('open');
+      document.getElementById('errorMsg').classList.remove('show');
+    }
+
+    function closeModal() {
+      document.getElementById('loginModal').classList.remove('open');
+    }
+
+    function toggleRegister() {
+      isRegister = !isRegister;
+      const title = document.getElementById('modalTitle');
+      const sub = document.getElementById('modalSub');
+      const btn = document.getElementById('loginBtn');
+      const switchLink = document.getElementById('switchLink');
+      const switchText = document.getElementById('switchText');
+      const hint = document.getElementById('demoHint');
+
+      if (isRegister) {
+        title.textContent = currentRole === 'teacher' ? 'Create Teacher Account' : 'Create Student Account';
+        sub.textContent = 'Fill in your details to register';
+        btn.textContent = 'Create Account';
+        switchLink.textContent = ' Back to login';
+        switchText.textContent = 'Already have an account?';
+        hint.style.display = 'none';
+      } else {
+        title.textContent = currentRole === 'teacher' ? 'Teacher Login' : 'Student Login';
+        sub.textContent = currentRole === 'teacher' ? 'Sign in to access the teacher portal' : 'Sign in to access your assigned exams';
+        btn.textContent = 'Sign In';
+        switchLink.textContent = ' Create an account';
+        switchText.textContent = currentRole === 'teacher' ? 'New teacher?' : 'New student?';
+        hint.style.display = 'block';
+      }
+    }
+
+    function handleLogin() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+
+      if (!email || !password) {
+        document.getElementById('errorMsg').textContent = 'Please fill in all fields.';
+        document.getElementById('errorMsg').classList.add('show');
+        return;
+      }
+
+      const btn = document.getElementById('loginBtn');
+      btn.textContent = 'Signing in...';
+      btn.disabled = true;
+
+      fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, role: currentRole, register: isRegister,
+          student_id: document.getElementById('studentId').value })
+      })
+      .then(r => r.json())
+      .then(data => {
+        if (data.success) {
+          window.location.href = currentRole === 'teacher' ? '/teacher/dashboard' : '/student/dashboard';
+        } else {
+          document.getElementById('errorMsg').textContent = data.error || 'Invalid credentials.';
+          document.getElementById('errorMsg').classList.add('show');
+          btn.textContent = isRegister ? 'Create Account' : 'Sign In';
+          btn.disabled = false;
+        }
+      })
+      .catch(() => {
+        window.location.href = currentRole === 'teacher' ? '/teacher/dashboard' : '/student/dashboard';
+      });
+    }
+
+    document.getElementById('loginModal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModal();
+      if (e.key === 'Enter' && document.getElementById('loginModal').classList.contains('open')) handleLogin();
+    });
+  </script>
+</body>
+</html>
