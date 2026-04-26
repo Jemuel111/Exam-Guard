@@ -1,0 +1,166 @@
+2026-04-26 12:05:47,323 [INFO] ExamGuard server starting at http://localhost:5000
+2026-04-26 12:05:48,375 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.3:5000
+2026-04-26 12:05:48,375 [INFO] [33mPress CTRL+C to quit[0m
+2026-04-26 12:05:48,376 [INFO]  * Restarting with stat
+2026-04-26 12:05:49,064 [INFO] ExamGuard server starting at http://localhost:5000
+2026-04-26 12:05:49,093 [WARNING]  * Debugger is active!
+2026-04-26 12:05:49,104 [INFO]  * Debugger PIN: 919-951-528
+2026-04-26 12:06:23,336 [INFO] 127.0.0.1 - - [26/Apr/2026 12:06:23] "GET / HTTP/1.1" 200 -
+2026-04-26 12:06:23,971 [INFO] 127.0.0.1 - - [26/Apr/2026 12:06:23] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-04-26 12:06:53,254 [INFO] 127.0.0.1 - - [26/Apr/2026 12:06:53] "POST /api/login HTTP/1.1" 200 -
+2026-04-26 12:06:53,275 [INFO] 127.0.0.1 - - [26/Apr/2026 12:06:53] "GET /student/dashboard HTTP/1.1" 200 -
+2026-04-26 12:07:21,850 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:21] "GET /exam?name=Juan+dela+Cruz&duration=60 HTTP/1.1" 200 -
+2026-04-26 12:07:24,139 [INFO] Session started: EG-1777176444 for Juan dela Cruz
+2026-04-26 12:07:24,139 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:24] "POST /api/start_session HTTP/1.1" 200 -
+2026-04-26 12:07:25,791 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:25] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:27,162 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:27] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:28,661 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:28] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:30,166 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:30] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:31,666 [WARNING] [EG-1777176444] VIOLATION: NO_FACE — No face detected for 6s
+2026-04-26 12:07:31,667 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:31] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:33,164 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:33] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:34,667 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:34] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:36,162 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:36] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:37,674 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:37] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:39,177 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:39] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:40,691 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:40] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:42,186 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:42] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:43,722 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:43] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:45,171 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:45] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:46,688 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:46] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:48,181 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:48] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:49,686 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:49] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:51,187 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:51] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:52,698 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:52] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:54,184 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:54] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:55,694 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:55] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:57,188 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:57] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:07:57,633 [WARNING] [EG-1777176444] VIOLATION: TAB_SWITCH — Student switched browser tab or window
+2026-04-26 12:07:57,637 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:57] "POST /api/tab_switch HTTP/1.1" 200 -
+2026-04-26 12:07:58,762 [INFO] 127.0.0.1 - - [26/Apr/2026 12:07:58] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:00,185 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:00] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:01,685 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:01] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:03,189 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:03] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:04,686 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:04] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:06,168 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:06] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:07,687 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:07] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:09,188 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:09] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:10,688 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:10] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:12,188 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:12] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:13,687 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:13] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:15,190 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:15] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:16,684 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:16] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:18,187 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:18] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:19,689 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:19] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:21,189 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:21] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:22,706 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:22] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:24,191 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:24] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:25,690 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:25] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:27,186 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:27] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:28,691 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:28] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:30,191 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:30] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:31,692 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:31] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:33,216 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:33] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:34,696 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:34] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:36,189 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:36] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:37,690 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:37] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:39,186 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:39] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:40,686 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:40] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:42,189 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:42] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:43,673 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:43] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:45,173 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:45] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:46,687 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:46] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:48,183 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:48] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:49,691 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:49] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:51,188 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:51] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:52,690 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:52] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:54,195 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:54] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:55,690 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:55] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:57,221 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:57] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:08:58,686 [INFO] 127.0.0.1 - - [26/Apr/2026 12:08:58] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:00,190 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:00] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:01,720 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:01] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:03,189 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:03] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:04,684 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:04] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:06,186 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:06] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:07,694 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:07] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:09,193 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:09] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:10,687 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:10] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:12,192 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:12] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:13,694 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:13] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:15,187 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:15] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:16,699 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:16] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:18,187 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:18] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:19,698 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:19] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:21,188 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:21] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:22,700 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:22] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:24,190 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:24] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:25,683 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:25] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:27,189 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:27] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:28,686 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:28] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:30,195 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:30] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:31,683 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:31] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:33,184 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:33] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:34,686 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:34] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:36,187 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:36] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:37,684 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:37] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:39,186 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:39] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:40,685 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:40] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:42,185 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:42] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:43,686 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:43] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:45,184 [WARNING] [EG-1777176444] VIOLATION: LOOK_AWAY — Looking away for 4s
+2026-04-26 12:09:45,185 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:45] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:46,703 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:46] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:48,185 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:48] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:49,683 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:49] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:51,187 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:51] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:52,686 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:52] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:54,190 [WARNING] [EG-1777176444] VIOLATION: LOOK_AWAY — Looking away for 3s
+2026-04-26 12:09:54,191 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:54] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:09:56,856 [INFO] [EG-1777176444] Reports saved: reports/EG-1777176444.json, reports/EG-1777176444_violations.csv
+2026-04-26 12:09:56,856 [INFO] Session ended: EG-1777176444, violations: 4
+2026-04-26 12:09:56,857 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:56] "POST /api/end_session HTTP/1.1" 200 -
+2026-04-26 12:09:56,908 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:56] "GET /report/EG-1777176444 HTTP/1.1" 200 -
+2026-04-26 12:09:56,917 [WARNING] [EG-1777176444] VIOLATION: TAB_SWITCH — Student switched browser tab or window
+2026-04-26 12:09:56,918 [INFO] 127.0.0.1 - - [26/Apr/2026 12:09:56] "POST /api/tab_switch HTTP/1.1" 200 -
+2026-04-26 12:10:22,332 [INFO] 127.0.0.1 - - [26/Apr/2026 12:10:22] "GET / HTTP/1.1" 200 -
+2026-04-26 12:10:39,726 [INFO] 127.0.0.1 - - [26/Apr/2026 12:10:39] "POST /api/login HTTP/1.1" 200 -
+2026-04-26 12:10:39,750 [INFO] 127.0.0.1 - - [26/Apr/2026 12:10:39] "GET /teacher/dashboard HTTP/1.1" 200 -
+2026-04-26 12:11:12,788 [INFO] 127.0.0.1 - - [26/Apr/2026 12:11:12] "GET / HTTP/1.1" 200 -
+2026-04-26 12:11:52,398 [INFO] 127.0.0.1 - - [26/Apr/2026 12:11:52] "POST /api/login HTTP/1.1" 200 -
+2026-04-26 12:11:52,414 [INFO] 127.0.0.1 - - [26/Apr/2026 12:11:52] "GET /teacher/dashboard HTTP/1.1" 200 -
+2026-04-26 12:13:11,765 [INFO] 127.0.0.1 - - [26/Apr/2026 12:13:11] "GET / HTTP/1.1" 200 -
+2026-04-26 12:13:18,573 [INFO] 127.0.0.1 - - [26/Apr/2026 12:13:18] "POST /api/login HTTP/1.1" 200 -
+2026-04-26 12:13:18,614 [INFO] 127.0.0.1 - - [26/Apr/2026 12:13:18] "GET /student/dashboard HTTP/1.1" 200 -
+2026-04-26 12:13:40,720 [INFO] 127.0.0.1 - - [26/Apr/2026 12:13:40] "GET /exam?name=Juan+dela+Cruz&duration=60 HTTP/1.1" 200 -
+2026-04-26 12:13:42,941 [INFO] Session started: EG-1777176822 for Juan dela Cruz
+2026-04-26 12:13:42,943 [INFO] 127.0.0.1 - - [26/Apr/2026 12:13:42] "POST /api/start_session HTTP/1.1" 200 -
+2026-04-26 12:13:44,766 [INFO] 127.0.0.1 - - [26/Apr/2026 12:13:44] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:13:46,184 [INFO] 127.0.0.1 - - [26/Apr/2026 12:13:46] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:13:47,586 [INFO] 127.0.0.1 - - [26/Apr/2026 12:13:47] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:13:49,026 [INFO] 127.0.0.1 - - [26/Apr/2026 12:13:49] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:13:50,528 [INFO] 127.0.0.1 - - [26/Apr/2026 12:13:50] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:13:52,037 [INFO] 127.0.0.1 - - [26/Apr/2026 12:13:52] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:13:53,533 [INFO] 127.0.0.1 - - [26/Apr/2026 12:13:53] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:13:55,071 [WARNING] [EG-1777176822] VIOLATION: NO_FACE — No face detected for 6s
+2026-04-26 12:13:55,073 [INFO] 127.0.0.1 - - [26/Apr/2026 12:13:55] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:13:56,572 [INFO] 127.0.0.1 - - [26/Apr/2026 12:13:56] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:13:58,111 [INFO] 127.0.0.1 - - [26/Apr/2026 12:13:58] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:13:59,664 [INFO] 127.0.0.1 - - [26/Apr/2026 12:13:59] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:14:01,230 [WARNING] [EG-1777176822] VIOLATION: TAB_SWITCH — Student switched browser tab or window
+2026-04-26 12:14:01,411 [INFO] 127.0.0.1 - - [26/Apr/2026 12:14:01] "POST /api/tab_switch HTTP/1.1" 200 -
+2026-04-26 12:14:01,767 [INFO] 127.0.0.1 - - [26/Apr/2026 12:14:01] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:14:03,451 [INFO] 127.0.0.1 - - [26/Apr/2026 12:14:03] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:14:04,124 [INFO] 127.0.0.1 - - [26/Apr/2026 12:14:04] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:14:05,655 [INFO] 127.0.0.1 - - [26/Apr/2026 12:14:05] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:14:07,155 [INFO] 127.0.0.1 - - [26/Apr/2026 12:14:07] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:14:08,821 [INFO] 127.0.0.1 - - [26/Apr/2026 12:14:08] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-04-26 12:14:10,950 [INFO] [EG-1777176822] Reports saved: reports/EG-1777176822.json, reports/EG-1777176822_violations.csv
+2026-04-26 12:14:10,952 [INFO] Session ended: EG-1777176822, violations: 2
+2026-04-26 12:14:10,955 [INFO] 127.0.0.1 - - [26/Apr/2026 12:14:10] "POST /api/end_session HTTP/1.1" 200 -
+2026-04-26 12:14:11,027 [INFO] 127.0.0.1 - - [26/Apr/2026 12:14:11] "GET /report/EG-1777176822 HTTP/1.1" 200 -
+2026-04-26 12:14:11,059 [WARNING] [EG-1777176822] VIOLATION: TAB_SWITCH — Student switched browser tab or window
+2026-04-26 12:14:11,062 [INFO] 127.0.0.1 - - [26/Apr/2026 12:14:11] "POST /api/tab_switch HTTP/1.1" 200 -

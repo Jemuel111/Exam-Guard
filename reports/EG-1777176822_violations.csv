@@ -1,0 +1,3 @@
+timestamp,elapsed_seconds,type,details,severity
+12:13:55,12.1,NO_FACE,No face detected for 6s,high
+12:14:01,18.3,TAB_SWITCH,Student switched browser tab or window,high

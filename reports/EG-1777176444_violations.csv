@@ -1,0 +1,5 @@
+timestamp,elapsed_seconds,type,details,severity
+12:07:31,7.5,NO_FACE,No face detected for 6s,high
+12:07:57,33.5,TAB_SWITCH,Student switched browser tab or window,high
+12:09:45,141.0,LOOK_AWAY,Looking away for 4s,medium
+12:09:54,150.1,LOOK_AWAY,Looking away for 3s,medium

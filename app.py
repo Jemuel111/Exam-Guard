@@ -1,10 +1,9 @@
 """
 ExamGuard - AI-Powered Online Exam Monitoring System
-Backend: Flask + OpenCV + MediaPipe
+Backend: Flask + OpenCV (mediapipe replaced with OpenCV cascade classifier)
 """
 
 import cv2
-import mediapipe as mp
 import numpy as np
 import json
 import time
@@ -35,9 +34,9 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'examguard-secret-2024'
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
 
-# ─── MediaPipe Setup ──────────────────────────────────────────────────────────
-mp_face_detection = mp.solutions.face_detection.FaceDetection
-mp_face_mesh = mp.solutions.face_mesh.FaceMesh
+# ─── OpenCV Setup (replaces MediaPipe) ────────────────────────────────────────
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+eye_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_eye.xml')
 
 # ─── Global State ─────────────────────────────────────────────────────────────
 exam_sessions = {}
@@ -161,32 +160,48 @@ def check_lighting(frame):
     return brightness > 40 and contrast > 10, round(float(brightness), 1), round(float(contrast), 1)
 
 
-def analyze_gaze(face_landmarks):
+def analyze_gaze(frame, face_rect):
     """
-    Returns True if the student appears to be looking away.
-    Uses nose tip, eye centers, and ear landmarks for head-pose estimation.
+    Estimates if student is looking away using eye detection and face position.
+    Returns True if looking away.
     """
     try:
-        nose = face_landmarks.landmark[1]
-        left_eye = face_landmarks.landmark[33]
-        right_eye = face_landmarks.landmark[263]
-        left_ear = face_landmarks.landmark[234]
-        right_ear = face_landmarks.landmark[454]
+        x, y, w, h = face_rect
+        frame_h, frame_w = frame.shape[:2]
 
-        face_width = abs(right_ear.x - left_ear.x)
-        if face_width < 0.01:
-            return False
+        # Check horizontal face position relative to frame center
+        face_center_x = x + w // 2
+        face_center_y = y + h // 2
+        h_offset = abs(face_center_x - frame_w // 2) / frame_w
+        v_offset = (face_center_y - frame_h // 2) / frame_h
 
-        eye_center_x = (left_eye.x + right_eye.x) / 2
-        eye_center_y = (left_eye.y + right_eye.y) / 2
+        # If face is too far to the side or too high up, likely looking away
+        if h_offset > 0.35 or v_offset < -0.25:
+            return True
 
-        nose_offset_h = (nose.x - eye_center_x) / face_width
-        nose_offset_v = nose.y - eye_center_y
+        # Use eye detection to check gaze within face ROI
+        face_roi_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)[y:y+h, x:x+w]
+        eyes = eye_cascade.detectMultiScale(face_roi_gray, scaleFactor=1.1, minNeighbors=5, minSize=(20, 20))
 
-        looking_away = abs(nose_offset_h) > 0.3 or nose_offset_v < -0.05
-        return looking_away
+        # No eyes detected within face = likely looking away
+        if len(eyes) == 0:
+            return True
+
+        return False
     except Exception:
         return False
+
+
+def detect_faces(frame):
+    """Detect faces using OpenCV cascade classifier."""
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(
+        gray,
+        scaleFactor=1.1,
+        minNeighbors=5,
+        minSize=(80, 80)
+    )
+    return faces if len(faces) > 0 else []
 
 
 def process_frame(session: ExamSession, frame_b64: str):
@@ -199,8 +214,6 @@ def process_frame(session: ExamSession, frame_b64: str):
         if frame is None:
             return {'status': 'error', 'message': 'Could not decode frame'}
 
-        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
         alerts = []
         session.stats['total_frames'] += 1
         now = time.time()
@@ -211,9 +224,8 @@ def process_frame(session: ExamSession, frame_b64: str):
             alerts.append({'type': 'POOR_LIGHTING', 'brightness': brightness, 'contrast': contrast})
 
         # ── Face detection ────────────────────────────────────────────────────
-        with mp_face_detection(min_detection_confidence=0.5) as face_det:
-            results = face_det.process(rgb_frame)
-            face_count = len(results.detections) if results.detections else 0
+        faces = detect_faces(frame)
+        face_count = len(faces)
 
         # No face
         if face_count == 0:
@@ -251,25 +263,22 @@ def process_frame(session: ExamSession, frame_b64: str):
 
         # ── Gaze analysis ─────────────────────────────────────────────────────
         if face_count == 1:
-            with mp_face_mesh(max_num_faces=1, min_detection_confidence=0.5) as mesh:
-                res = mesh.process(rgb_frame)
-                if res.multi_face_landmarks:
-                    looking_away = analyze_gaze(res.multi_face_landmarks[0])
-                    if looking_away:
-                        session.stats['look_away_frames'] += 1
-                        if session.look_away_start is None:
-                            session.look_away_start = now
-                        elapsed_look = now - session.look_away_start
-                        if elapsed_look >= session.LOOK_AWAY_THRESHOLD and not session._look_away_logged:
-                            v = session.log_violation('LOOK_AWAY', f'Looking away for {round(elapsed_look)}s', 'medium')
-                            session.stats['look_away_events'] += 1
-                            session._look_away_logged = True
-                            alerts.append({'type': 'LOOK_AWAY', 'violation': v})
-                        else:
-                            alerts.append({'type': 'LOOK_AWAY'})
-                    else:
-                        session.look_away_start = None
-                        session._look_away_logged = False
+            looking_away = analyze_gaze(frame, faces[0])
+            if looking_away:
+                session.stats['look_away_frames'] += 1
+                if session.look_away_start is None:
+                    session.look_away_start = now
+                elapsed_look = now - session.look_away_start
+                if elapsed_look >= session.LOOK_AWAY_THRESHOLD and not session._look_away_logged:
+                    v = session.log_violation('LOOK_AWAY', f'Looking away for {round(elapsed_look)}s', 'medium')
+                    session.stats['look_away_events'] += 1
+                    session._look_away_logged = True
+                    alerts.append({'type': 'LOOK_AWAY', 'violation': v})
+                else:
+                    alerts.append({'type': 'LOOK_AWAY'})
+            else:
+                session.look_away_start = None
+                session._look_away_logged = False
 
         return {
             'status': 'ok',
@@ -322,7 +331,6 @@ def login():
     is_register = data.get('register', False)
 
     if is_register:
-        # Demo: accept any registration
         return jsonify({'success': True, 'role': role})
 
     user = MOCK_USERS.get(email)
