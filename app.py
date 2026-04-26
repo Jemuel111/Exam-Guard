@@ -474,7 +474,10 @@ def student_dashboard():
 
 @app.route('/static/sw.js')
 def service_worker():
-    return app.send_static_file('sw.js')
+    response = app.make_response(app.send_static_file('sw.js'))
+    response.headers['Service-Worker-Allowed'] = '/'
+    response.headers['Content-Type'] = 'application/javascript'
+    return response
 
 @app.route('/manifest.json')
 def manifest():
