@@ -176,3 +176,19 @@
 2026-04-26 22:42:13,737 [INFO]  * Debugger PIN: 919-951-528
 2026-04-26 22:42:24,555 [INFO] 127.0.0.1 - - [26/Apr/2026 22:42:24] "GET / HTTP/1.1" 200 -
 2026-04-26 22:42:24,981 [INFO] 127.0.0.1 - - [26/Apr/2026 22:42:24] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-04-26 23:02:51,075 [INFO] Database initialized
+2026-04-26 23:02:51,075 [INFO] ExamGuard server starting at http://localhost:5000
+2026-04-26 23:02:51,291 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.3:5000
+2026-04-26 23:02:51,292 [INFO] [33mPress CTRL+C to quit[0m
+2026-04-26 23:02:51,292 [INFO]  * Restarting with stat
+2026-04-26 23:02:52,046 [INFO] Database initialized
+2026-04-26 23:02:52,046 [INFO] ExamGuard server starting at http://localhost:5000
+2026-04-26 23:02:52,077 [WARNING]  * Debugger is active!
+2026-04-26 23:02:52,086 [INFO]  * Debugger PIN: 919-951-528
+2026-04-26 23:02:59,810 [INFO] 127.0.0.1 - - [26/Apr/2026 23:02:59] "GET / HTTP/1.1" 200 -
+2026-04-26 23:02:59,913 [INFO] 127.0.0.1 - - [26/Apr/2026 23:02:59] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-04-26 23:03:00,356 [INFO] 127.0.0.1 - - [26/Apr/2026 23:03:00] "[33mGET /manifest.json HTTP/1.1[0m" 404 -
+2026-04-26 23:03:00,357 [INFO] 127.0.0.1 - - [26/Apr/2026 23:03:00] "[33mGET /static/sw.js HTTP/1.1[0m" 404 -

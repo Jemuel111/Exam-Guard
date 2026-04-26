@@ -3,695 +3,330 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#080c14"/>
   <title>ExamGuard — Student Dashboard</title>
-
-  <!--
-    student_dashboard.html — Student Portal
-    ─────────────────────────────────────────
-    WHAT THIS PAGE DOES:
-      Shows the student's available, upcoming, and completed exams.
-      "Start Exam" triggers a two-step consent/camera check modal before
-      redirecting to /exam?name=<name>&duration=<minutes>.
-
-    CONSENT MODAL FLOW:
-      Step 1 — List what is monitored + checkbox consent
-      Step 2 — Camera preview + auto-checks (cam, face, lighting)
-      → On pass: enables "Start Exam" button → window.location = /exam
-
-    CAMERA CHECK (step 2):
-      Calls navigator.mediaDevices.getUserMedia({ video: true }).
-      The check indicators (cam, face, lighting) are simulated with timeouts
-      in the demo. A real implementation should run a quick frame analysis
-      call to /api/analyze_frame once the stream starts.
-
-    TODO:
-      Replace hardcoded exam list with GET /api/student/exams once
-      the teacher→exam→student assignment flow is built (see README.md).
-  -->
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --u:          8px;
-      --bg:         #080c14;
-      --bg-1:       #0c1220;
-      --bg-2:       #101828;
-      --accent:     #0057FF;
-      --accent-dim: rgba(0,87,255,0.10);
-      --accent-mid: rgba(0,87,255,0.25);
-      --ok:         #00C853;
-      --warn:       #FFB300;
-      --danger:     #FF1744;
-      --tx-high:    #E8EDF5;
-      --tx-mid:     #7A8BA8;
-      --tx-low:     #3D506A;
-      --bd:         rgba(255,255,255,0.06);
-      --bd-accent:  rgba(0,87,255,0.30);
-      --font-mono:  'IBM Plex Mono', monospace;
-      --font-sans:  'IBM Plex Sans', sans-serif;
-      --t-fast:     120ms ease;
-      --t-mid:      220ms ease;
+      --bg:#080c14; --bg1:#0d1424; --bg2:#111c30;
+      --acc:#3b82f6; --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
+      --hi:#f0f6ff; --mid:#6b84a8; --low:#2d4060;
+      --bd:rgba(255,255,255,0.06);
+      --sans:'Space Grotesk',sans-serif; --mono:'Space Mono',monospace;
     }
-
-    html, body { height: 100%; }
-    body {
-      font-family: var(--font-sans);
-      background: var(--bg);
-      color: var(--tx-high);
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* ── TOP NAV ─────────────────────────────────────────────────────────── */
+    html,body { min-height:100%; }
+    body { font-family:var(--sans); background:var(--bg); color:var(--hi); -webkit-font-smoothing:antialiased; }
     .topnav {
-      position: sticky; top: 0; z-index: 100;
-      height: 52px; display: flex; align-items: center; justify-content: space-between;
-      padding: 0 calc(var(--u)*5);
-      background: rgba(8,12,20,0.92); backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--bd);
+      position:sticky; top:0; z-index:100; height:56px;
+      display:flex; align-items:center; justify-content:space-between; padding:0 40px;
+      background:rgba(8,12,20,0.92); backdrop-filter:blur(16px); border-bottom:1px solid var(--bd);
     }
-    .logo-group { display: flex; align-items: center; gap: calc(var(--u)*1.5); }
-    .logo-badge { width: 22px; height: 22px; background: var(--accent); display: flex; align-items: center; justify-content: center; }
-    .logo-badge svg { width: 12px; height: 12px; fill: white; }
-    .logo-text { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em; }
-    .logo-text b { color: var(--accent); }
-    .nav-right { display: flex; align-items: center; gap: calc(var(--u)*1.5); }
+    .logo-group { display:flex; align-items:center; gap:10px; }
+    .logo-hex { width:24px; height:24px; background:var(--acc); display:flex; align-items:center; justify-content:center; clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); }
+    .logo-hex svg { width:12px; height:12px; fill:white; }
+    .logo-text { font-family:var(--mono); font-size:0.78rem; font-weight:700; letter-spacing:0.04em; }
+    .logo-text b { color:var(--acc); }
+    .nav-right { display:flex; align-items:center; gap:12px; }
+    .student-chip { display:flex; align-items:center; gap:8px; border:1px solid var(--bd); padding:5px 12px; font-family:var(--mono); font-size:0.62rem; color:var(--mid); }
+    .chip-av { width:20px; height:20px; background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.25); display:flex; align-items:center; justify-content:center; font-size:0.55rem; font-weight:700; color:var(--acc); }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; font-family:var(--mono); font-size:0.65rem; font-weight:700; letter-spacing:0.04em; padding:7px 16px; border:1px solid; cursor:pointer; text-decoration:none; background:none; transition:all 0.12s; }
+    .btn-ghost { color:var(--mid); border-color:var(--bd); }
+    .btn-ghost:hover { background:rgba(255,255,255,0.03); color:var(--hi); border-color:rgba(255,255,255,0.1); }
+    .btn-solid { background:var(--acc); color:#fff; border-color:var(--acc); }
+    .btn-solid:hover { background:#2563eb; border-color:#2563eb; }
+    .btn-off { color:var(--low); border-color:var(--bd); cursor:not-allowed; opacity:0.5; }
+    .btn-ok { color:var(--ok); border-color:rgba(34,197,94,0.3); }
+    .btn-ok:hover { background:rgba(34,197,94,0.06); }
+    .main { max-width:820px; margin:0 auto; padding:48px 24px; animation:fade-in 0.25s ease; }
+    @keyframes fade-in { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+    .greeting { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:40px; padding-bottom:32px; border-bottom:1px solid var(--bd); flex-wrap:wrap; gap:20px; }
+    .g-eyebrow { font-family:var(--mono); font-size:0.55rem; letter-spacing:0.14em; text-transform:uppercase; color:var(--low); margin-bottom:6px; }
+    .g-name { font-size:1.5rem; font-weight:700; letter-spacing:-0.02em; margin-bottom:4px; }
+    .g-sub { font-size:0.82rem; color:var(--mid); }
+    .stat-pills { display:flex; gap:10px; }
+    .stat-pill { background:var(--bg1); border:1px solid var(--bd); padding:12px 16px; text-align:right; min-width:72px; }
+    .sp-num { font-family:var(--mono); font-size:1.2rem; font-weight:700; line-height:1; display:block; }
+    .sp-lbl { font-family:var(--mono); font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--low); display:block; margin-top:4px; }
+    .section-hd { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+    .section-heading { display:flex; align-items:center; gap:12px; }
+    .sh-line { width:3px; height:14px; }
+    .sh-line.available { background:var(--acc); }
+    .sh-line.upcoming  { background:var(--warn); }
+    .sh-line.done      { background:var(--ok); }
+    .sh-title { font-family:var(--mono); font-size:0.68rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--mid); }
+    .sh-count { font-family:var(--mono); font-size:0.58rem; color:var(--low); }
+    .section-block { margin-bottom:48px; }
+    .exam-card { background:var(--bg1); border:1px solid var(--bd); border-left:3px solid transparent; display:flex; align-items:center; justify-content:space-between; gap:16px; padding:20px 24px; margin-bottom:10px; transition:all 0.12s; }
+    .exam-card:hover { background:var(--bg2); }
+    .exam-card.available { border-left-color:var(--acc); }
+    .exam-card.upcoming  { border-left-color:var(--warn); }
+    .exam-card.done      { border-left-color:var(--ok); }
+    .ec-info { flex:1; min-width:0; }
+    .ec-name { font-size:0.92rem; font-weight:600; color:var(--hi); margin-bottom:4px; }
+    .ec-meta { font-family:var(--mono); font-size:0.6rem; color:var(--low); margin-bottom:8px; }
+    .ec-tags { display:flex; gap:6px; flex-wrap:wrap; }
+    .tag { font-family:var(--mono); font-size:0.55rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; padding:2px 7px; border:1px solid var(--bd); color:var(--low); }
+    .tag.t-dur  { color:var(--mid); }
+    .tag.t-q    { color:var(--acc); border-color:rgba(59,130,246,0.25); }
+    .tag.t-ok   { color:var(--ok);  border-color:rgba(34,197,94,0.25); }
+    .tag.t-pass { color:var(--ok);  border-color:rgba(34,197,94,0.15); background:rgba(34,197,94,0.04); }
+    .ec-action { flex-shrink:0; }
 
-    /* Student identity chip */
-    .student-chip {
-      display: flex; align-items: center; gap: calc(var(--u)*1);
-      border: 1px solid var(--bd); padding: 4px calc(var(--u)*1.5);
-      font-family: var(--font-mono); font-size: 0.65rem; color: var(--tx-mid);
-    }
-    .chip-id {
-      width: 20px; height: 20px; background: var(--accent-dim);
-      border: 1px solid var(--accent-mid); display: flex; align-items: center;
-      justify-content: center; font-size: 0.58rem; font-weight: 600; color: var(--accent);
-    }
+    /* Modal */
+    .modal-overlay { position:fixed; inset:0; z-index:500; background:rgba(4,6,12,0.92); backdrop-filter:blur(16px); display:flex; align-items:center; justify-content:center; padding:24px; opacity:0; pointer-events:none; transition:opacity 0.18s; }
+    .modal-overlay.open { opacity:1; pointer-events:all; }
+    .modal { background:var(--bg2); border:1px solid rgba(59,130,246,0.25); padding:36px; width:100%; max-width:460px; max-height:90vh; overflow-y:auto; transform:translateY(14px); transition:transform 0.18s; position:relative; }
+    .modal-overlay.open .modal { transform:translateY(0); }
+    .modal-accent { position:absolute; top:0; left:0; right:0; height:2px; background:var(--acc); }
+    .modal-step { font-family:var(--mono); font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--acc); margin-bottom:6px; }
+    .modal-title { font-size:1.1rem; font-weight:600; letter-spacing:-0.01em; margin-bottom:4px; }
+    .modal-sub { font-size:0.78rem; color:var(--mid); line-height:1.6; margin-bottom:24px; }
 
-    .btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      gap: calc(var(--u)*1);
-      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 500;
-      letter-spacing: 0.04em;
-      padding: calc(var(--u)*0.875) calc(var(--u)*2);
-      border: 1px solid transparent; cursor: pointer;
-      text-decoration: none; background: none;
-      transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast);
-    }
-    .btn-ghost { color: var(--tx-mid); border-color: var(--bd); }
-    .btn-ghost:hover { background: rgba(255,255,255,0.04); color: var(--tx-high); border-color: rgba(255,255,255,0.1); }
-    .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
-    .btn-primary:hover { background: #0048d4; border-color: #0048d4; }
-    .btn-disabled { color: var(--tx-low); border-color: var(--bd); cursor: not-allowed; opacity: 0.5; }
-    .btn-outline-ok { color: var(--ok); border-color: rgba(0,200,83,0.3); }
-    .btn-outline-ok:hover { background: rgba(0,200,83,0.06); }
-
-    /* ── MAIN CONTENT ────────────────────────────────────────────────────── */
-    .main {
-      max-width: 800px; margin: 0 auto;
-      padding: calc(var(--u)*6) calc(var(--u)*3);
-      animation: fade-in 0.3s ease;
-    }
-    @keyframes fade-in {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── GREETING BAR ────────────────────────────────────────────────────── */
-    .greeting {
-      display: flex; align-items: flex-start; justify-content: space-between;
-      margin-bottom: calc(var(--u)*4);
-      padding-bottom: calc(var(--u)*4);
-      border-bottom: 1px solid var(--bd);
-    }
-    .greeting-eyebrow {
-      font-family: var(--font-mono); font-size: 0.6rem; font-weight: 500;
-      letter-spacing: 0.12em; text-transform: uppercase; color: var(--tx-low);
-      margin-bottom: calc(var(--u)*0.75);
-    }
-    .greeting-name {
-      font-family: var(--font-mono); font-size: 1.3rem; font-weight: 600;
-      letter-spacing: -0.01em; color: var(--tx-high); margin-bottom: calc(var(--u)*0.5);
-    }
-    .greeting-sub { font-size: 0.8rem; color: var(--tx-mid); }
-
-    /* Stat pills — 3 across */
-    .stat-pills { display: flex; gap: calc(var(--u)*1.5); }
-    .stat-pill {
-      background: var(--bg-1); border: 1px solid var(--bd);
-      padding: calc(var(--u)*1.5) calc(var(--u)*2);
-      display: flex; flex-direction: column; align-items: flex-end; min-width: 80px;
-    }
-    .stat-pill-num { font-family: var(--font-mono); font-size: 1.2rem; font-weight: 600; line-height: 1; }
-    .stat-pill-label { font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--tx-low); margin-top: 4px; }
-
-    /* ── SECTION HEADER ──────────────────────────────────────────────────── */
-    .section-header {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: calc(var(--u)*1.5);
-    }
-    .section-heading {
-      display: flex; align-items: center; gap: calc(var(--u)*1.5);
-    }
-    .section-heading-line { width: 2px; height: 12px; }
-    .section-heading-line.available { background: var(--accent); }
-    .section-heading-line.upcoming  { background: var(--warn); }
-    .section-heading-line.completed { background: var(--ok); }
-
-    .section-title { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tx-mid); }
-    .section-count { font-family: var(--font-mono); font-size: 0.62rem; color: var(--tx-low); }
-
-    /* ── EXAM CARDS ──────────────────────────────────────────────────────── */
-    .exam-card {
-      background: var(--bg-1); border: 1px solid var(--bd);
-      border-left: 2px solid transparent;
-      display: flex; align-items: center; justify-content: space-between;
-      gap: calc(var(--u)*2); padding: calc(var(--u)*2.5) calc(var(--u)*3);
-      margin-bottom: calc(var(--u)*1.5);
-      transition: border-color var(--t-fast), background var(--t-fast);
-    }
-    .exam-card:hover { background: var(--bg-2); }
-    .exam-card.available { border-left-color: var(--accent); }
-    .exam-card.upcoming  { border-left-color: var(--warn); }
-    .exam-card.completed { border-left-color: var(--ok); }
-
-    .exam-card-info { flex: 1; min-width: 0; }
-    .exam-card-name { font-size: 0.88rem; font-weight: 500; color: var(--tx-high); margin-bottom: calc(var(--u)*0.5); }
-    .exam-card-meta {
-      font-family: var(--font-mono); font-size: 0.62rem; color: var(--tx-low);
-      margin-bottom: calc(var(--u)*1);
-    }
-    .exam-card-tags { display: flex; gap: calc(var(--u)*1); flex-wrap: wrap; }
-
-    /* Tag chips — slim, monospaced */
-    .tag {
-      font-family: var(--font-mono); font-size: 0.58rem; font-weight: 500;
-      letter-spacing: 0.06em; text-transform: uppercase;
-      padding: 2px 7px; border: 1px solid var(--bd);
-      color: var(--tx-low); background: transparent;
-    }
-    .tag.duration  { color: var(--tx-mid); }
-    .tag.questions { color: var(--accent); border-color: rgba(0,87,255,0.25); }
-    .tag.score-ok  { color: var(--ok);     border-color: rgba(0,200,83,0.25); }
-    .tag.score-pass { color: var(--ok);    border-color: rgba(0,200,83,0.15); background: rgba(0,200,83,0.04); }
-
-    .exam-card-action { flex-shrink: 0; }
-
-    /* ── SECTION SPACING ──────────────────────────────────────────────────── */
-    .section-block { margin-bottom: calc(var(--u)*5); }
-
-    /* ── MODAL OVERLAY ───────────────────────────────────────────────────── */
-    .modal-overlay {
-      position: fixed; inset: 0; z-index: 500;
-      background: rgba(8,12,20,0.90); backdrop-filter: blur(8px);
-      display: flex; align-items: center; justify-content: center;
-      padding: calc(var(--u)*3);
-      opacity: 0; pointer-events: none; transition: opacity var(--t-mid);
-    }
-    .modal-overlay.open { opacity: 1; pointer-events: all; }
-    .modal {
-      background: var(--bg-2); border: 1px solid var(--bd-accent);
-      padding: calc(var(--u)*5); width: 100%; max-width: 480px;
-      max-height: 90vh; overflow-y: auto;
-      transform: translateY(12px); transition: transform var(--t-mid);
-    }
-    .modal-overlay.open .modal { transform: translateY(0); }
-
-    .modal-step-label {
-      font-family: var(--font-mono); font-size: 0.58rem; font-weight: 500;
-      letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent);
-      margin-bottom: calc(var(--u)*1);
-    }
-    .modal-title { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 600; margin-bottom: calc(var(--u)*0.5); }
-    .modal-sub { font-size: 0.78rem; color: var(--tx-mid); line-height: 1.6; margin-bottom: calc(var(--u)*3); }
-
-    /* What is monitored — checklist */
-    .monitor-list { margin-bottom: calc(var(--u)*2.5); }
-    .monitor-item {
-      display: flex; align-items: flex-start; gap: calc(var(--u)*1.5);
-      padding: calc(var(--u)*1.25) 0;
-      border-bottom: 1px solid rgba(255,255,255,0.03);
-      font-family: var(--font-mono); font-size: 0.72rem; color: var(--tx-mid);
-    }
-    .monitor-item:last-child { border: none; }
-    .monitor-item-key {
-      font-weight: 500; color: var(--tx-high); min-width: 120px; flex-shrink: 0;
-    }
-    .monitor-item-val { color: var(--tx-low); }
-    .monitor-item.no-store { color: var(--ok); }
-    .monitor-item.no-store .monitor-item-key { color: var(--ok); }
-
-    /* Consent checkbox row */
-    .consent-row {
-      display: flex; align-items: flex-start; gap: calc(var(--u)*1.5);
-      background: var(--bg-1); border: 1px solid var(--bd);
-      padding: calc(var(--u)*2); margin-bottom: calc(var(--u)*3);
-    }
-    .consent-row label {
-      font-size: 0.78rem; color: var(--tx-mid); line-height: 1.5; cursor: pointer;
-    }
-    .consent-row input { margin-top: 2px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
-
-    /* Camera preview area */
-    .cam-preview {
-      width: 100%; aspect-ratio: 4/3; background: #04070d;
-      border: 1px solid var(--bd); margin-bottom: calc(var(--u)*2);
-      display: flex; align-items: center; justify-content: center;
-      position: relative; overflow: hidden;
-    }
-    #camVideo {
-      width: 100%; height: 100%; object-fit: cover;
-      display: none; transform: scaleX(-1);
-    }
-    .cam-placeholder {
-      text-align: center;
-      font-family: var(--font-mono); font-size: 0.7rem; color: var(--tx-low);
-    }
-
-    /* Setup check rows */
-    .check-list { margin-bottom: calc(var(--u)*3); }
-    .check-item {
-      display: flex; align-items: center; gap: calc(var(--u)*1.5);
-      padding: calc(var(--u)*1) 0;
-      border-bottom: 1px solid rgba(255,255,255,0.03);
-      font-family: var(--font-mono); font-size: 0.7rem; color: var(--tx-low);
-    }
-    .check-item:last-child { border: none; }
-    .check-status { width: 6px; height: 6px; flex-shrink: 0; }
-    .check-status.pending  { background: var(--tx-low); }
-    .check-status.pass     { background: var(--ok); }
-    .check-status.fail     { background: var(--danger); }
-    .check-item.check-pass { color: var(--tx-mid); }
-
-    .modal-actions { display: flex; flex-direction: column; gap: calc(var(--u)*1); }
-
-    ::-webkit-scrollbar { width: 3px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--bg-1); }
+    /* Consent items */
+    .monitor-list { margin-bottom:20px; }
+    .mi { display:flex; gap:12px; align-items:flex-start; padding:9px 0; border-bottom:1px solid rgba(255,255,255,0.03); font-family:var(--mono); font-size:0.68rem; }
+    .mi:last-child { border:none; }
+    .mi-key { font-weight:700; color:var(--hi); min-width:130px; flex-shrink:0; }
+    .mi-val { color:var(--low); }
+    .mi.no-store .mi-key { color:var(--ok); }
+    .mi.no-store .mi-val { color:var(--ok); opacity:0.7; }
+    .consent-row { display:flex; align-items:flex-start; gap:10px; background:var(--bg1); border:1px solid var(--bd); padding:14px; margin-bottom:20px; cursor:pointer; }
+    .consent-row label { font-size:0.78rem; color:var(--mid); line-height:1.55; cursor:pointer; }
+    .consent-row input { margin-top:2px; accent-color:var(--acc); cursor:pointer; flex-shrink:0; }
+    .cam-preview { width:100%; aspect-ratio:4/3; background:#04070d; border:1px solid var(--bd); display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; margin-bottom:14px; }
+    #camVideo { width:100%; height:100%; object-fit:cover; display:none; transform:scaleX(-1); }
+    .cam-ph { text-align:center; font-family:var(--mono); font-size:0.65rem; color:var(--low); }
+    .check-list { margin-bottom:20px; }
+    .check-item { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.03); font-family:var(--mono); font-size:0.68rem; color:var(--low); }
+    .check-item:last-child { border:none; }
+    .check-dot { width:6px; height:6px; flex-shrink:0; border-radius:50%; }
+    .check-dot.pending { background:var(--low); }
+    .check-dot.pass    { background:var(--ok); }
+    .check-dot.fail    { background:var(--danger); }
+    .check-item.pass   { color:var(--mid); }
+    .modal-actions { display:flex; flex-direction:column; gap:8px; }
+    ::-webkit-scrollbar { width:3px; }
+    ::-webkit-scrollbar-track { background:transparent; }
+    ::-webkit-scrollbar-thumb { background:var(--bg2); }
   </style>
 </head>
 <body>
-
-  <!-- ── TOP NAV ───────────────────────────────────────────────────────────── -->
   <nav class="topnav">
     <div class="logo-group">
-      <div class="logo-badge">
-        <svg viewBox="0 0 12 14" fill="white"><path d="M6 0L0 2.5v4.5C0 10.5 6 14 6 14s6-3.5 6-7V2.5L6 0z"/></svg>
-      </div>
+      <div class="logo-hex"><svg viewBox="0 0 12 14" fill="white"><path d="M6 0L0 2.5v4.5C0 10.5 6 14 6 14s6-3.5 6-7V2.5L6 0z"/></svg></div>
       <span class="logo-text">EXAM<b>GUARD</b></span>
     </div>
     <div class="nav-right">
       <div class="student-chip">
-        <div class="chip-id">JD</div>
+        <div class="chip-av">JD</div>
         <span>Juan dela Cruz · STU-001</span>
       </div>
-      <button class="btn btn-ghost" onclick="window.location.href='/'">Logout</button>
+      <a href="/" class="btn btn-ghost">Logout</a>
     </div>
   </nav>
 
-
-  <!-- ── MAIN CONTENT ──────────────────────────────────────────────────────── -->
   <main class="main">
-
-    <!-- Greeting + stat summary -->
     <div class="greeting">
       <div>
-        <div class="greeting-eyebrow">STUDENT PORTAL / DASHBOARD</div>
-        <div class="greeting-name">Juan dela Cruz</div>
-        <div class="greeting-sub">1 exam available to take · Sunday, April 26, 2026</div>
+        <div class="g-eyebrow">STUDENT PORTAL / DASHBOARD</div>
+        <div class="g-name">Juan dela Cruz</div>
+        <div class="g-sub">1 exam ready to take · Sunday, April 26, 2026</div>
       </div>
       <div class="stat-pills">
-        <div class="stat-pill">
-          <div class="stat-pill-num" style="color:var(--accent)">1</div>
-          <div class="stat-pill-label">Available</div>
-        </div>
-        <div class="stat-pill">
-          <div class="stat-pill-num" style="color:var(--warn)">2</div>
-          <div class="stat-pill-label">Upcoming</div>
-        </div>
-        <div class="stat-pill">
-          <div class="stat-pill-num" style="color:var(--ok)">3</div>
-          <div class="stat-pill-label">Completed</div>
-        </div>
+        <div class="stat-pill"><span class="sp-num" style="color:var(--acc)">1</span><span class="sp-lbl">Ready</span></div>
+        <div class="stat-pill"><span class="sp-num" style="color:var(--warn)">2</span><span class="sp-lbl">Upcoming</span></div>
+        <div class="stat-pill"><span class="sp-num" style="color:var(--ok)">3</span><span class="sp-lbl">Done</span></div>
       </div>
     </div>
 
-    <!-- Available exams -->
     <div class="section-block">
-      <div class="section-header">
-        <div class="section-heading">
-          <div class="section-heading-line available"></div>
-          <span class="section-title">Available Now</span>
-        </div>
-        <span class="section-count">1 exam ready</span>
+      <div class="section-hd">
+        <div class="section-heading"><div class="sh-line available"></div><span class="sh-title">Available Now</span></div>
+        <span class="sh-count">1 exam ready</span>
       </div>
-
       <div class="exam-card available">
-        <div class="exam-card-info">
-          <div class="exam-card-name">Algebra Finals</div>
-          <div class="exam-card-meta">Mathematics · Closes at 11:00 today · Prof. Santos</div>
-          <div class="exam-card-tags">
-            <span class="tag duration">60 min</span>
-            <span class="tag questions">25 questions</span>
-          </div>
+        <div class="ec-info">
+          <div class="ec-name">Algebra Finals</div>
+          <div class="ec-meta">Mathematics · Closes 11:00 today · Ms. Santos</div>
+          <div class="ec-tags"><span class="tag t-dur">60 min</span><span class="tag t-q">25 questions</span></div>
         </div>
-        <div class="exam-card-action">
-          <button class="btn btn-primary" onclick="openConsentModal()">
+        <div class="ec-action">
+          <button class="btn btn-solid" onclick="openConsent()">
             Start Exam
-            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5h6M5 2l3 3-3 3"/></svg>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 5h6M5 2l3 3-3 3"/></svg>
           </button>
         </div>
       </div>
     </div>
 
-    <!-- Upcoming exams -->
     <div class="section-block">
-      <div class="section-header">
-        <div class="section-heading">
-          <div class="section-heading-line upcoming"></div>
-          <span class="section-title">Upcoming</span>
-        </div>
-        <span class="section-count">2 exams scheduled</span>
+      <div class="section-hd">
+        <div class="section-heading"><div class="sh-line upcoming"></div><span class="sh-title">Upcoming</span></div>
+        <span class="sh-count">2 scheduled</span>
       </div>
-
       <div class="exam-card upcoming">
-        <div class="exam-card-info">
-          <div class="exam-card-name">Chemistry Quiz 3</div>
-          <div class="exam-card-meta">Science · Tomorrow, 09:00 · Prof. Reyes</div>
-          <div class="exam-card-tags">
-            <span class="tag duration">30 min</span>
-            <span class="tag questions">15 questions</span>
-          </div>
+        <div class="ec-info">
+          <div class="ec-name">Chemistry Quiz 3</div>
+          <div class="ec-meta">Science · Tomorrow, 09:00 · Prof. Reyes</div>
+          <div class="ec-tags"><span class="tag t-dur">30 min</span><span class="tag t-q">15 questions</span></div>
         </div>
-        <div class="exam-card-action">
-          <span class="btn btn-disabled">Not Yet Available</span>
-        </div>
+        <div class="ec-action"><span class="btn btn-off">Not Available</span></div>
       </div>
-
       <div class="exam-card upcoming">
-        <div class="exam-card-info">
-          <div class="exam-card-name">English Literature</div>
-          <div class="exam-card-meta">English · Friday, 13:00 · Prof. Cruz</div>
-          <div class="exam-card-tags">
-            <span class="tag duration">90 min</span>
-            <span class="tag questions">30 questions</span>
-          </div>
+        <div class="ec-info">
+          <div class="ec-name">English Literature</div>
+          <div class="ec-meta">English · Friday, 13:00 · Prof. Cruz</div>
+          <div class="ec-tags"><span class="tag t-dur">90 min</span><span class="tag t-q">30 questions</span></div>
         </div>
-        <div class="exam-card-action">
-          <span class="btn btn-disabled">Not Yet Available</span>
-        </div>
+        <div class="ec-action"><span class="btn btn-off">Not Available</span></div>
       </div>
     </div>
 
-    <!-- Completed exams -->
     <div class="section-block">
-      <div class="section-header">
-        <div class="section-heading">
-          <div class="section-heading-line completed"></div>
-          <span class="section-title">Completed</span>
-        </div>
-        <span class="section-count">3 exams done</span>
+      <div class="section-hd">
+        <div class="section-heading"><div class="sh-line done"></div><span class="sh-title">Completed</span></div>
+        <span class="sh-count">3 finished</span>
       </div>
-
-      <div class="exam-card completed">
-        <div class="exam-card-info">
-          <div class="exam-card-name">Science Midterm</div>
-          <div class="exam-card-meta">Science · Taken Nov 10, 2024</div>
-          <div class="exam-card-tags">
-            <span class="tag score-ok">88 / 100</span>
-            <span class="tag score-pass">Passed</span>
-          </div>
+      <div class="exam-card done">
+        <div class="ec-info">
+          <div class="ec-name">Science Midterm</div>
+          <div class="ec-meta">Science · Taken Nov 10, 2024</div>
+          <div class="ec-tags"><span class="tag t-ok">88 / 100</span><span class="tag t-pass">Passed</span></div>
         </div>
-        <div class="exam-card-action">
-          <a href="#" class="btn btn-outline-ok">View Results</a>
-        </div>
+        <div class="ec-action"><a href="#" class="btn btn-ok">View Results</a></div>
       </div>
-
-      <div class="exam-card completed">
-        <div class="exam-card-info">
-          <div class="exam-card-name">Math Quiz 2</div>
-          <div class="exam-card-meta">Mathematics · Taken Nov 5, 2024</div>
-          <div class="exam-card-tags">
-            <span class="tag score-ok">75 / 100</span>
-            <span class="tag score-pass">Passed</span>
-          </div>
+      <div class="exam-card done">
+        <div class="ec-info">
+          <div class="ec-name">Math Quiz 2</div>
+          <div class="ec-meta">Mathematics · Taken Nov 5, 2024</div>
+          <div class="ec-tags"><span class="tag t-ok">75 / 100</span><span class="tag t-pass">Passed</span></div>
         </div>
-        <div class="exam-card-action">
-          <a href="#" class="btn btn-outline-ok">View Results</a>
-        </div>
+        <div class="ec-action"><a href="#" class="btn btn-ok">View Results</a></div>
       </div>
-
-      <div class="exam-card completed">
-        <div class="exam-card-info">
-          <div class="exam-card-name">Filipino Panitikan</div>
-          <div class="exam-card-meta">Filipino · Taken Oct 28, 2024</div>
-          <div class="exam-card-tags">
-            <span class="tag score-ok">91 / 100</span>
-            <span class="tag score-pass">Passed</span>
-          </div>
+      <div class="exam-card done">
+        <div class="ec-info">
+          <div class="ec-name">Filipino Panitikan</div>
+          <div class="ec-meta">Filipino · Taken Oct 28, 2024</div>
+          <div class="ec-tags"><span class="tag t-ok">91 / 100</span><span class="tag t-pass">Passed</span></div>
         </div>
-        <div class="exam-card-action">
-          <a href="#" class="btn btn-outline-ok">View Results</a>
-        </div>
+        <div class="ec-action"><a href="#" class="btn btn-ok">View Results</a></div>
       </div>
     </div>
+  </main>
 
-  </main><!-- /main -->
-
-
-  <!-- ── CONSENT + CAMERA MODAL ────────────────────────────────────────────── -->
-  <!--
-    Two-step modal:
-      Step 1: Disclosure + consent checkbox
-      Step 2: Live camera preview + automated checks
-    The "Start Exam" button only enables after all checks pass in Step 2.
-  -->
+  <!-- CONSENT MODAL -->
   <div class="modal-overlay" id="consentModal">
     <div class="modal">
-
-      <!-- STEP 1: Consent -->
+      <div class="modal-accent"></div>
       <div id="step1">
-        <div class="modal-step-label">Step 1 of 2 — Disclosure &amp; Consent</div>
+        <div class="modal-step">Step 1 of 2 — Disclosure &amp; Consent</div>
         <div class="modal-title">Before you begin</div>
         <div class="modal-sub">ExamGuard monitors your webcam during this session. Review what is and is not collected.</div>
-
         <div class="monitor-list">
-          <div class="monitor-item">
-            <span class="monitor-item-key">FACE PRESENCE</span>
-            <span class="monitor-item-val">Absence &gt; 5s triggers a flag</span>
-          </div>
-          <div class="monitor-item">
-            <span class="monitor-item-key">GAZE DIRECTION</span>
-            <span class="monitor-item-val">Looking away &gt; 3s triggers a flag</span>
-          </div>
-          <div class="monitor-item">
-            <span class="monitor-item-key">PERSON COUNT</span>
-            <span class="monitor-item-val">Multiple faces = critical alert</span>
-          </div>
-          <div class="monitor-item">
-            <span class="monitor-item-key">TAB SWITCHES</span>
-            <span class="monitor-item-val">Detected via Browser Visibility API</span>
-          </div>
-          <div class="monitor-item no-store">
-            <span class="monitor-item-key">VIDEO STORAGE</span>
-            <span class="monitor-item-val">No raw video is ever stored — metadata only</span>
-          </div>
+          <div class="mi"><span class="mi-key">FACE PRESENCE</span><span class="mi-val">Absence &gt; 5s triggers a flag</span></div>
+          <div class="mi"><span class="mi-key">GAZE DIRECTION</span><span class="mi-val">Looking away &gt; 3s triggers a flag</span></div>
+          <div class="mi"><span class="mi-key">PERSON COUNT</span><span class="mi-val">Multiple faces = critical alert</span></div>
+          <div class="mi"><span class="mi-key">TAB SWITCHES</span><span class="mi-val">Detected via Browser Visibility API</span></div>
+          <div class="mi no-store"><span class="mi-key">VIDEO STORAGE</span><span class="mi-val">No raw video stored — metadata only</span></div>
         </div>
-
         <div class="consent-row">
           <input type="checkbox" id="consentCheck"/>
-          <label for="consentCheck">
-            I understand and consent to webcam monitoring for this session.
-            All flags are reviewed by my instructor — no automatic judgments are made.
-          </label>
+          <label for="consentCheck">I understand and consent to webcam monitoring. All flags are reviewed by my instructor — no automatic judgments are made.</label>
         </div>
-
         <div class="modal-actions">
-          <button class="btn btn-primary" style="justify-content:center;padding:calc(var(--u)*1.5) calc(var(--u)*2)" onclick="goToStep2()">
-            Continue to Camera Check
-          </button>
-          <button class="btn btn-ghost" style="justify-content:center" onclick="closeConsentModal()">Cancel</button>
+          <button class="btn btn-solid" style="justify-content:center;padding:11px" onclick="goStep2()">Continue to Camera Check</button>
+          <button class="btn btn-ghost" style="justify-content:center" onclick="closeConsent()">Cancel</button>
         </div>
       </div>
-
-      <!-- STEP 2: Camera Check -->
       <div id="step2" style="display:none">
-        <div class="modal-step-label">Step 2 of 2 — Camera Setup</div>
+        <div class="modal-step">Step 2 of 2 — Camera Setup</div>
         <div class="modal-title">Camera Verification</div>
         <div class="modal-sub">Allow camera access and confirm your setup is ready.</div>
-
-        <!-- Live camera preview -->
         <div class="cam-preview">
           <video id="camVideo" autoplay muted playsinline></video>
-          <div class="cam-placeholder" id="camPlaceholder">
-            <div style="font-size:0.65rem;color:var(--tx-low)">Camera not yet active</div>
-          </div>
+          <div class="cam-ph" id="camPh"><span>Camera not yet active</span></div>
         </div>
-
-        <!-- Setup checks — status dots animate to green when passing -->
         <div class="check-list">
-          <div class="check-item" id="check-cam">
-            <div class="check-status pending" id="dot-cam"></div>
-            <span id="label-cam">Camera access — pending</span>
-          </div>
-          <div class="check-item" id="check-face">
-            <div class="check-status pending" id="dot-face"></div>
-            <span id="label-face">Face detected — pending</span>
-          </div>
-          <div class="check-item" id="check-light">
-            <div class="check-status pending" id="dot-light"></div>
-            <span id="label-light">Lighting adequate — pending</span>
-          </div>
+          <div class="check-item" id="ci-cam"><div class="check-dot pending" id="cd-cam"></div><span id="cl-cam">Camera access — pending</span></div>
+          <div class="check-item" id="ci-face"><div class="check-dot pending" id="cd-face"></div><span id="cl-face">Face detected — pending</span></div>
+          <div class="check-item" id="ci-light"><div class="check-dot pending" id="cd-light"></div><span id="cl-light">Lighting adequate — pending</span></div>
         </div>
-
         <div class="modal-actions">
-          <!--
-            startBtn is disabled until all checks pass.
-            Do not enable manually — it's unlocked by checkComplete().
-          -->
-          <button class="btn btn-primary" id="startBtn"
-            style="justify-content:center;padding:calc(var(--u)*1.5) calc(var(--u)*2);opacity:0.4;cursor:not-allowed"
-            onclick="startExam()" disabled>
-            Start Exam — Algebra Finals
+          <button class="btn btn-solid" id="startBtn" style="justify-content:center;padding:11px;opacity:0.35;cursor:not-allowed" onclick="startExam()" disabled>
+            Start — Algebra Finals
           </button>
-          <button class="btn btn-ghost" style="justify-content:center" onclick="goBackToStep1()">
-            Back to Consent
-          </button>
+          <button class="btn btn-ghost" style="justify-content:center" onclick="goStep1()">Back</button>
         </div>
       </div>
-
     </div>
   </div>
 
-
   <script>
-    /* ─── Consent Modal Controller ───────────────────────────────────────────
-     * Opens the two-step consent/camera modal before starting an exam.
-     * Step 1: Disclosure + consent checkbox.
-     * Step 2: Camera access + simulated environment checks.
-     *         In a real build, replace the setTimeout checks with a real
-     *         frame analysis call to /api/analyze_frame.
-     * ──────────────────────────────────────────────────────────────────────── */
+    let camStream = null;
 
-    let cameraStream = null;
+    function openConsent() { document.getElementById('consentModal').classList.add('open'); }
+    function closeConsent() { document.getElementById('consentModal').classList.remove('open'); stopCam(); }
 
-    /** Open the consent modal (called from "Start Exam" button) */
-    function openConsentModal() {
-      document.getElementById('consentModal').classList.add('open');
-      document.getElementById('step1').style.display = 'block';
-      document.getElementById('step2').style.display = 'none';
-      // Reset consent checkbox on each open
-      document.getElementById('consentCheck').checked = false;
-    }
-
-    /** Close and clean up */
-    function closeConsentModal() {
-      document.getElementById('consentModal').classList.remove('open');
-      stopCamera();
-    }
-
-    /** Proceed from step 1 to step 2 (requires consent checked) */
-    function goToStep2() {
+    function goStep2() {
       if (!document.getElementById('consentCheck').checked) {
-        // Briefly highlight the checkbox row instead of an alert
-        const row = document.querySelector('.consent-row');
-        row.style.borderColor = 'rgba(255,23,68,0.5)';
-        setTimeout(() => row.style.borderColor = '', 1200);
+        document.querySelector('.consent-row').style.borderColor = 'rgba(239,68,68,0.4)';
+        setTimeout(() => document.querySelector('.consent-row').style.borderColor = '', 1500);
         return;
       }
       document.getElementById('step1').style.display = 'none';
       document.getElementById('step2').style.display = 'block';
-      startCamera();
+      startCam();
     }
 
-    /** Go back to step 1 */
-    function goBackToStep1() {
-      document.getElementById('step2').style.display = 'none';
-      document.getElementById('step1').style.display = 'block';
-      stopCamera();
-    }
+    function goStep1() { document.getElementById('step2').style.display = 'none'; document.getElementById('step1').style.display = 'block'; stopCam(); }
 
-
-    /* ─── Camera Setup & Checks ──────────────────────────────────────────────
-     * Requests camera access, then runs simulated environment checks.
-     * On success: unlocks the "Start Exam" button.
-     * On failure: shows error state on the failed check item.
-     * ──────────────────────────────────────────────────────────────────────── */
-
-    function startCamera() {
-      navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480, facingMode: 'user' } })
+    function startCam() {
+      navigator.mediaDevices.getUserMedia({ video: { width:640, height:480, facingMode:'user' } })
         .then(stream => {
-          cameraStream = stream;
-          const video = document.getElementById('camVideo');
-          video.srcObject = stream;
-          video.style.display = 'block';
-          document.getElementById('camPlaceholder').style.display = 'none';
-          // Run checks with staggered timing
-          runCheck('cam',   600,  'Camera access — granted');
-          runCheck('face',  1400, 'Face detected — OK');
-          runCheck('light', 2200, 'Lighting adequate — OK');
+          camStream = stream;
+          const v = document.getElementById('camVideo');
+          v.srcObject = stream; v.style.display = 'block';
+          document.getElementById('camPh').style.display = 'none';
+          runCheck('cam',   500, 'Camera access — granted');
+          runCheck('face',  1300, 'Face detected — OK');
+          runCheck('light', 2100, 'Lighting adequate — OK');
         })
         .catch(() => {
-          // Camera denied
-          setCheckFail('cam', 'Camera access — denied');
-          document.getElementById('camPlaceholder').innerHTML =
-            '<div style="font-size:0.65rem;color:var(--danger)">Camera access denied.<br>Please allow camera and retry.</div>';
+          failCheck('cam', 'Camera access — denied');
+          document.getElementById('camPh').innerHTML = '<span style="color:var(--danger)">Camera denied. Please allow access.</span>';
         });
     }
 
-    function stopCamera() {
-      if (cameraStream) {
-        cameraStream.getTracks().forEach(t => t.stop());
-        cameraStream = null;
-      }
-    }
+    function stopCam() { if (camStream) { camStream.getTracks().forEach(t=>t.stop()); camStream = null; } }
 
-    /**
-     * Mark a check item as passing after `delay` ms.
-     * When all three pass, enables the Start Exam button.
-     */
     function runCheck(id, delay, label) {
       setTimeout(() => {
-        const dot   = document.getElementById('dot-' + id);
-        const item  = document.getElementById('check-' + id);
-        const lbl   = document.getElementById('label-' + id);
-        dot.className   = 'check-status pass';
-        item.className  = 'check-item check-pass';
-        lbl.textContent = label;
-        checkComplete();
+        document.getElementById('cd-'+id).className = 'check-dot pass';
+        document.getElementById('ci-'+id).className = 'check-item pass';
+        document.getElementById('cl-'+id).textContent = label;
+        checkAllPass();
       }, delay);
     }
 
-    /** Mark a check as failed */
-    function setCheckFail(id, label) {
-      document.getElementById('dot-' + id).className  = 'check-status fail';
-      document.getElementById('label-' + id).textContent = label;
+    function failCheck(id, label) {
+      document.getElementById('cd-'+id).className = 'check-dot fail';
+      document.getElementById('cl-'+id).textContent = label;
     }
 
-    /** Enable the Start button only when all three checks are passing */
-    function checkComplete() {
-      const allPass = ['dot-cam', 'dot-face', 'dot-light']
-        .every(id => document.getElementById(id).classList.contains('pass'));
-      if (allPass) {
+    function checkAllPass() {
+      const all = ['cd-cam','cd-face','cd-light'].every(id => document.getElementById(id).classList.contains('pass'));
+      if (all) {
         const btn = document.getElementById('startBtn');
-        btn.style.opacity = '1';
-        btn.style.cursor  = 'pointer';
-        btn.disabled      = false;
+        btn.style.opacity = '1'; btn.style.cursor = 'pointer'; btn.disabled = false;
       }
     }
 
-    /** Launch the exam — stop camera, redirect to exam page */
-    function startExam() {
-      stopCamera();
-      window.location.href = '/exam?name=Juan+dela+Cruz&duration=60';
-    }
+    function startExam() { stopCam(); window.location.href = '/exam?name=Juan+dela+Cruz&duration=60'; }
 
-    // Backdrop click closes modal
     document.getElementById('consentModal').addEventListener('click', e => {
-      if (e.target === document.getElementById('consentModal')) closeConsentModal();
+      if (e.target === document.getElementById('consentModal')) closeConsent();
     });
   </script>
 </body>

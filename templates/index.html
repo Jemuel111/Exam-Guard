@@ -3,916 +3,572 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#080c14"/>
+  <link rel="manifest" href="/manifest.json"/>
   <title>ExamGuard — Secure Online Examination</title>
-
-  <!--
-    index.html — Landing page / login entry point
-    ─────────────────────────────────────────────
-    ROUTES FROM HERE:
-      Teacher login  → /teacher/dashboard
-      Student login  → /student/dashboard
-
-    LOGIN FLOW:
-      POST /api/login  { email, password, role, register }
-      → { success: true, role: "teacher"|"student" }
-
-    DEV NOTE:
-      In demo mode any credentials work. See MOCK_USERS in app.py.
-      The modal auto-fills demo credentials based on role selection.
-  -->
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
-    /* ── TOKENS ─────────────────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --u:           8px;
-      --bg:          #080c14;
-      --bg-1:        #0c1220;
-      --bg-2:        #101828;
-      --accent:      #0057FF;
-      --accent-dim:  rgba(0,87,255,0.10);
-      --accent-mid:  rgba(0,87,255,0.25);
-      --ok:          #00C853;
-      --warn:        #FFB300;
-      --danger:      #FF1744;
-      --tx-high:     #E8EDF5;
-      --tx-mid:      #7A8BA8;
-      --tx-low:      #3D506A;
-      --bd:          rgba(255,255,255,0.06);
-      --bd-accent:   rgba(0,87,255,0.30);
-      --font-mono:   'IBM Plex Mono', monospace;
-      --font-sans:   'IBM Plex Sans', sans-serif;
-      --t-fast:      120ms ease;
-      --t-mid:       220ms ease;
+      --bg:      #080c14;
+      --bg1:     #0d1424;
+      --bg2:     #111c30;
+      --acc:     #3b82f6;
+      --acc2:    #60a5fa;
+      --ok:      #22c55e;
+      --warn:    #f59e0b;
+      --danger:  #ef4444;
+      --hi:      #f0f6ff;
+      --mid:     #6b84a8;
+      --low:     #2d4060;
+      --bd:      rgba(255,255,255,0.06);
+      --sans:    'Space Grotesk', sans-serif;
+      --mono:    'Space Mono', monospace;
     }
-
-    html { font-size: 16px; scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; }
     body {
-      font-family: var(--font-sans);
+      font-family: var(--sans);
       background: var(--bg);
-      color: var(--tx-high);
-      line-height: 1.5;
-      -webkit-font-smoothing: antialiased;
+      color: var(--hi);
       min-height: 100vh;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ── GRID TEXTURE ───────────────────────────────────────────────────────── */
-    /* Subtle coordinate-grid background — reinforces precision instrument feel */
+    /* Grid background */
     body::before {
       content: '';
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
       background-image:
-        linear-gradient(rgba(0,87,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,87,255,0.03) 1px, transparent 1px);
-      background-size: 48px 48px;
+        linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
+      background-size: 52px 52px;
     }
 
-    /* ── NAV ────────────────────────────────────────────────────────────────── */
+    /* Glow orb */
+    body::after {
+      content: '';
+      position: fixed; top: -200px; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 600px;
+      background: radial-gradient(ellipse, rgba(59,130,246,0.12) 0%, transparent 70%);
+      z-index: 0; pointer-events: none;
+    }
+
+    /* ── NAV ── */
     nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      height: 52px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 calc(var(--u) * 6);
-      background: rgba(8,12,20,0.90);
-      backdrop-filter: blur(12px);
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      height: 56px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px;
+      background: rgba(8,12,20,0.85); backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--bd);
     }
-
-    /* Logo */
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: calc(var(--u) * 1.5);
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-mark {
+      width: 28px; height: 28px; background: var(--acc);
+      display: flex; align-items: center; justify-content: center; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     }
-    .logo-badge {
-      width: 22px;
-      height: 22px;
-      background: var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .logo-mark svg { width: 14px; height: 14px; fill: white; }
+    .logo-name { font-family: var(--mono); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.05em; color: var(--hi); }
+    .logo-name b { color: var(--acc); }
+    .nav-center { display: flex; gap: 4px; }
+    .nav-link {
+      font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.06em;
+      color: var(--mid); padding: 6px 14px; text-decoration: none;
+      border: 1px solid transparent; transition: all 0.15s;
     }
-    .logo-badge svg { width: 12px; height: 12px; fill: white; }
-    .logo-text {
-      font-family: var(--font-mono);
-      font-size: 0.82rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      color: var(--tx-high);
-    }
-    .logo-text b { color: var(--accent); }
-
-    /* Nav links */
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: calc(var(--u) * 1);
-    }
+    .nav-link:hover { color: var(--hi); border-color: var(--bd); }
+    .nav-right { display: flex; gap: 8px; }
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: calc(var(--u) * 1);
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      padding: calc(var(--u) * 1) calc(var(--u) * 2);
-      border: 1px solid transparent;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast);
-      white-space: nowrap;
-      background: none;
+      font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.04em; font-weight: 700;
+      padding: 8px 20px; border: 1px solid; cursor: pointer;
+      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+      transition: all 0.15s; background: none;
     }
-    .btn-ghost {
-      color: var(--tx-mid);
-      border-color: var(--bd);
-    }
-    .btn-ghost:hover { background: rgba(255,255,255,0.04); color: var(--tx-high); border-color: rgba(255,255,255,0.12); }
-    .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
-    .btn-primary:hover { background: #0048d4; border-color: #0048d4; }
+    .btn-ghost { color: var(--mid); border-color: var(--bd); }
+    .btn-ghost:hover { color: var(--hi); border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.03); }
+    .btn-solid { color: #fff; background: var(--acc); border-color: var(--acc); }
+    .btn-solid:hover { background: #2563eb; border-color: #2563eb; }
 
-    /* Dev progress strip */
-    .dev-strip {
-      position: fixed;
-      top: 52px; left: 0; right: 0;
-      z-index: 90;
-      height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: calc(var(--u) * 2);
-      background: rgba(255,179,0,0.05);
-      border-bottom: 1px solid rgba(255,179,0,0.15);
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      color: var(--warn);
-      letter-spacing: 0.08em;
-    }
-    .dev-strip-track {
-      width: 120px;
-      height: 2px;
-      background: rgba(255,255,255,0.08);
-      overflow: hidden;
-    }
-    .dev-strip-fill {
-      height: 100%;
-      width: 45%;
-      background: var(--warn);
-    }
-
-    /* ── HERO ───────────────────────────────────────────────────────────────── */
+    /* ── HERO ── */
     .hero {
-      position: relative;
-      z-index: 5;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: calc(var(--u) * 16) calc(var(--u) * 6) calc(var(--u) * 10);
+      position: relative; z-index: 5;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 120px 48px 80px;
       text-align: center;
     }
+    .hero-inner { max-width: 780px; }
 
-    /* Status tag — "MONITORING ACTIVE" */
-    .hero-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: calc(var(--u) * 1);
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--tx-mid);
-      border: 1px solid var(--bd);
-      padding: calc(var(--u) * 0.75) calc(var(--u) * 1.5);
-      margin-bottom: calc(var(--u) * 4);
-      animation: fade-up 0.5s ease both;
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      border: 1px solid rgba(34,197,94,0.3); padding: 5px 14px;
+      font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em;
+      color: var(--ok); margin-bottom: 36px;
+      animation: fade-up 0.6s ease both;
     }
-    .tag-dot {
-      width: 5px;
-      height: 5px;
-      background: var(--ok);
-      animation: pulse 2.4s cubic-bezier(0.4,0,0.6,1) infinite;
-    }
-    @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+    .pulse-dot { width: 6px; height: 6px; background: var(--ok); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
 
-    /* Eyebrow — EG-SYSTEM/v2 */
-    .hero-eyebrow {
-      font-family: var(--font-mono);
-      font-size: 0.62rem;
-      color: var(--tx-low);
-      letter-spacing: 0.1em;
-      margin-bottom: calc(var(--u) * 2);
-      animation: fade-up 0.5s 0.05s ease both;
-    }
-
-    /* Main headline — mono, large, precise */
     .hero-title {
-      font-family: var(--font-mono);
-      font-size: clamp(2rem, 5vw, 4rem);
-      font-weight: 600;
-      letter-spacing: -0.025em;
-      line-height: 1.08;
-      color: var(--tx-high);
-      margin-bottom: calc(var(--u) * 3);
-      max-width: 720px;
-      animation: fade-up 0.5s 0.1s ease both;
+      font-family: var(--sans); font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+      font-weight: 700; line-height: 1.06; letter-spacing: -0.03em;
+      color: var(--hi); margin-bottom: 24px;
+      animation: fade-up 0.6s 0.08s ease both;
     }
-    /* Accent word — just a different color, no gradient */
-    .hero-title .hl { color: var(--accent); }
+    .hero-title .hl { color: var(--acc); }
+    .hero-title .dim { color: var(--mid); }
 
     .hero-sub {
-      font-size: 0.95rem;
-      color: var(--tx-mid);
-      line-height: 1.7;
-      max-width: 460px;
-      margin: 0 auto calc(var(--u) * 6);
-      animation: fade-up 0.5s 0.15s ease both;
+      font-size: 1rem; color: var(--mid); line-height: 1.75; max-width: 500px;
+      margin: 0 auto 48px;
+      animation: fade-up 0.6s 0.16s ease both;
     }
 
     .hero-actions {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: calc(var(--u) * 1.5);
-      flex-wrap: wrap;
-      animation: fade-up 0.5s 0.2s ease both;
+      display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;
+      margin-bottom: 80px;
+      animation: fade-up 0.6s 0.24s ease both;
     }
-    .btn-hero {
-      display: inline-flex;
-      align-items: center;
-      gap: calc(var(--u) * 1);
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      font-weight: 500;
-      letter-spacing: 0.04em;
-      padding: calc(var(--u) * 1.5) calc(var(--u) * 3);
-      border: 1px solid transparent;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast);
-      background: none;
-    }
-    .btn-hero-primary {
-      background: var(--accent);
-      color: white;
-      border-color: var(--accent);
-    }
-    .btn-hero-primary:hover { background: #0048d4; border-color: #0048d4; }
-    .btn-hero-ghost {
-      color: var(--tx-mid);
-      border-color: var(--bd);
-    }
-    .btn-hero-ghost:hover { background: rgba(255,255,255,0.04); color: var(--tx-high); border-color: rgba(255,255,255,0.1); }
+    .btn-lg { font-size: 0.75rem; padding: 12px 28px; }
 
-    /* ── ROLE SELECTION SECTION ─────────────────────────────────────────────── */
+    /* Metrics strip */
+    .metrics-strip {
+      display: flex; align-items: center; justify-content: center; gap: 0;
+      border: 1px solid var(--bd); max-width: 540px; margin: 0 auto;
+      animation: fade-up 0.6s 0.32s ease both;
+    }
+    .metric {
+      flex: 1; padding: 16px 20px; text-align: center;
+      border-right: 1px solid var(--bd);
+    }
+    .metric:last-child { border-right: none; }
+    .metric-num { font-family: var(--mono); font-size: 1.4rem; font-weight: 700; color: var(--hi); display: block; }
+    .metric-lbl { font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.12em; color: var(--low); text-transform: uppercase; display: block; margin-top: 2px; }
+
+    @keyframes fade-up { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── ROLE CARDS ── */
     .roles-section {
-      position: relative;
-      z-index: 5;
-      max-width: 900px;
-      margin: 0 auto;
-      padding: calc(var(--u) * 10) calc(var(--u) * 6);
+      position: relative; z-index: 5;
+      max-width: 960px; margin: 0 auto; padding: 0 48px 100px;
     }
-
     .section-label {
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--tx-low);
-      margin-bottom: calc(var(--u) * 1);
+      font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--low); margin-bottom: 6px;
     }
     .section-title {
-      font-family: var(--font-mono);
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--tx-high);
-      margin-bottom: calc(var(--u) * 4);
+      font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 32px;
     }
-
-    /* Two-column role cards */
-    .roles-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: calc(var(--u) * 2);
-    }
-
+    .roles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .role-card {
-      display: block;
-      background: var(--bg-1);
-      border: 1px solid var(--bd);
-      padding: calc(var(--u) * 4);
-      text-decoration: none;
-      color: inherit;
-      cursor: pointer;
-      transition: border-color var(--t-fast), background var(--t-fast);
-      position: relative;
+      background: var(--bg1); border: 1px solid var(--bd);
+      padding: 36px; cursor: pointer; text-decoration: none; color: inherit;
+      display: block; position: relative; overflow: hidden;
+      transition: border-color 0.2s, background 0.2s;
     }
-    .role-card:hover {
-      border-color: rgba(255,255,255,0.10);
-      background: var(--bg-2);
-    }
-    /* Left accent on hover */
     .role-card::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 2px;
-      background: transparent;
-      transition: background var(--t-fast);
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+      width: 3px; background: transparent; transition: background 0.2s;
     }
-    .role-card:hover::before { background: var(--accent); }
-
-    /* Small box icon — replaces emoji */
-    .role-icon-box {
-      width: 32px;
-      height: 32px;
-      background: var(--accent-dim);
-      border: 1px solid var(--accent-mid);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: calc(var(--u) * 2.5);
+    .role-card:hover { border-color: rgba(59,130,246,0.3); background: var(--bg2); }
+    .role-card:hover::before { background: var(--acc); }
+    .role-card-num {
+      font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.12em;
+      color: var(--low); margin-bottom: 24px; display: block;
     }
-    .role-icon-box svg {
-      width: 16px;
-      height: 16px;
-      stroke: var(--accent);
-      fill: none;
-      stroke-width: 1.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
+    .role-icon {
+      width: 40px; height: 40px; border: 1px solid var(--bd);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 20px;
+      background: rgba(59,130,246,0.06);
     }
-
-    .role-name {
-      font-family: var(--font-mono);
-      font-size: 0.88rem;
-      font-weight: 600;
-      color: var(--tx-high);
-      margin-bottom: calc(var(--u) * 1);
-    }
-    .role-desc {
-      font-size: 0.8rem;
-      color: var(--tx-mid);
-      line-height: 1.6;
-      margin-bottom: calc(var(--u) * 2.5);
-    }
-    .role-features {
-      list-style: none;
-      margin-bottom: calc(var(--u) * 3);
-    }
+    .role-icon svg { width: 18px; height: 18px; stroke: var(--acc); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .role-name { font-size: 1.1rem; font-weight: 600; margin-bottom: 10px; letter-spacing: -0.01em; }
+    .role-desc { font-size: 0.82rem; color: var(--mid); line-height: 1.65; margin-bottom: 28px; }
+    .role-features { list-style: none; margin-bottom: 32px; }
     .role-features li {
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      color: var(--tx-low);
-      padding: calc(var(--u) * 0.75) 0;
-      border-bottom: 1px solid rgba(255,255,255,0.03);
-      display: flex;
-      align-items: center;
-      gap: calc(var(--u) * 1);
+      font-family: var(--mono); font-size: 0.65rem; color: var(--low);
+      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.03);
+      display: flex; align-items: center; gap: 10px;
     }
     .role-features li:last-child { border: none; }
-    .role-features li::before {
-      content: '→';
-      color: var(--accent);
-      font-size: 0.65rem;
-      flex-shrink: 0;
-    }
-    .role-cta {
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      font-weight: 500;
-      color: var(--accent);
-      letter-spacing: 0.04em;
-    }
+    .role-features li::before { content: '→'; color: var(--acc); font-size: 0.62rem; flex-shrink: 0; }
+    .role-cta { font-family: var(--mono); font-size: 0.65rem; font-weight: 700; color: var(--acc); letter-spacing: 0.04em; }
 
-    /* ── FEATURE GRID ───────────────────────────────────────────────────────── */
+    /* ── FEATURES GRID ── */
     .features-section {
-      position: relative;
-      z-index: 5;
-      max-width: 900px;
-      margin: 0 auto;
-      padding: calc(var(--u) * 8) calc(var(--u) * 6) calc(var(--u) * 12);
+      position: relative; z-index: 5;
+      max-width: 960px; margin: 0 auto; padding: 0 48px 100px;
     }
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;  /* Gap via background on parent — creates 1px dividers */
-      background: var(--bd);
-      border: 1px solid var(--bd);
+    .feat-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 1px;
+      background: var(--bd); border: 1px solid var(--bd);
     }
-    .feat-cell {
-      background: var(--bg);
-      padding: calc(var(--u) * 3);
+    .feat-cell { background: var(--bg); padding: 28px 24px; }
+    .feat-tag {
+      font-family: var(--mono); font-size: 0.55rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--acc);
+      margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
     }
-    /* Detection type label */
-    .feat-type {
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: calc(var(--u) * 1.5);
-    }
-    .feat-title {
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--tx-high);
-      margin-bottom: calc(var(--u) * 1);
-    }
-    .feat-desc {
-      font-size: 0.75rem;
-      color: var(--tx-mid);
-      line-height: 1.6;
-    }
+    .feat-tag::before { content: ''; display: block; width: 16px; height: 1px; background: var(--acc); }
+    .feat-name { font-size: 0.88rem; font-weight: 600; margin-bottom: 8px; }
+    .feat-desc { font-size: 0.75rem; color: var(--mid); line-height: 1.65; }
 
-    /* ── FOOTER ─────────────────────────────────────────────────────────────── */
+    /* ── FOOTER ── */
     footer {
-      position: relative;
-      z-index: 5;
-      border-top: 1px solid var(--bd);
-      padding: calc(var(--u) * 3) calc(var(--u) * 6);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      position: relative; z-index: 5;
+      border-top: 1px solid var(--bd); padding: 24px 48px;
+      display: flex; align-items: center; justify-content: space-between;
     }
-    .footer-text {
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      color: var(--tx-low);
-      letter-spacing: 0.06em;
-    }
+    .footer-text { font-family: var(--mono); font-size: 0.58rem; color: var(--low); letter-spacing: 0.06em; }
 
-    /* ── LOGIN MODAL ────────────────────────────────────────────────────────── */
+    /* ── LOGIN MODAL ── */
     .modal-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 500;
-      background: rgba(8,12,20,0.88);
-      backdrop-filter: blur(8px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: calc(var(--u) * 3);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity var(--t-mid);
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(4,6,12,0.9); backdrop-filter: blur(16px);
+      display: flex; align-items: center; justify-content: center; padding: 24px;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
     }
     .modal-overlay.open { opacity: 1; pointer-events: all; }
-
     .modal {
-      background: var(--bg-2);
-      border: 1px solid var(--bd-accent);
-      padding: calc(var(--u) * 5);
-      width: 100%;
-      max-width: 400px;
-      transform: translateY(12px);
-      transition: transform var(--t-mid);
+      background: var(--bg1); border: 1px solid rgba(59,130,246,0.3);
+      padding: 40px; width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto;
+      transform: translateY(16px); transition: transform 0.2s;
       position: relative;
     }
     .modal-overlay.open .modal { transform: translateY(0); }
-
-    /* Role indicator strip at top of modal */
-    .modal-role-strip {
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: var(--accent);
+    .modal-accent { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--acc); }
+    .modal-close {
+      position: absolute; top: 16px; right: 16px;
+      background: none; border: 1px solid var(--bd); color: var(--mid);
+      font-family: var(--mono); font-size: 0.58rem; padding: 3px 8px; cursor: pointer;
+      transition: all 0.15s;
     }
-
-    .modal-title {
-      font-family: var(--font-mono);
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--tx-high);
-      margin-bottom: calc(var(--u) * 0.5);
-    }
-    .modal-sub {
-      font-size: 0.75rem;
-      color: var(--tx-mid);
-      margin-bottom: calc(var(--u) * 4);
-    }
-
-    /* Hint box — demo credentials */
+    .modal-close:hover { border-color: var(--danger); color: var(--danger); }
+    .modal-eyebrow { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.12em; color: var(--acc); margin-bottom: 6px; }
+    .modal-title { font-size: 1.3rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 4px; }
+    .modal-sub { font-size: 0.78rem; color: var(--mid); margin-bottom: 28px; line-height: 1.6; }
     .hint-box {
-      background: var(--bg-1);
-      border: 1px solid var(--bd);
-      padding: calc(var(--u) * 1.5) calc(var(--u) * 2);
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      color: var(--tx-mid);
-      line-height: 1.7;
-      margin-bottom: calc(var(--u) * 3);
+      background: var(--bg2); border: 1px solid var(--bd); padding: 12px 16px;
+      font-family: var(--mono); font-size: 0.62rem; color: var(--mid); line-height: 1.8;
+      margin-bottom: 24px;
     }
-
-    /* Form */
-    .form-group { margin-bottom: calc(var(--u) * 2); }
-    .form-label {
-      display: block;
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--tx-low);
-      margin-bottom: calc(var(--u) * 0.75);
-    }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--low); margin-bottom: 6px; }
     .field {
-      width: 100%;
-      padding: calc(var(--u) * 1.25) calc(var(--u) * 1.5);
-      background: var(--bg);
-      border: 1px solid var(--bd);
-      color: var(--tx-high);
-      font-family: var(--font-sans);
-      font-size: 0.85rem;
-      outline: none;
-      transition: border-color var(--t-fast);
+      width: 100%; padding: 10px 14px; background: var(--bg); border: 1px solid var(--bd);
+      color: var(--hi); font-family: var(--sans); font-size: 0.875rem;
+      outline: none; transition: border-color 0.15s;
     }
-    .field:focus { border-color: var(--accent); }
-    .field::placeholder { color: var(--tx-low); }
-
+    .field:focus { border-color: var(--acc); }
+    .field::placeholder { color: var(--low); }
     .error-msg {
-      background: rgba(255,23,68,0.06);
-      border: 1px solid rgba(255,23,68,0.2);
-      padding: calc(var(--u) * 1.25) calc(var(--u) * 1.5);
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--danger);
-      margin-bottom: calc(var(--u) * 2);
-      display: none;
+      background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.25);
+      padding: 10px 14px; font-family: var(--mono); font-size: 0.68rem; color: var(--danger);
+      margin-bottom: 16px; display: none;
     }
     .error-msg.show { display: block; }
+    .modal-footer { margin-top: 20px; text-align: center; font-family: var(--mono); font-size: 0.62rem; color: var(--low); }
+    .modal-footer a { color: var(--acc); cursor: pointer; text-decoration: none; }
+    .modal-footer a:hover { text-decoration: underline; }
 
-    .modal-footer-link {
-      margin-top: calc(var(--u) * 2.5);
-      text-align: center;
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      color: var(--tx-low);
+    /* ── DEV BANNER ── */
+    .dev-banner {
+      position: fixed; top: 56px; left: 0; right: 0; z-index: 90;
+      height: 26px; display: flex; align-items: center; justify-content: center; gap: 16px;
+      background: rgba(245,158,11,0.06); border-bottom: 1px solid rgba(245,158,11,0.15);
+      font-family: var(--mono); font-size: 0.58rem; color: var(--warn); letter-spacing: 0.08em;
     }
-    .modal-footer-link a {
-      color: var(--accent);
-      cursor: pointer;
-      text-decoration: none;
-    }
-    .modal-footer-link a:hover { text-decoration: underline; }
+    .progress-track { width: 100px; height: 2px; background: var(--bd); }
+    .progress-fill { height: 100%; background: var(--warn); width: 75%; }
 
-    /* Keyboard close hint */
-    .modal-esc {
-      position: absolute;
-      top: calc(var(--u) * 2);
-      right: calc(var(--u) * 2);
-      font-family: var(--font-mono);
-      font-size: 0.6rem;
-      color: var(--tx-low);
-      border: 1px solid var(--bd);
-      padding: 2px 6px;
-      cursor: pointer;
-      background: none;
-      transition: color var(--t-fast), border-color var(--t-fast);
+    /* Pill labels */
+    .pill {
+      display: inline-block; font-family: var(--mono); font-size: 0.55rem; font-weight: 700;
+      letter-spacing: 0.1em; padding: 2px 7px; border: 1px solid;
     }
-    .modal-esc:hover { color: var(--tx-mid); border-color: rgba(255,255,255,0.1); }
-
-    /* ── ANIMATIONS ─────────────────────────────────────────────────────────── */
-    @keyframes fade-up {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Staggered animation for feature cells */
-    .feat-cell { opacity: 0; animation: fade-up 0.4s ease forwards; }
-    .feat-cell:nth-child(1) { animation-delay: 0.05s; }
-    .feat-cell:nth-child(2) { animation-delay: 0.10s; }
-    .feat-cell:nth-child(3) { animation-delay: 0.15s; }
-    .feat-cell:nth-child(4) { animation-delay: 0.20s; }
-    .feat-cell:nth-child(5) { animation-delay: 0.25s; }
-    .feat-cell:nth-child(6) { animation-delay: 0.30s; }
+    .pill-live   { color: var(--ok);     border-color: rgba(34,197,94,0.35); }
+    .pill-draft  { color: var(--acc);    border-color: rgba(59,130,246,0.35); }
+    .pill-php    { color: #8892bf;       border-color: rgba(136,146,191,0.3); }
   </style>
 </head>
 <body>
 
-  <!-- ── DEV PROGRESS STRIP ──────────────────────────────────────────────── -->
-  <!-- Remove this strip once the project reaches 100% -->
-  <div class="dev-strip">
-    <span>DEV BUILD — 45% COMPLETE</span>
-    <div class="dev-strip-track"><div class="dev-strip-fill"></div></div>
-    <span style="color: var(--tx-low)">CV pipeline · UI done · Auth partial · DB pending</span>
+  <div class="dev-banner">
+    <span>BUILD v0.75 · MOCK DEFENSE READY</span>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <span style="color:var(--low)">Flask + OpenCV + SQLite · PWA Enabled</span>
   </div>
 
-  <!-- ── NAVIGATION ──────────────────────────────────────────────────────── -->
   <nav>
-    <div class="nav-logo">
-      <div class="logo-badge">
-        <!-- Shield icon — inline SVG, no external dependency -->
-        <svg viewBox="0 0 12 14" fill="white"><path d="M6 0L0 2.5v4.5C0 10.5 6 14 6 14s6-3.5 6-7V2.5L6 0z"/></svg>
+    <a class="nav-logo" href="#">
+      <div class="logo-mark">
+        <svg viewBox="0 0 12 14"><path d="M6 0L0 2.5v4.5C0 10.5 6 14 6 14s6-3.5 6-7V2.5L6 0z"/></svg>
       </div>
-      <span class="logo-text">EXAM<b>GUARD</b></span>
+      <span class="logo-name">EXAM<b>GUARD</b></span>
+    </a>
+    <div class="nav-center">
+      <a href="#features" class="nav-link">DETECTION</a>
+      <a href="#roles" class="nav-link">ACCESS</a>
     </div>
-    <div class="nav-links">
-      <a href="#features" class="btn btn-ghost">Features</a>
-      <button class="btn btn-ghost" onclick="openModal('student')">Student Login</button>
-      <button class="btn btn-primary" onclick="openModal('teacher')">Teacher Portal</button>
+    <div class="nav-right">
+      <button class="btn btn-ghost" onclick="openModal('student')">Student</button>
+      <button class="btn btn-solid" onclick="openModal('teacher')">Teacher Portal</button>
     </div>
   </nav>
 
-  <!-- ── HERO ────────────────────────────────────────────────────────────── -->
   <section class="hero">
-    <div class="hero-tag">
-      <div class="tag-dot"></div>
-      AI-Powered Exam Monitoring System
-    </div>
-    <div class="hero-eyebrow">EG-SYSTEM / BUILD 0.45 / FLASK + OPENCV</div>
-    <h1 class="hero-title">
-      Secure exams.<br>
-      <span class="hl">Smart proctoring.</span>
-    </h1>
-    <p class="hero-sub">
-      Real-time computer vision monitoring for online examinations.
-      Behavioral insights for instructors — not automated verdicts.
-    </p>
-    <div class="hero-actions">
-      <button class="btn-hero btn-hero-primary" onclick="openModal('teacher')">
-        Teacher Portal
-        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
-      </button>
-      <button class="btn-hero btn-hero-ghost" onclick="openModal('student')">
-        Take an Exam
-      </button>
+    <div class="hero-inner">
+      <div class="status-pill">
+        <span class="pulse-dot"></span>
+        MONITORING SYSTEM ACTIVE · PWA ENABLED
+      </div>
+      <h1 class="hero-title">
+        Exam integrity,<br>
+        <span class="hl">verified in real time.</span>
+      </h1>
+      <p class="hero-sub">
+        Computer vision proctoring for online examinations. Behavioral insights for instructors — never automated verdicts.
+      </p>
+      <div class="hero-actions">
+        <button class="btn btn-solid btn-lg" onclick="openModal('teacher')">
+          Teacher Portal
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+        </button>
+        <button class="btn btn-ghost btn-lg" onclick="openModal('student')">
+          Take an Exam
+        </button>
+      </div>
+      <div class="metrics-strip">
+        <div class="metric">
+          <span class="metric-num" id="m-sessions">—</span>
+          <span class="metric-lbl">Sessions</span>
+        </div>
+        <div class="metric">
+          <span class="metric-num" id="m-students">—</span>
+          <span class="metric-lbl">Students</span>
+        </div>
+        <div class="metric">
+          <span class="metric-num" id="m-exams">—</span>
+          <span class="metric-lbl">Exams</span>
+        </div>
+        <div class="metric">
+          <span class="metric-num" id="m-flags">—</span>
+          <span class="metric-lbl">Flags Logged</span>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- ── ROLE SELECTION ──────────────────────────────────────────────────── -->
-  <section class="roles-section">
+  <section class="roles-section" id="roles">
     <div class="section-label">ACCESS CONTROL</div>
-    <div class="section-title">Select your role to continue</div>
+    <div class="section-title">Select your role</div>
     <div class="roles-grid">
-
-      <!-- Teacher card -->
       <a class="role-card" href="#" onclick="event.preventDefault(); openModal('teacher')">
-        <div class="role-icon-box">
-          <!-- Monitor/dashboard icon -->
+        <span class="role-card-num">01 / INSTRUCTOR</span>
+        <div class="role-icon">
           <svg viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="10" rx="1"/><path d="M5 14h6M8 12v2"/></svg>
         </div>
-        <div class="role-name">Teacher / Instructor</div>
-        <p class="role-desc">Create and manage exams, monitor students in real-time, and review detailed session reports.</p>
+        <div class="role-name">Teacher Portal</div>
+        <p class="role-desc">Create exams, manage students, monitor live sessions, and review detailed behavioral reports.</p>
         <ul class="role-features">
-          <li>Create and manage exam questions</li>
-          <li>Live student monitoring dashboard</li>
-          <li>Real-time violation alerts</li>
-          <li>Downloadable session reports (JSON + CSV)</li>
-          <li>Student management and enrollment</li>
+          <li>Create & manage exam question banks</li>
+          <li>Live student grid monitoring</li>
+          <li>Real-time violation alerts via WebSocket</li>
+          <li>Full session reports (JSON + CSV export)</li>
+          <li>Persistent SQLite student database</li>
         </ul>
         <div class="role-cta">Enter Teacher Portal →</div>
       </a>
-
-      <!-- Student card -->
       <a class="role-card" href="#" onclick="event.preventDefault(); openModal('student')">
-        <div class="role-icon-box">
-          <!-- User icon -->
+        <span class="role-card-num">02 / EXAMINEE</span>
+        <div class="role-icon">
           <svg viewBox="0 0 16 16"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
         </div>
-        <div class="role-name">Student</div>
-        <p class="role-desc">Access your assigned exams with webcam monitoring in a transparent, fair environment.</p>
+        <div class="role-name">Student Access</div>
+        <p class="role-desc">View assigned exams, complete them under fair webcam monitoring, see results after review.</p>
         <ul class="role-features">
-          <li>View assigned exams and schedule</li>
-          <li>Take monitored online exams</li>
-          <li>Real-time environment feedback</li>
-          <li>Webcam consent and setup guide</li>
-          <li>View results after instructor review</li>
+          <li>View assigned & upcoming exams</li>
+          <li>Consent-first camera setup flow</li>
+          <li>Live environment feedback (lighting, face)</li>
+          <li>Transparent monitoring — no hidden recording</li>
+          <li>Results after instructor review</li>
         </ul>
         <div class="role-cta">Start Exam →</div>
       </a>
     </div>
   </section>
 
-  <!-- ── DETECTION FEATURES ───────────────────────────────────────────────── -->
   <section class="features-section" id="features">
     <div class="section-label">DETECTION CAPABILITIES</div>
-    <div class="section-title" style="margin-bottom: calc(var(--u)*3)">What ExamGuard monitors</div>
-    <div class="features-grid">
-
+    <div class="section-title" style="margin-bottom:28px">What ExamGuard monitors</div>
+    <div class="feat-grid">
       <div class="feat-cell">
-        <div class="feat-type">NO_FACE</div>
-        <div class="feat-title">Face Absence</div>
-        <p class="feat-desc">Flags when no face is detected for more than 5 consecutive seconds. High severity alert.</p>
+        <div class="feat-tag">NO_FACE</div>
+        <div class="feat-name">Face Absence</div>
+        <p class="feat-desc">Flags when no face is detected for more than 5 consecutive seconds. High severity.</p>
       </div>
-
       <div class="feat-cell">
-        <div class="feat-type">MULTIPLE_FACES</div>
-        <div class="feat-title">Multiple Persons</div>
-        <p class="feat-desc">Detects when more than one person appears in the webcam frame. Critical severity.</p>
+        <div class="feat-tag">MULTIPLE_FACES</div>
+        <div class="feat-name">Multiple Persons</div>
+        <p class="feat-desc">Detects when more than one person appears in frame. Critical — immediate alert.</p>
       </div>
-
       <div class="feat-cell">
-        <div class="feat-type">LOOK_AWAY</div>
-        <div class="feat-title">Gaze Deviation</div>
-        <p class="feat-desc">Face mesh landmark analysis tracks sustained looking away from the screen over 3 seconds.</p>
+        <div class="feat-tag">LOOK_AWAY</div>
+        <div class="feat-name">Gaze Deviation</div>
+        <p class="feat-desc">Eye landmark analysis tracks sustained off-screen gaze beyond 3 seconds.</p>
       </div>
-
       <div class="feat-cell">
-        <div class="feat-type">TAB_SWITCH</div>
-        <div class="feat-title">Tab Switch</div>
-        <p class="feat-desc">Browser Visibility API detects when the student navigates away from the exam tab. Immediate.</p>
+        <div class="feat-tag">TAB_SWITCH</div>
+        <div class="feat-name">Tab Switch</div>
+        <p class="feat-desc">Browser Visibility API detects navigation away from the exam tab. Immediate log.</p>
       </div>
-
       <div class="feat-cell">
-        <div class="feat-type">POOR_LIGHTING</div>
-        <div class="feat-title">Lighting Quality</div>
-        <p class="feat-desc">OpenCV brightness and contrast analysis ensures conditions are adequate for face detection.</p>
+        <div class="feat-tag">POOR_LIGHTING</div>
+        <div class="feat-name">Lighting Quality</div>
+        <p class="feat-desc">OpenCV brightness + contrast analysis ensures conditions are adequate per frame.</p>
       </div>
-
       <div class="feat-cell">
-        <div class="feat-type">RISK_SCORE</div>
-        <div class="feat-title">Risk Assessment</div>
-        <p class="feat-desc">Weighted behavioral scoring: Low / Medium / High. All flags require human instructor review.</p>
+        <div class="feat-tag">RISK_SCORE</div>
+        <div class="feat-name">Risk Assessment</div>
+        <p class="feat-desc">Weighted behavioral scoring: Low / Medium / High. All flags require human review.</p>
       </div>
     </div>
   </section>
 
-  <!-- ── FOOTER ────────────────────────────────────────────────────────────── -->
   <footer>
-    <span class="footer-text">EXAMGUARD · FLASK + OPENCV · EDUCATIONAL USE ONLY · HUMAN REVIEW REQUIRED</span>
-    <span class="footer-text" style="color:var(--tx-low)">RA 10173 · FERPA · GDPR COMPLIANT INTENT</span>
+    <span class="footer-text">EXAMGUARD · FLASK + OPENCV + SQLITE · EDUCATIONAL USE ONLY · HUMAN REVIEW REQUIRED</span>
+    <div style="display:flex;gap:8px">
+      <span class="pill pill-php">PYTHON</span>
+      <span class="pill pill-live">PWA</span>
+      <span class="pill pill-draft">SQLite</span>
+    </div>
   </footer>
 
-
-  <!-- ── LOGIN MODAL ───────────────────────────────────────────────────────── -->
-  <!--
-    MODAL LOGIC:
-      openModal('teacher') or openModal('student') sets currentRole and
-      auto-fills demo credentials. On success, redirects to the correct dashboard.
-
-    API: POST /api/login → { success, role, name }
-    Fallback: if fetch fails (network), redirects directly (demo mode).
-  -->
+  <!-- LOGIN MODAL -->
   <div class="modal-overlay" id="loginModal">
     <div class="modal">
-      <div class="modal-role-strip" id="modalStrip"></div>
-      <button class="modal-esc" onclick="closeModal()">ESC</button>
-
-      <div class="modal-title" id="modalTitle">Teacher Login</div>
-      <div class="modal-sub" id="modalSub">Sign in to access the teacher portal</div>
-
+      <div class="modal-accent"></div>
+      <button class="modal-close" onclick="closeModal()">ESC</button>
+      <div class="modal-eyebrow" id="modalEyebrow">TEACHER ACCESS</div>
+      <div class="modal-title" id="modalTitle">Sign In</div>
+      <div class="modal-sub" id="modalSub">Access the ExamGuard teacher portal</div>
       <div class="hint-box" id="demoHint">
-        DEMO — teacher@school.edu / teacher123<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;student@school.edu / student123
+        DEMO CREDENTIALS<br>
+        teacher@school.edu / teacher123<br>
+        student@school.edu / student123
       </div>
-
-      <div class="error-msg" id="errorMsg">Invalid credentials. Please try again.</div>
-
+      <div class="error-msg" id="errorMsg"></div>
       <div class="form-group">
-        <label class="form-label" for="loginEmail">Email Address</label>
-        <input type="email" class="field" id="loginEmail" placeholder="you@school.edu" autocomplete="email"/>
+        <label class="form-label">Email</label>
+        <input type="email" class="field" id="loginEmail" placeholder="you@school.edu"/>
       </div>
       <div class="form-group">
-        <label class="form-label" for="loginPassword">Password</label>
-        <input type="password" class="field" id="loginPassword" placeholder="••••••••" autocomplete="current-password"/>
+        <label class="form-label">Password</label>
+        <input type="password" class="field" id="loginPassword" placeholder="••••••••"/>
       </div>
-      <div class="form-group" id="studentIdGroup" style="display:none">
-        <label class="form-label" for="studentId">Student ID</label>
-        <input type="text" class="field" id="studentId" placeholder="e.g. STU-2024-001"/>
+      <div class="form-group" id="nameGroup" style="display:none">
+        <label class="form-label">Full Name</label>
+        <input type="text" class="field" id="loginName" placeholder="Your full name"/>
       </div>
-
-      <button class="btn btn-primary" style="width:100%;padding:calc(var(--u)*1.5) calc(var(--u)*2);font-size:0.75rem;justify-content:center;margin-top:calc(var(--u)*0.5)" id="loginBtn" onclick="handleLogin()">
-        Sign In
-      </button>
-
-      <div class="modal-footer-link">
-        <span id="switchText">New teacher?</span>
-        <a id="switchLink" onclick="toggleRegister()">Create an account</a>
+      <div class="form-group" id="sidGroup" style="display:none">
+        <label class="form-label">Student ID</label>
+        <input type="text" class="field" id="loginSid" placeholder="STU-001"/>
+      </div>
+      <button class="btn btn-solid" style="width:100%;justify-content:center;font-size:0.75rem;padding:12px" id="loginBtn" onclick="handleLogin()">Sign In</button>
+      <div class="modal-footer">
+        <span id="switchText">New here?</span>
+        <a id="switchLink" onclick="toggleRegister()"> Create account</a>
       </div>
     </div>
   </div>
 
-
   <script>
-    /* ─── Login Modal Controller ─────────────────────────────────────────────
-     * Manages role selection, demo credential prefill, login/register toggle.
-     * Called from nav buttons and role cards via openModal('teacher'|'student').
-     * ──────────────────────────────────────────────────────────────────────── */
+    // Load live stats
+    fetch('/api/dashboard_stats').then(r=>r.json()).then(d=>{
+      document.getElementById('m-sessions').textContent = d.total_sessions || '0';
+      document.getElementById('m-students').textContent = d.total_students || '0';
+      document.getElementById('m-exams').textContent = d.total_exams || '0';
+      document.getElementById('m-flags').textContent = d.total_violations || '0';
+    }).catch(()=>{});
 
-    let currentRole = 'teacher';
-    let isRegister  = false;
+    let currentRole = 'teacher', isRegister = false;
 
-    /** Open the login modal for a given role */
     function openModal(role) {
-      currentRole = role;
-      isRegister  = false;
-
-      const isTeacher = role === 'teacher';
-
-      // Update modal text
-      document.getElementById('modalTitle').textContent = isTeacher ? 'Teacher Login' : 'Student Login';
-      document.getElementById('modalSub').textContent   = isTeacher
-        ? 'Sign in to access the teacher portal'
-        : 'Sign in to access your assigned exams';
-      document.getElementById('switchText').textContent = isTeacher ? 'New teacher?' : 'New student?';
-      document.getElementById('switchLink').textContent = ' Create an account';
-      document.getElementById('loginBtn').textContent   = 'Sign In';
-      document.getElementById('studentIdGroup').style.display = isTeacher ? 'none' : 'block';
+      currentRole = role; isRegister = false;
+      const isT = role === 'teacher';
+      document.getElementById('modalEyebrow').textContent = isT ? 'TEACHER ACCESS' : 'STUDENT ACCESS';
+      document.getElementById('modalTitle').textContent = 'Sign In';
+      document.getElementById('modalSub').textContent = isT ? 'Access the ExamGuard teacher portal' : 'Sign in to view your assigned exams';
+      document.getElementById('loginEmail').value = isT ? 'teacher@school.edu' : 'student@school.edu';
+      document.getElementById('loginPassword').value = isT ? 'teacher123' : 'student123';
       document.getElementById('demoHint').style.display = 'block';
+      document.getElementById('nameGroup').style.display = 'none';
+      document.getElementById('sidGroup').style.display = 'none';
       document.getElementById('errorMsg').classList.remove('show');
-
-      // Pre-fill demo credentials for quick testing
-      document.getElementById('loginEmail').value    = isTeacher ? 'teacher@school.edu' : 'student@school.edu';
-      document.getElementById('loginPassword').value = isTeacher ? 'teacher123' : 'student123';
-
+      document.getElementById('switchText').textContent = isT ? 'New teacher?' : 'New student?';
+      document.getElementById('switchLink').textContent = ' Create account';
+      document.getElementById('loginBtn').textContent = 'Sign In';
       document.getElementById('loginModal').classList.add('open');
     }
 
-    /** Close the login modal */
-    function closeModal() {
-      document.getElementById('loginModal').classList.remove('open');
-    }
+    function closeModal() { document.getElementById('loginModal').classList.remove('open'); }
 
-    /** Toggle between login and register form states */
     function toggleRegister() {
       isRegister = !isRegister;
-      const isTeacher = currentRole === 'teacher';
-
-      document.getElementById('modalTitle').textContent = isRegister
-        ? (isTeacher ? 'Create Teacher Account' : 'Create Student Account')
-        : (isTeacher ? 'Teacher Login' : 'Student Login');
-      document.getElementById('loginBtn').textContent  = isRegister ? 'Create Account' : 'Sign In';
-      document.getElementById('switchLink').textContent = isRegister ? ' Back to login' : ' Create an account';
-      document.getElementById('switchText').textContent = isRegister ? 'Already registered?' : (isTeacher ? 'New teacher?' : 'New student?');
+      const isT = currentRole === 'teacher';
+      document.getElementById('modalTitle').textContent = isRegister ? 'Create Account' : 'Sign In';
+      document.getElementById('loginBtn').textContent = isRegister ? 'Create Account' : 'Sign In';
+      document.getElementById('nameGroup').style.display = isRegister ? 'block' : 'none';
+      document.getElementById('sidGroup').style.display = (isRegister && !isT) ? 'block' : 'none';
       document.getElementById('demoHint').style.display = isRegister ? 'none' : 'block';
+      document.getElementById('switchLink').textContent = isRegister ? ' Back to login' : ' Create account';
+      document.getElementById('switchText').textContent = isRegister ? 'Already registered?' : (isT ? 'New teacher?' : 'New student?');
     }
 
-    /** Submit login/register to /api/login */
     function handleLogin() {
-      const email    = document.getElementById('loginEmail').value.trim();
+      const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
-
-      if (!email || !password) {
-        showError('Please fill in all fields.');
-        return;
-      }
-
+      if (!email || !password) { showError('Please fill in all fields.'); return; }
       const btn = document.getElementById('loginBtn');
-      btn.textContent = 'Authenticating...';
-      btn.disabled    = true;
-
+      btn.textContent = isRegister ? 'Creating...' : 'Signing in...';
+      btn.disabled = true;
       fetch('/api/login', {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({
-          email,
-          password,
-          role:       currentRole,
-          register:   isRegister,
-          student_id: document.getElementById('studentId').value
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({
+          email, password, role: currentRole, register: isRegister,
+          name: document.getElementById('loginName').value,
+          student_id: document.getElementById('loginSid').value
         })
-      })
-      .then(r => r.json())
-      .then(data => {
+      }).then(r=>r.json()).then(data=>{
         if (data.success) {
           window.location.href = currentRole === 'teacher' ? '/teacher/dashboard' : '/student/dashboard';
         } else {
           showError(data.error || 'Invalid credentials.');
           btn.textContent = isRegister ? 'Create Account' : 'Sign In';
-          btn.disabled    = false;
+          btn.disabled = false;
         }
-      })
-      .catch(() => {
-        // Network/server error — redirect anyway (demo mode fallback)
+      }).catch(()=>{
         window.location.href = currentRole === 'teacher' ? '/teacher/dashboard' : '/student/dashboard';
       });
     }
 
     function showError(msg) {
       const el = document.getElementById('errorMsg');
-      el.textContent = msg;
-      el.classList.add('show');
+      el.textContent = msg; el.classList.add('show');
     }
 
-    // Close modal on backdrop click
     document.getElementById('loginModal').addEventListener('click', e => {
       if (e.target === document.getElementById('loginModal')) closeModal();
     });
-
-    // Keyboard shortcuts
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') closeModal();
       if (e.key === 'Enter' && document.getElementById('loginModal').classList.contains('open')) handleLogin();
     });
+
+    // PWA Service Worker
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/static/sw.js').catch(()=>{});
+    }
   </script>
 </body>
 </html>
