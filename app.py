@@ -787,15 +787,13 @@ def enroll_students(exam_id):
 
 @app.route('/api/student/exams', methods=['GET'])
 def student_exams():
-    """Return exams visible to the current student."""
     db = get_db()
-    # Return all active/scheduled + completed by this student
     active = db.execute('''SELECT e.*, 
                             (SELECT COUNT(*) FROM questions WHERE exam_id=e.id) as question_count
                             FROM exams e WHERE e.status IN ('active','scheduled')
-                            ORDER BY e.scheduled_start ASC NULLS LAST''').fetchall()
+                            ORDER BY CASE WHEN e.scheduled_start IS NULL THEN 1 ELSE 0 END,
+                                     e.scheduled_start ASC''').fetchall()
     return jsonify([dict(e) for e in active])
-
 
 # ─── SUBMISSION API ───────────────────────────────────────────────────────────
 @app.route('/api/submit_exam', methods=['POST'])
