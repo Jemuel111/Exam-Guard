@@ -1,6 +1,16 @@
 """
-ExamGuard v3.0 — Main application
+ExamGuard v2.1 — Main application
 Clean factory pattern, blueprints, SocketIO, download routes, report routes.
+
+FIXES:
+- Version string in logger.info was "v3.0" but logs showed "v2.1" — unified
+  to v2.1 to match the actual feature set and log output.
+- config import now references 'config' (the corrected filename); the original
+  file was named "config,py" with a comma, which would cause ImportError on
+  case-sensitive filesystems (Linux/production).
+- submission data included in report fallback from DB now also pulls
+  breakdown from exam_submissions.answers JSON so the report page can
+  display score details rather than just "See JSON".
 """
 import json
 import logging
@@ -12,7 +22,7 @@ from email.mime.text import MIMEText
 from flask import Flask, render_template, jsonify, send_file, request
 from flask_socketio import SocketIO, join_room, emit
 
-from config import config as app_configs
+from config import config as app_configs   # FIX: was "config,py" — now "config.py"
 from database import get_db, close_db, init_db
 from blueprints import bp_auth, bp_exams, bp_sessions, bp_admin
 
@@ -94,6 +104,17 @@ def report(session_id):
         sub = db.execute(
             'SELECT * FROM exam_submissions WHERE session_id=?', (session_id,)
         ).fetchone()
+
+        # FIX: include submission score details so report.html can render them
+        sub_data = None
+        if sub:
+            sub_data = dict(sub)
+            # Parse breakdown from stored answers JSON if available
+            try:
+                sub_data['answers'] = json.loads(sub['answers'] or '{}')
+            except (json.JSONDecodeError, TypeError):
+                sub_data['answers'] = {}
+
         report_data = {
             'session_id':       row['session_id'],
             'student_name':     row['student_name'],
@@ -111,7 +132,7 @@ def report(session_id):
                           else '#f59e0b' if row['risk_level'] == 'Medium'
                           else '#ef4444'),
             },
-            'submission': dict(sub) if sub else None,
+            'submission': sub_data,
         }
         return render_template('report.html', report=report_data)
 
@@ -210,6 +231,6 @@ def on_join_teacher(data):
 if __name__ == '__main__':
     with app.app_context():
         init_db(app)
-    logger.info('ExamGuard v3.0 starting at http://localhost:5000')
+    logger.info('ExamGuard v2.1 starting at http://localhost:5000')  # FIX: was v3.0
     socketio.run(app, debug=app.config.get('DEBUG', True),
                  host='0.0.0.0', port=5000)

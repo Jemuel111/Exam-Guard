@@ -673,3 +673,45 @@
 2026-04-27 11:24:49,445 [INFO]  * Debugger PIN: 919-951-528
 2026-04-27 11:25:07,564 [INFO]  * Detected change in '/Users/macbook/Downloads/examguard/app.py', reloading
 2026-04-27 11:25:07,665 [INFO]  * Restarting with stat
+2026-04-27 12:23:24,305 [INFO] Database initialized ✓
+2026-04-27 12:23:24,306 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-04-27 12:23:24,517 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.3:5000
+2026-04-27 12:23:24,517 [INFO] [33mPress CTRL+C to quit[0m
+2026-04-27 12:23:24,517 [INFO]  * Restarting with stat
+2026-04-27 12:23:25,003 [INFO] Database initialized ✓
+2026-04-27 12:23:25,003 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-04-27 12:23:25,030 [WARNING]  * Debugger is active!
+2026-04-27 12:23:25,042 [INFO]  * Debugger PIN: 130-332-172
+2026-04-27 12:23:33,848 [INFO] 127.0.0.1 - - [27/Apr/2026 12:23:33] "GET / HTTP/1.1" 200 -
+2026-04-27 12:23:33,870 [ERROR] dashboard_stats error: no such column: is_active
+2026-04-27 12:23:33,871 [INFO] 127.0.0.1 - - [27/Apr/2026 12:23:33] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-04-27 12:23:34,194 [INFO] 127.0.0.1 - - [27/Apr/2026 12:23:34] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-04-27 12:23:34,302 [INFO] 127.0.0.1 - - [27/Apr/2026 12:23:34] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-04-27 12:23:54,172 [INFO] 127.0.0.1 - - [27/Apr/2026 12:23:54] "[35m[1mPOST /api/login HTTP/1.1[0m" 500 -
+2026-04-27 12:23:54,208 [INFO] 127.0.0.1 - - [27/Apr/2026 12:23:54] "GET /teacher/dashboard HTTP/1.1" 200 -
+2026-04-27 12:23:54,484 [INFO] 127.0.0.1 - - [27/Apr/2026 12:23:54] "GET /socket.io/?EIO=4&transport=polling&t=PtDBVLn HTTP/1.1" 200 -
+2026-04-27 12:23:54,491 [INFO] 127.0.0.1 - - [27/Apr/2026 12:23:54] "GET /api/exams HTTP/1.1" 200 -
+2026-04-27 12:23:54,493 [INFO] 127.0.0.1 - - [27/Apr/2026 12:23:54] "GET /api/sessions HTTP/1.1" 200 -
+2026-04-27 12:23:54,493 [ERROR] dashboard_stats error: no such column: is_active
+2026-04-27 12:23:54,495 [INFO] 127.0.0.1 - - [27/Apr/2026 12:23:54] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-04-27 12:23:54,532 [INFO] 127.0.0.1 - - [27/Apr/2026 12:23:54] "POST /socket.io/?EIO=4&transport=polling&t=PtDBVMV&sid=s7qAmqaHRkPILQbxAAAA HTTP/1.1" 200 -
+2026-04-27 12:23:54,535 [INFO] 127.0.0.1 - - [27/Apr/2026 12:23:54] "GET /socket.io/?EIO=4&transport=polling&t=PtDBVMX&sid=s7qAmqaHRkPILQbxAAAA HTTP/1.1" 200 -
+2026-04-27 12:23:54,558 [INFO] 127.0.0.1 - - [27/Apr/2026 12:23:54] "GET /socket.io/?EIO=4&transport=polling&t=PtDBVMp&sid=s7qAmqaHRkPILQbxAAAA HTTP/1.1" 200 -
+2026-04-27 12:23:57,605 [INFO] 127.0.0.1 - - [27/Apr/2026 12:23:57] "GET /api/sessions HTTP/1.1" 200 -
+2026-04-27 12:24:02,254 [INFO] 127.0.0.1 - - [27/Apr/2026 12:24:02] "GET /api/download_csv/EG-1777258470 HTTP/1.1" 200 -
+2026-04-27 12:24:03,930 [INFO] 127.0.0.1 - - [27/Apr/2026 12:24:03] "GET /api/sessions HTTP/1.1" 200 -
+2026-04-27 12:24:04,495 [ERROR] dashboard_stats error: no such column: is_active
+2026-04-27 12:24:04,497 [INFO] 127.0.0.1 - - [27/Apr/2026 12:24:04] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-04-27 12:24:04,499 [INFO] 127.0.0.1 - - [27/Apr/2026 12:24:04] "GET /api/sessions HTTP/1.1" 200 -
+2026-04-27 12:24:08,380 [INFO] 127.0.0.1 - - [27/Apr/2026 12:24:08] "GET /api/sessions HTTP/1.1" 200 -
+2026-04-27 12:24:09,732 [INFO] 127.0.0.1 - - [27/Apr/2026 12:24:09] "GET /api/sessions HTTP/1.1" 200 -
+2026-04-27 12:24:14,063 [INFO] 127.0.0.1 - - [27/Apr/2026 12:24:14] "GET /report/EG-1777258470 HTTP/1.1" 200 -
+2026-04-27 12:24:14,093 [INFO] 127.0.0.1 - - [27/Apr/2026 12:24:14] "GET /socket.io/?EIO=4&transport=websocket&sid=s7qAmqaHRkPILQbxAAAA HTTP/1.1" 200 -
+2026-04-27 12:24:21,381 [INFO] 127.0.0.1 - - [27/Apr/2026 12:24:21] "GET / HTTP/1.1" 200 -
+2026-04-27 12:24:21,403 [ERROR] dashboard_stats error: no such column: is_active
+2026-04-27 12:24:21,405 [INFO] 127.0.0.1 - - [27/Apr/2026 12:24:21] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-04-27 12:24:21,431 [INFO] 127.0.0.1 - - [27/Apr/2026 12:24:21] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-04-27 12:24:21,442 [INFO] 127.0.0.1 - - [27/Apr/2026 12:24:21] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -

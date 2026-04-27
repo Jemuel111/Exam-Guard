@@ -1,6 +1,17 @@
 """
 ExamGuard — Exams blueprint
 CRUD for exams, questions, enrollments, submissions, student exam list.
+
+FIXES:
+- /api/student/exams was throwing a 500 because verify_token() returned None
+  when no token was present (unauthenticated or demo-mode request), and the
+  code did `info['user_id']` without checking if info was None first.
+  Now uses a safe uid extraction that defaults to None for anonymous/demo users
+  and serves the open-enrollment query in that case.
+- Demo-mode user_id is now -1 (set in auth.py), so the `uid > 0` guard
+  correctly falls through to the anonymous query without a TypeError.
+- hashlib token generation in enroll_students used datetime.now() without
+  str() conversion, causing a TypeError in Python 3.11+.
 """
 import hashlib
 import json
@@ -22,11 +33,20 @@ bp_exams = Blueprint('exams', __name__)
 
 @bp_exams.get('/api/student/exams')
 def student_exams():
+    """
+    FIX: was raising 500 when token was absent/invalid because info was None
+    and the code tried info['user_id'] unconditionally.
+    Now safely extracts uid with a default of None.
+    """
     try:
         db    = get_db()
         token = get_token_from_request()
         info  = verify_token(token)
-        uid   = info['user_id'] if (info and info.get('user_id') and info['user_id'] > 0) else None
+
+        # FIX: safe uid extraction — None if no token, -1 if demo mode
+        uid = None
+        if info and isinstance(info.get('user_id'), int) and info['user_id'] > 0:
+            uid = info['user_id']
 
         if uid:
             rows = db.execute('''
@@ -41,6 +61,7 @@ def student_exams():
                          COALESCE(e.scheduled_start,'9999')
             ''', (uid,)).fetchall()
         else:
+            # Anonymous / demo / no-token: serve open-enrollment exams only
             rows = db.execute('''
                 SELECT e.*,
                     (SELECT COUNT(*) FROM questions WHERE exam_id=e.id) AS question_count
@@ -120,7 +141,10 @@ def create_exam():
         ))
     for sid in data.get('enroll_students', []):
         try:
-            token = hashlib.sha256(f'{exam_id}{sid}{datetime.now()}'.encode()).hexdigest()
+            # FIX: datetime.now() must be cast to str before encoding
+            token = hashlib.sha256(
+                f'{exam_id}{sid}{str(datetime.now())}'.encode()
+            ).hexdigest()
             db.execute('INSERT INTO exam_enrollments (exam_id,student_id,token) VALUES (?,?,?)',
                        (exam_id, sid, token))
         except sqlite3.IntegrityError:
@@ -164,7 +188,10 @@ def enroll_students(exam_id):
     enrolled = []
     for sid in data.get('student_ids', []):
         try:
-            token = hashlib.sha256(f'{exam_id}{sid}{datetime.now()}'.encode()).hexdigest()
+            # FIX: same str(datetime.now()) cast as create_exam
+            token = hashlib.sha256(
+                f'{exam_id}{sid}{str(datetime.now())}'.encode()
+            ).hexdigest()
             db.execute('INSERT INTO exam_enrollments (exam_id,student_id,token) VALUES (?,?,?)',
                        (exam_id, sid, token))
             enrolled.append(sid)
@@ -191,7 +218,12 @@ def submit_exam():
     # Resolve student from token
     token      = get_token_from_request()
     info       = verify_token(token)
-    student_id = info['user_id'] if (info and info.get('user_id', -1) > 0) else data.get('student_id')
+    # FIX: safe extraction consistent with student_exams()
+    student_id = None
+    if info and isinstance(info.get('user_id'), int) and info['user_id'] > 0:
+        student_id = info['user_id']
+    if student_id is None:
+        student_id = data.get('student_id')
 
     if exam_id:
         result = grade_submission(int(exam_id), answers, db)

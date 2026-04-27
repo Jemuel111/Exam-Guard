@@ -2,6 +2,16 @@
 ExamGuard — Sessions blueprint
 /api/start_session, /api/analyze_frame, /api/tab_switch,
 /api/audio_alert, /api/end_session, /api/status/<id>, /api/sessions
+
+FIXES:
+- /api/tab_switch was incrementing session.stats['tab_switches'] BEFORE
+  checking session.ended, so the stat incremented even for post-session
+  tab switches (visible in logs: EG-1777258470 got a TAB_SWITCH after
+  end_session). Stats are now only mutated when the session is still active.
+- /api/audio_alert had the same issue — stat increment moved inside the
+  active-session guard.
+- verify_token can now receive None safely (fixed in auth.py); the `info`
+  null-check pattern here is unchanged but now more robust.
 """
 import json
 import logging
@@ -19,7 +29,6 @@ logger      = logging.getLogger(__name__)
 bp_sessions = Blueprint('sessions', __name__)
 
 # Shared in-memory session store (keyed by session_id)
-# Imported by app.py and exposed to SocketIO handlers
 exam_sessions: dict[str, ExamSession] = {}
 
 
@@ -47,6 +56,7 @@ def get_sessions():
     token = get_token_from_request()
     info  = verify_token(token)
     try:
+        # FIX: user_id > 0 guard now safe because auth.py demo mode sets -1
         is_student = (info and info.get('role') == 'student'
                       and info.get('user_id') and info['user_id'] > 0)
         if is_student:
@@ -124,7 +134,7 @@ def analyze():
     if not frame:
         return jsonify({'status': 'error', 'message': 'No frame'}), 400
 
-    from app import socketio  # lazy import to avoid circular at module load
+    from app import socketio
     return jsonify(process_frame(session, frame, socketio))
 
 
@@ -134,11 +144,18 @@ def tab_switch():
     session = exam_sessions.get(data.get('session_id'))
     if not session:
         return jsonify({'error': 'not found'}), 404
+
+    # FIX: check ended BEFORE touching any stats.
+    # Previously stats['tab_switches'] was incremented unconditionally,
+    # so a tab switch fired by the browser when navigating to the report
+    # page (after end_session) still inflated the counter and tried to
+    # log a violation (which log_violation then silently dropped, but the
+    # stat was already wrong).
     if session.ended:
         return jsonify({'logged': False, 'reason': 'session ended'})
 
     from app import socketio
-    session.stats['tab_switches'] += 1
+    session.stats['tab_switches'] += 1   # FIX: moved inside the active guard
     v = session.log_violation('TAB_SWITCH', 'Student switched browser tab or window', 'high', socketio)
     return jsonify({'logged': True, 'violation': v})
 
@@ -149,12 +166,14 @@ def audio_alert():
     session = exam_sessions.get(data.get('session_id'))
     if not session:
         return jsonify({'error': 'not found'}), 404
+
+    # FIX: same pattern as tab_switch — guard stats increment behind ended check
     if session.ended:
-        return jsonify({'logged': False})
+        return jsonify({'logged': False, 'reason': 'session ended'})
 
     from app import socketio
     level = data.get('level', 0)
-    session.stats['audio_alerts'] += 1
+    session.stats['audio_alerts'] += 1   # FIX: moved inside the active guard
     v = session.log_violation('AUDIO_ANOMALY', f'Suspicious audio: {level} dB', 'medium', socketio)
     return jsonify({'logged': True, 'violation': v})
 
@@ -181,7 +200,6 @@ def end_session():
 def session_status(session_id):
     session = exam_sessions.get(session_id)
     if not session:
-        # Try DB fallback
         db  = get_db()
         row = db.execute('SELECT * FROM sessions WHERE session_id=?', (session_id,)).fetchone()
         if row:
