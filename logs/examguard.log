@@ -611,3 +611,65 @@
 2026-04-27 11:05:29,897 [INFO] 127.0.0.1 - - [27/Apr/2026 11:05:29] "GET /api/dashboard_stats HTTP/1.1" 200 -
 2026-04-27 11:05:29,993 [INFO] 127.0.0.1 - - [27/Apr/2026 11:05:29] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
 2026-04-27 11:05:30,005 [INFO] 127.0.0.1 - - [27/Apr/2026 11:05:30] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-04-27 11:20:40,933 [INFO]  * Detected change in '/Users/macbook/Downloads/examguard/database.py', reloading
+2026-04-27 11:20:41,163 [INFO]  * Restarting with stat
+2026-04-27 11:20:42,760 [INFO] Database initialized ✓
+2026-04-27 11:20:42,760 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-04-27 11:20:42,790 [WARNING]  * Debugger is active!
+2026-04-27 11:20:42,801 [INFO]  * Debugger PIN: 919-951-528
+2026-04-27 11:20:59,925 [INFO]  * Detected change in '/Users/macbook/Downloads/examguard/auth.py', reloading
+2026-04-27 11:21:00,062 [INFO]  * Restarting with stat
+2026-04-27 11:21:01,058 [INFO] Database initialized ✓
+2026-04-27 11:21:01,058 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-04-27 11:21:01,093 [WARNING]  * Debugger is active!
+2026-04-27 11:21:01,102 [INFO]  * Debugger PIN: 919-951-528
+2026-04-27 11:21:18,240 [INFO]  * Detected change in '/Users/macbook/Downloads/examguard/session_exam.py', reloading
+2026-04-27 11:21:18,477 [INFO]  * Restarting with stat
+2026-04-27 11:21:19,636 [INFO] Database initialized ✓
+2026-04-27 11:21:19,636 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-04-27 11:21:19,694 [WARNING]  * Debugger is active!
+2026-04-27 11:21:19,731 [INFO]  * Debugger PIN: 919-951-528
+2026-04-27 11:21:56,002 [INFO]  * Detected change in '/Users/macbook/Downloads/examguard/cv_engine.py', reloading
+2026-04-27 11:21:56,180 [INFO]  * Restarting with stat
+2026-04-27 11:21:57,325 [INFO] Database initialized ✓
+2026-04-27 11:21:57,326 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-04-27 11:21:57,358 [WARNING]  * Debugger is active!
+2026-04-27 11:21:57,374 [INFO]  * Debugger PIN: 919-951-528
+2026-04-27 11:22:16,517 [INFO]  * Detected change in '/Users/macbook/Downloads/examguard/grading.py', reloading
+2026-04-27 11:22:16,639 [INFO]  * Restarting with stat
+2026-04-27 11:22:17,864 [INFO] Database initialized ✓
+2026-04-27 11:22:17,864 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-04-27 11:22:17,896 [WARNING]  * Debugger is active!
+2026-04-27 11:22:17,906 [INFO]  * Debugger PIN: 919-951-528
+2026-04-27 11:22:57,169 [INFO]  * Detected change in '/Users/macbook/Downloads/examguard/blueprints/auth_bp.py', reloading
+2026-04-27 11:22:57,276 [INFO]  * Restarting with stat
+2026-04-27 11:22:58,788 [INFO] Database initialized ✓
+2026-04-27 11:22:58,789 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-04-27 11:22:58,829 [WARNING]  * Debugger is active!
+2026-04-27 11:22:58,841 [INFO]  * Debugger PIN: 919-951-528
+2026-04-27 11:23:39,109 [INFO]  * Detected change in '/Users/macbook/Downloads/examguard/blueprints/exms_bp.py', reloading
+2026-04-27 11:23:39,245 [INFO]  * Restarting with stat
+2026-04-27 11:23:40,895 [INFO] Database initialized ✓
+2026-04-27 11:23:40,896 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-04-27 11:23:40,940 [WARNING]  * Debugger is active!
+2026-04-27 11:23:40,949 [INFO]  * Debugger PIN: 919-951-528
+2026-04-27 11:24:01,088 [INFO]  * Detected change in '/Users/macbook/Downloads/examguard/blueprints/sessions_bp.py', reloading
+2026-04-27 11:24:01,193 [INFO]  * Restarting with stat
+2026-04-27 11:24:02,322 [INFO] Database initialized ✓
+2026-04-27 11:24:02,323 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-04-27 11:24:02,348 [WARNING]  * Debugger is active!
+2026-04-27 11:24:02,357 [INFO]  * Debugger PIN: 919-951-528
+2026-04-27 11:24:21,507 [INFO]  * Detected change in '/Users/macbook/Downloads/examguard/blueprints/admin_bp.py', reloading
+2026-04-27 11:24:21,617 [INFO]  * Restarting with stat
+2026-04-27 11:24:22,993 [INFO] Database initialized ✓
+2026-04-27 11:24:22,993 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-04-27 11:24:23,030 [WARNING]  * Debugger is active!
+2026-04-27 11:24:23,038 [INFO]  * Debugger PIN: 919-951-528
+2026-04-27 11:24:48,209 [INFO]  * Detected change in '/Users/macbook/Downloads/examguard/blueprints/__init__.py', reloading
+2026-04-27 11:24:48,334 [INFO]  * Restarting with stat
+2026-04-27 11:24:49,400 [INFO] Database initialized ✓
+2026-04-27 11:24:49,401 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-04-27 11:24:49,436 [WARNING]  * Debugger is active!
+2026-04-27 11:24:49,445 [INFO]  * Debugger PIN: 919-951-528
+2026-04-27 11:25:07,564 [INFO]  * Detected change in '/Users/macbook/Downloads/examguard/app.py', reloading
+2026-04-27 11:25:07,665 [INFO]  * Restarting with stat

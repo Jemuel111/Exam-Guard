@@ -1,0 +1,184 @@
+"""
+ExamGuard — ExamSession model
+Thread-safe session state, violation logging, risk scoring, report generation.
+"""
+import csv
+import json
+import logging
+import os
+import time
+from datetime import datetime
+from threading import Lock
+
+logger = logging.getLogger(__name__)
+
+
+class ExamSession:
+    def __init__(self, session_id: str, student_name: str,
+                 exam_duration: int = 60, exam_id=None,
+                 student_id=None, config: dict | None = None):
+        cfg = config or {}
+        self.session_id    = session_id
+        self.student_name  = student_name
+        self.exam_duration = exam_duration
+        self.exam_id       = exam_id
+        self.student_id    = student_id
+        self.start_time    = datetime.now()
+        self.end_time      = None
+        self.is_active     = False
+        self.ended         = False
+        self._lock         = Lock()
+
+        # Configurable thresholds
+        self.NO_FACE_THRESHOLD    = cfg.get('NO_FACE_THRESHOLD',    5)
+        self.LOOK_AWAY_THRESHOLD  = cfg.get('LOOK_AWAY_THRESHOLD',  3)
+        self.MULTI_FACE_THRESHOLD = cfg.get('MULTI_FACE_THRESHOLD', 2)
+
+        # Risk weights
+        self._weights = {
+            'face_absence':  cfg.get('WEIGHT_FACE_ABSENCE', 15),
+            'multiple_face': cfg.get('WEIGHT_MULTI_FACE',   25),
+            'look_away':     cfg.get('WEIGHT_LOOK_AWAY',    10),
+            'tab_switch':    cfg.get('WEIGHT_TAB_SWITCH',   20),
+            'audio':         cfg.get('WEIGHT_AUDIO',        12),
+        }
+        self._risk_cutoffs = (
+            cfg.get('RISK_LOW_CUTOFF',    5),
+            cfg.get('RISK_MEDIUM_CUTOFF', 15),
+        )
+
+        # Detection state
+        self.no_face_start    = None
+        self.look_away_start  = None
+        self.multi_face_start = None
+        self._no_face_logged    = False
+        self._look_away_logged  = False
+        self._multi_face_logged = False
+
+        self.violations: list[dict] = []
+        self.stats = {
+            'total_frames':        0,
+            'no_face_frames':      0,
+            'multiple_face_frames':0,
+            'look_away_frames':    0,
+            'tab_switches':        0,
+            'audio_alerts':        0,
+            'face_absence_events': 0,
+            'multiple_face_events':0,
+            'look_away_events':    0,
+        }
+
+    # ── Violation logging ─────────────────────────────────────────────────────
+
+    def log_violation(self, vtype: str, details: str = '',
+                      severity: str = 'medium', _socketio=None) -> dict | None:
+        with self._lock:
+            if self.ended:
+                return None
+            entry = {
+                'timestamp':       datetime.now().strftime('%H:%M:%S'),
+                'elapsed_seconds': round(self.get_elapsed(), 1),
+                'type':            vtype,
+                'details':         details,
+                'severity':        severity,
+            }
+            self.violations.append(entry)
+            logger.warning('[%s] VIOLATION: %s — %s', self.session_id, vtype, details)
+
+            if _socketio:
+                _socketio.emit('violation', {
+                    'session_id':   self.session_id,
+                    'student_name': self.student_name,
+                    'violation':    entry,
+                }, room='teachers')
+
+            return entry
+
+    # ── Timing ───────────────────────────────────────────────────────────────
+
+    def get_elapsed(self) -> float:
+        return (datetime.now() - self.start_time).total_seconds()
+
+    # ── Risk ─────────────────────────────────────────────────────────────────
+
+    def compute_risk(self) -> dict:
+        s = self.stats
+        duration_min = max(self.get_elapsed() / 60, 1)
+        raw = (
+            s['face_absence_events']  * self._weights['face_absence']  +
+            s['multiple_face_events'] * self._weights['multiple_face'] +
+            s['look_away_events']     * self._weights['look_away']     +
+            s['tab_switches']         * self._weights['tab_switch']    +
+            s['audio_alerts']         * self._weights['audio']
+        )
+        score = raw / duration_min
+        low, medium = self._risk_cutoffs
+        if score < low:
+            level, color = 'Low',    '#22c55e'
+        elif score < medium:
+            level, color = 'Medium', '#f59e0b'
+        else:
+            level, color = 'High',   '#ef4444'
+        return {'level': level, 'score': round(score, 1), 'color': color}
+
+    # ── Report ───────────────────────────────────────────────────────────────
+
+    def generate_report(self) -> dict:
+        end = self.end_time or datetime.now()
+        dur = (end - self.start_time).total_seconds()
+        return {
+            'session_id':       self.session_id,
+            'student_name':     self.student_name,
+            'exam_id':          self.exam_id,
+            'exam_date':        self.start_time.strftime('%Y-%m-%d'),
+            'start_time':       self.start_time.strftime('%H:%M:%S'),
+            'end_time':         end.strftime('%H:%M:%S'),
+            'duration_minutes': round(dur / 60, 2),
+            'total_violations': len(self.violations),
+            'violations':       self.violations,
+            'stats':            self.stats,
+            'risk_assessment':  self.compute_risk(),
+        }
+
+    def save_reports(self, reports_dir: str = 'reports'):
+        os.makedirs(reports_dir, exist_ok=True)
+        report = self.generate_report()
+        sid    = self.session_id
+
+        json_path = os.path.join(reports_dir, f'{sid}.json')
+        with open(json_path, 'w') as f:
+            json.dump(report, f, indent=2)
+
+        csv_path = os.path.join(reports_dir, f'{sid}_violations.csv')
+        with open(csv_path, 'w', newline='') as f:
+            w = csv.DictWriter(f, fieldnames=[
+                'timestamp', 'elapsed_seconds', 'type', 'details', 'severity'])
+            w.writeheader()
+            w.writerows(self.violations)
+
+        return json_path, csv_path
+
+    def save_to_db(self, db):
+        report = self.generate_report()
+        risk   = report['risk_assessment']
+        db.execute('''
+            INSERT OR REPLACE INTO sessions
+            (session_id,student_id,exam_id,student_name,start_time,end_time,
+             duration_minutes,total_violations,risk_level,risk_score,stats,is_active)
+            VALUES (?,?,?,?,?,?,?,?,?,?,?,0)
+        ''', (
+            self.session_id, self.student_id, self.exam_id, self.student_name,
+            report['start_time'], report['end_time'], report['duration_minutes'],
+            len(self.violations), risk['level'], risk['score'],
+            json.dumps(self.stats)
+        ))
+        for v in self.violations:
+            db.execute('''
+                INSERT OR IGNORE INTO violations
+                (session_id,timestamp,elapsed_seconds,type,details,severity)
+                VALUES (?,?,?,?,?,?)
+            ''', (
+                self.session_id, v['timestamp'], v['elapsed_seconds'],
+                v['type'], v['details'], v['severity']
+            ))
+        db.commit()
