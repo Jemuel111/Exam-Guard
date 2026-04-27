@@ -570,3 +570,44 @@
 2026-04-27 10:57:32,352 [INFO] 127.0.0.1 - - [27/Apr/2026 10:57:32] "GET /api/dashboard_stats HTTP/1.1" 200 -
 2026-04-27 10:57:47,349 [INFO] 127.0.0.1 - - [27/Apr/2026 10:57:47] "GET /api/sessions HTTP/1.1" 200 -
 2026-04-27 10:57:47,351 [INFO] 127.0.0.1 - - [27/Apr/2026 10:57:47] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-04-27 11:04:27,658 [INFO] Database initialized ✓
+2026-04-27 11:04:27,659 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-04-27 11:04:27,908 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.3:5000
+2026-04-27 11:04:27,908 [INFO] [33mPress CTRL+C to quit[0m
+2026-04-27 11:04:27,909 [INFO]  * Restarting with stat
+2026-04-27 11:04:28,685 [INFO] Database initialized ✓
+2026-04-27 11:04:28,685 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-04-27 11:04:28,708 [WARNING]  * Debugger is active!
+2026-04-27 11:04:28,717 [INFO]  * Debugger PIN: 919-951-528
+2026-04-27 11:04:35,472 [INFO] 127.0.0.1 - - [27/Apr/2026 11:04:35] "GET /teacher/dashboard HTTP/1.1" 200 -
+2026-04-27 11:04:35,514 [INFO] 127.0.0.1 - - [27/Apr/2026 11:04:35] "GET /socket.io/?EIO=4&transport=polling&t=PtCvLUf HTTP/1.1" 200 -
+2026-04-27 11:04:35,522 [INFO] 127.0.0.1 - - [27/Apr/2026 11:04:35] "GET /api/sessions HTTP/1.1" 200 -
+2026-04-27 11:04:35,526 [INFO] 127.0.0.1 - - [27/Apr/2026 11:04:35] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-04-27 11:04:35,529 [INFO] 127.0.0.1 - - [27/Apr/2026 11:04:35] "GET /api/exams HTTP/1.1" 200 -
+2026-04-27 11:04:35,560 [INFO] 127.0.0.1 - - [27/Apr/2026 11:04:35] "POST /socket.io/?EIO=4&transport=polling&t=PtCvLVY&sid=zDsjVrWXL6X0Jja9AAAA HTTP/1.1" 200 -
+2026-04-27 11:04:35,568 [INFO] 127.0.0.1 - - [27/Apr/2026 11:04:35] "GET /socket.io/?EIO=4&transport=polling&t=PtCvLVa&sid=zDsjVrWXL6X0Jja9AAAA HTTP/1.1" 200 -
+2026-04-27 11:04:40,672 [INFO] 127.0.0.1 - - [27/Apr/2026 11:04:40] "GET /api/sessions HTTP/1.1" 200 -
+2026-04-27 11:04:45,513 [INFO] 127.0.0.1 - - [27/Apr/2026 11:04:45] "GET /api/sessions HTTP/1.1" 200 -
+2026-04-27 11:04:45,515 [INFO] 127.0.0.1 - - [27/Apr/2026 11:04:45] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-04-27 11:04:48,248 [INFO] 127.0.0.1 - - [27/Apr/2026 11:04:48] "GET /report/EG-1777258470 HTTP/1.1" 200 -
+2026-04-27 11:04:48,327 [INFO] 127.0.0.1 - - [27/Apr/2026 11:04:48] "GET /socket.io/?EIO=4&transport=websocket&sid=zDsjVrWXL6X0Jja9AAAA HTTP/1.1" 200 -
+2026-04-27 11:04:58,199 [INFO] 127.0.0.1 - - [27/Apr/2026 11:04:58] "GET / HTTP/1.1" 200 -
+2026-04-27 11:04:58,224 [INFO] 127.0.0.1 - - [27/Apr/2026 11:04:58] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-04-27 11:04:58,278 [INFO] 127.0.0.1 - - [27/Apr/2026 11:04:58] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-04-27 11:04:58,292 [INFO] 127.0.0.1 - - [27/Apr/2026 11:04:58] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-04-27 11:05:08,000 [INFO] 127.0.0.1 - - [27/Apr/2026 11:05:08] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-04-27 11:05:21,670 [INFO] 127.0.0.1 - - [27/Apr/2026 11:05:21] "GET / HTTP/1.1" 200 -
+2026-04-27 11:05:21,835 [INFO] 127.0.0.1 - - [27/Apr/2026 11:05:21] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-04-27 11:05:21,836 [INFO] 127.0.0.1 - - [27/Apr/2026 11:05:21] "GET /static/sw.js HTTP/1.1" 200 -
+2026-04-27 11:05:22,010 [INFO] 127.0.0.1 - - [27/Apr/2026 11:05:22] "GET /manifest.json HTTP/1.1" 200 -
+2026-04-27 11:05:22,030 [INFO] 127.0.0.1 - - [27/Apr/2026 11:05:22] "GET /static/icons/icon-192.png HTTP/1.1" 200 -
+2026-04-27 11:05:25,472 [INFO] 127.0.0.1 - - [27/Apr/2026 11:05:25] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-04-27 11:05:26,445 [INFO] 127.0.0.1 - - [27/Apr/2026 11:05:26] "[33mGET /robots.txt HTTP/1.1[0m" 404 -
+2026-04-27 11:05:28,059 [INFO] 127.0.0.1 - - [27/Apr/2026 11:05:28] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-04-27 11:05:29,823 [INFO] 127.0.0.1 - - [27/Apr/2026 11:05:29] "GET / HTTP/1.1" 200 -
+2026-04-27 11:05:29,897 [INFO] 127.0.0.1 - - [27/Apr/2026 11:05:29] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-04-27 11:05:29,993 [INFO] 127.0.0.1 - - [27/Apr/2026 11:05:29] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-04-27 11:05:30,005 [INFO] 127.0.0.1 - - [27/Apr/2026 11:05:30] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
