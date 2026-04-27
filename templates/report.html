@@ -9,102 +9,130 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --navy: #0b1426; --navy-mid: #111d35; --navy-light: #1a2d50;
-      --blue: #2563eb; --cyan: #06b6d4; --amber: #f59e0b;
-      --red: #ef4444; --green: #22c55e; --text: #e2e8f0;
-      --text-muted: #94a3b8; --border: rgba(148,163,184,0.12);
+      --navy:#0b1426; --navy-mid:#111d35; --navy-light:#1a2d50;
+      --blue:#2563eb; --cyan:#06b6d4; --amber:#f59e0b;
+      --red:#ef4444; --green:#22c55e; --text:#e2e8f0;
+      --text-muted:#94a3b8; --border:rgba(148,163,184,0.12);
     }
-    body { font-family: 'Outfit', sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; }
-    body::before {
-      content: ''; position: fixed; inset: 0;
-      background-image: linear-gradient(rgba(37,99,235,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(37,99,235,0.03) 1px, transparent 1px);
-      background-size: 40px 40px; pointer-events: none; z-index: 0;
-    }
-    .page-header {
-      position: relative; z-index: 5;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 20px 48px; border-bottom: 1px solid var(--border);
-      background: var(--navy-mid);
-    }
-    .logo { font-family: 'DM Serif Display', serif; font-size: 1.2rem; }
-    .logo span { color: var(--cyan); }
-    .header-actions { display: flex; gap: 10px; }
-    .btn-action {
-      padding: 8px 18px; border-radius: 8px;
-      font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 600;
-      cursor: pointer; transition: all 0.2s; border: 1px solid var(--border);
-      background: transparent; color: var(--text);
-    }
-    .btn-action:hover { background: var(--navy-light); }
-    .btn-action.primary { background: var(--blue); border-color: var(--blue); color: white; }
-    .btn-action.primary:hover { background: #1d4ed8; }
-    .main-content { max-width: 1000px; margin: 0 auto; padding: 48px 32px; position: relative; z-index: 5; }
-    .report-hero { text-align: center; margin-bottom: 48px; }
-    .report-eyebrow { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--cyan); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 16px; }
-    .report-title { font-family: 'DM Serif Display', serif; font-size: 2.5rem; margin-bottom: 12px; letter-spacing: -0.02em; }
-    .report-meta { color: var(--text-muted); font-size: 0.9rem; font-family: 'DM Mono', monospace; }
-    .risk-banner { border-radius: 16px; padding: 24px 32px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
-    .risk-banner.low { background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); }
-    .risk-banner.medium { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); }
-    .risk-banner.high { background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); }
-    .risk-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 4px; }
-    .risk-level { font-family: 'DM Serif Display', serif; font-size: 2rem; }
-    .risk-low { color: var(--green); }
-    .risk-medium { color: var(--amber); }
-    .risk-high { color: var(--red); }
-    .risk-note { font-size: 0.85rem; color: var(--text-muted); max-width: 400px; line-height: 1.6; }
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 32px; }
-    .stat-card { background: var(--navy-mid); border: 1px solid var(--border); border-radius: 14px; padding: 20px; text-align: center; }
-    .stat-card-num { font-family: 'DM Serif Display', serif; font-size: 2.2rem; margin-bottom: 4px; }
-    .stat-card-label { font-size: 0.75rem; color: var(--text-muted); letter-spacing: 0.05em; }
-    .stat-card.danger .stat-card-num { color: var(--red); }
-    .stat-card.warning .stat-card-num { color: var(--amber); }
-    .stat-card.info .stat-card-num { color: var(--cyan); }
-    .stat-card.ok .stat-card-num { color: var(--green); }
-    .section { margin-bottom: 36px; }
-    .section-title { font-family: 'DM Serif Display', serif; font-size: 1.2rem; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
-    .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-    .violations-table { width: 100%; border-collapse: collapse; }
-    .violations-table th { text-align: left; font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; padding: 10px 14px; border-bottom: 1px solid var(--border); font-weight: 500; }
-    .violations-table td { padding: 12px 14px; border-bottom: 1px solid rgba(148,163,184,0.06); font-size: 0.875rem; }
-    .violations-table tr:hover td { background: rgba(255,255,255,0.02); }
-    .sev-badge { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 600; font-family: 'DM Mono', monospace; }
-    .sev-badge.critical { background: rgba(185,28,28,0.2); color: #fca5a5; }
-    .sev-badge.high { background: rgba(239,68,68,0.15); color: var(--red); }
-    .sev-badge.medium { background: rgba(245,158,11,0.15); color: var(--amber); }
-    .no-violations { text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.9rem; }
-    .timeline { position: relative; padding-left: 24px; }
-    .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--border); }
-    .timeline-item { position: relative; margin-bottom: 16px; padding-left: 20px; }
-    .timeline-item::before { content: ''; position: absolute; left: -20px; top: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--border); border: 2px solid var(--navy); }
-    .timeline-item.high::before { background: var(--red); }
-    .timeline-item.critical::before { background: #b91c1c; }
-    .timeline-item.medium::before { background: var(--amber); }
-    .timeline-time { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 2px; }
-    .timeline-text { font-size: 0.85rem; }
-    .timeline-detail { font-size: 0.78rem; color: var(--text-muted); }
-    .disclaimer { background: rgba(6,182,212,0.05); border: 1px solid rgba(6,182,212,0.15); border-radius: 14px; padding: 20px 24px; margin-top: 16px; font-size: 0.82rem; color: var(--text-muted); line-height: 1.7; }
-    .disclaimer strong { color: var(--cyan); }
-    .page-footer { text-align: center; padding: 32px; color: var(--text-muted); font-size: 0.72rem; font-family: 'DM Mono', monospace; border-top: 1px solid var(--border); position: relative; z-index: 5; }
+    body { font-family:'Outfit',sans-serif; background:var(--navy); color:var(--text); min-height:100vh; }
+    body::before { content:''; position:fixed; inset:0;
+      background-image:linear-gradient(rgba(37,99,235,0.03) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(37,99,235,0.03) 1px,transparent 1px);
+      background-size:40px 40px; pointer-events:none; z-index:0; }
+    .page-header { position:relative; z-index:5; display:flex; align-items:center;
+      justify-content:space-between; padding:20px 48px; border-bottom:1px solid var(--border);
+      background:var(--navy-mid); }
+    .logo { font-family:'DM Serif Display',serif; font-size:1.2rem; }
+    .logo span { color:var(--cyan); }
+    .header-actions { display:flex; gap:10px; }
+    .btn-action { padding:8px 18px; border-radius:8px; font-family:'Outfit',sans-serif;
+      font-size:0.85rem; font-weight:600; cursor:pointer; transition:all 0.2s;
+      border:1px solid var(--border); background:transparent; color:var(--text); }
+    .btn-action:hover { background:var(--navy-light); }
+    .btn-action.primary { background:var(--blue); border-color:var(--blue); color:white; }
+    .btn-action.primary:hover { background:#1d4ed8; }
+    .main-content { max-width:1000px; margin:0 auto; padding:48px 32px; position:relative; z-index:5; }
+    .report-hero { text-align:center; margin-bottom:48px; }
+    .report-eyebrow { font-family:'DM Mono',monospace; font-size:0.75rem; color:var(--cyan); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:16px; }
+    .report-title { font-family:'DM Serif Display',serif; font-size:2.5rem; margin-bottom:12px; letter-spacing:-0.02em; }
+    .report-meta { color:var(--text-muted); font-size:0.9rem; font-family:'DM Mono',monospace; }
+
+    /* Score card */
+    .score-card { background:var(--navy-mid); border:1px solid var(--border); border-radius:16px;
+      padding:28px 32px; margin-bottom:24px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:24px; }
+    .score-item { text-align:center; }
+    .score-label { font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin-bottom:8px; }
+    .score-value { font-family:'DM Serif Display',serif; font-size:2.5rem; }
+    .score-sub { font-size:0.78rem; color:var(--text-muted); margin-top:4px; }
+    .score-progress { height:6px; background:var(--navy-light); border-radius:3px; margin-top:10px; overflow:hidden; }
+    .score-progress-fill { height:100%; border-radius:3px; transition:width 0.8s; }
+
+    .risk-banner { border-radius:16px; padding:24px 32px; display:flex; align-items:center;
+      justify-content:space-between; margin-bottom:32px; flex-wrap:wrap; gap:16px; }
+    .risk-banner.low    { background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.2); }
+    .risk-banner.medium { background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.2); }
+    .risk-banner.high   { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); }
+    .risk-label { font-size:0.75rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-muted); margin-bottom:4px; }
+    .risk-level { font-family:'DM Serif Display',serif; font-size:2rem; }
+    .risk-low    { color:var(--green); }
+    .risk-medium { color:var(--amber); }
+    .risk-high   { color:var(--red); }
+    .risk-note { font-size:0.85rem; color:var(--text-muted); max-width:400px; line-height:1.6; }
+
+    .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; margin-bottom:32px; }
+    .stat-card { background:var(--navy-mid); border:1px solid var(--border); border-radius:14px; padding:20px; text-align:center; }
+    .stat-card-num { font-family:'DM Serif Display',serif; font-size:2.2rem; margin-bottom:4px; }
+    .stat-card-label { font-size:0.75rem; color:var(--text-muted); letter-spacing:0.05em; }
+    .stat-card.danger .stat-card-num  { color:var(--red); }
+    .stat-card.warning .stat-card-num { color:var(--amber); }
+    .stat-card.info .stat-card-num    { color:var(--cyan); }
+    .stat-card.ok .stat-card-num      { color:var(--green); }
+
+    .section { margin-bottom:36px; }
+    .section-title { font-family:'DM Serif Display',serif; font-size:1.2rem; margin-bottom:16px;
+      display:flex; align-items:center; gap:10px; }
+    .section-title::after { content:''; flex:1; height:1px; background:var(--border); }
+    .violations-table { width:100%; border-collapse:collapse; }
+    .violations-table th { text-align:left; font-size:0.72rem; color:var(--text-muted);
+      text-transform:uppercase; letter-spacing:0.1em; padding:10px 14px;
+      border-bottom:1px solid var(--border); font-weight:500; }
+    .violations-table td { padding:12px 14px; border-bottom:1px solid rgba(148,163,184,0.06); font-size:0.875rem; }
+    .violations-table tr:hover td { background:rgba(255,255,255,0.02); }
+    .sev-badge { display:inline-block; padding:2px 10px; border-radius:20px; font-size:0.7rem; font-weight:600; font-family:'DM Mono',monospace; }
+    .sev-badge.critical { background:rgba(185,28,28,0.2); color:#fca5a5; }
+    .sev-badge.high     { background:rgba(239,68,68,0.15); color:var(--red); }
+    .sev-badge.medium   { background:rgba(245,158,11,0.15); color:var(--amber); }
+    .no-violations { text-align:center; padding:40px; color:var(--text-muted); font-size:0.9rem; }
+
+    /* Grading breakdown */
+    .breakdown-item { display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
+    .breakdown-item:last-child { border:none; }
+    .breakdown-q { flex:1; font-size:0.82rem; color:var(--text-muted); }
+    .breakdown-score { font-family:'DM Mono',monospace; font-size:0.78rem; min-width:50px; text-align:right; }
+    .breakdown-feedback { font-family:'DM Mono',monospace; font-size:0.65rem; min-width:120px; text-align:right; }
+    .feedback-correct { color:var(--green); }
+    .feedback-incorrect { color:var(--red); }
+    .feedback-review { color:var(--amber); }
+    .feedback-na { color:var(--text-muted); }
+
+    .timeline { position:relative; padding-left:24px; }
+    .timeline::before { content:''; position:absolute; left:8px; top:0; bottom:0; width:2px; background:var(--border); }
+    .timeline-item { position:relative; margin-bottom:16px; padding-left:20px; }
+    .timeline-item::before { content:''; position:absolute; left:-20px; top:6px; width:10px; height:10px;
+      border-radius:50%; background:var(--border); border:2px solid var(--navy); }
+    .timeline-item.high::before     { background:var(--red); }
+    .timeline-item.critical::before { background:#b91c1c; }
+    .timeline-item.medium::before   { background:var(--amber); }
+    .timeline-time   { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--text-muted); margin-bottom:2px; }
+    .timeline-text   { font-size:0.85rem; }
+    .timeline-detail { font-size:0.78rem; color:var(--text-muted); }
+
+    .disclaimer { background:rgba(6,182,212,0.05); border:1px solid rgba(6,182,212,0.15);
+      border-radius:14px; padding:20px 24px; margin-top:16px; font-size:0.82rem;
+      color:var(--text-muted); line-height:1.7; }
+    .disclaimer strong { color:var(--cyan); }
+    .page-footer { text-align:center; padding:32px; color:var(--text-muted); font-size:0.72rem;
+      font-family:'DM Mono',monospace; border-top:1px solid var(--border); position:relative; z-index:5; }
     @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-    .main-content { animation: fadeUp 0.6s ease; }
-    @media print { .header-actions, .btn-action { display: none; } }
+    .main-content { animation:fadeUp 0.6s ease; }
+    @media print { .header-actions, .btn-action { display:none; } }
   </style>
 </head>
 <body>
   <div class="page-header">
     <div class="logo">Exam<span>Guard</span> 🛡 · Monitoring Report</div>
     <div class="header-actions">
-      <button class="btn-action" onclick="window.print()">🖨 Print Report</button>
-      <button class="btn-action primary" onclick="downloadJSON()">⬇ Download JSON</button>
-      <button class="btn-action" onclick="window.location.href='/'">← New Exam</button>
+      <button class="btn-action" onclick="window.print()">🖨 Print</button>
+      <button class="btn-action primary" onclick="downloadJSON()">⬇ JSON</button>
+      <button class="btn-action" onclick="downloadCSV()">⬇ CSV</button>
+      <button class="btn-action" onclick="window.location.href='/'">← Home</button>
     </div>
   </div>
 
   <div class="main-content">
     {% set r = report %}
     {% set risk = r.risk_assessment %}
+    {% set sub = r.submission %}
 
     <div class="report-hero">
       <div class="report-eyebrow">Exam Monitoring Report</div>
@@ -114,6 +142,34 @@
       </div>
     </div>
 
+    <!-- Score card (only shown if submission exists) -->
+    {% if sub %}
+    <div class="score-card">
+      <div class="score-item">
+        <div class="score-label">Score</div>
+        <div class="score-value" style="color:{% if sub.passed %}var(--green){% else %}var(--red){% endif %}">
+          {{ sub.score | int }}/{{ sub.max_score | int }}
+        </div>
+        <div class="score-sub">{{ "%.1f"|format(sub.percentage) }}%</div>
+        <div class="score-progress">
+          <div class="score-progress-fill" style="width:{{ sub.percentage }}%;background:{% if sub.passed %}var(--green){% else %}var(--red){% endif %}"></div>
+        </div>
+      </div>
+      <div class="score-item">
+        <div class="score-label">Result</div>
+        <div class="score-value" style="color:{% if sub.passed %}var(--green){% else %}var(--red){% endif %}">
+          {% if sub.passed %}PASSED{% else %}FAILED{% endif %}
+        </div>
+        <div class="score-sub">Passing score: 75%</div>
+      </div>
+      <div class="score-item">
+        <div class="score-label">Duration</div>
+        <div class="score-value" style="color:var(--cyan)">{{ r.duration_minutes }}m</div>
+        <div class="score-sub">{{ r.start_time }} – {{ r.end_time }}</div>
+      </div>
+    </div>
+    {% endif %}
+
     <div class="risk-banner {{ risk.level | lower }}">
       <div>
         <div class="risk-label">Risk Assessment</div>
@@ -121,7 +177,7 @@
         <div style="font-family:'DM Mono',monospace;font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Score: {{ risk.score }}</div>
       </div>
       <div class="risk-note">
-        ⚠️ This assessment is a <strong>decision-support indicator only</strong>. Instructors must review the full activity log and exercise independent judgment before taking any academic action. Environmental factors may affect detection accuracy.
+        ⚠️ This assessment is a <strong>decision-support indicator only</strong>. Instructors must review the full activity log and exercise independent judgment. Environmental factors may affect detection accuracy.
       </div>
     </div>
 
@@ -142,46 +198,67 @@
         <div class="stat-card-num">{{ r.stats.tab_switches }}</div>
         <div class="stat-card-label">Tab Switches</div>
       </div>
+      {% if r.stats.audio_alerts is defined %}
+      <div class="stat-card {% if r.stats.audio_alerts > 0 %}warning{% else %}ok{% endif %}">
+        <div class="stat-card-num">{{ r.stats.audio_alerts }}</div>
+        <div class="stat-card-label">Audio Anomalies</div>
+      </div>
+      {% endif %}
       <div class="stat-card info">
         <div class="stat-card-num">{{ r.total_violations }}</div>
         <div class="stat-card-label">Total Flags</div>
       </div>
-      <div class="stat-card info">
-        <div class="stat-card-num">{{ r.duration_minutes }}m</div>
-        <div class="stat-card-label">Exam Duration</div>
+    </div>
+
+    {% if sub and sub.answers %}
+    <div class="section">
+      <div class="section-title">📝 Grade Breakdown</div>
+      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text-muted);margin-bottom:16px">
+        MC and TF questions are auto-graded. Essay/FITB marked for instructor review.
+      </div>
+      {% set breakdown = sub.answers | tojson %}
+      <div style="background:var(--navy-mid);border:1px solid var(--border);border-radius:12px;padding:20px">
+        <div class="breakdown-item" style="border-bottom:1px solid var(--border);margin-bottom:8px;padding-bottom:8px">
+          <div class="breakdown-q" style="font-weight:600;color:var(--text)">Question</div>
+          <div class="breakdown-score" style="color:var(--text)">Score</div>
+          <div class="breakdown-feedback" style="color:var(--text)">Status</div>
+        </div>
+        <div class="breakdown-item">
+          <div class="breakdown-q">Auto-grading results available in JSON download.</div>
+          <div class="breakdown-score" style="color:var(--green)">{{ sub.score | int }}/{{ sub.max_score | int }}</div>
+          <div class="breakdown-feedback feedback-review">See JSON</div>
+        </div>
       </div>
     </div>
+    {% endif %}
 
     <div class="section">
       <div class="section-title">📋 Activity Log</div>
       {% if r.violations %}
       <table class="violations-table">
-        <thead>
-          <tr>
-            <th>Time</th><th>Elapsed</th><th>Event Type</th><th>Details</th><th>Severity</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Time</th><th>Elapsed</th><th>Event Type</th><th>Details</th><th>Severity</th></tr></thead>
         <tbody>
           {% for v in r.violations %}
           <tr>
-            <td style="font-family:'DM Mono',monospace;font-size:0.78rem;">{{ v.timestamp }}</td>
-            <td style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--text-muted);">+{{ v.elapsed_seconds }}s</td>
+            <td style="font-family:'DM Mono',monospace;font-size:0.78rem">{{ v.timestamp }}</td>
+            <td style="font-family:'DM Mono',monospace;font-size:0.78rem;color:var(--text-muted)">+{{ v.elapsed_seconds }}s</td>
             <td>
               {% if v.type == 'NO_FACE' %}👤
               {% elif v.type == 'MULTIPLE_FACES' %}👥
               {% elif v.type == 'LOOK_AWAY' %}👁
               {% elif v.type == 'TAB_SWITCH' %}🪟
+              {% elif v.type == 'AUDIO_ANOMALY' %}🎤
               {% else %}⚠️{% endif %}
               {{ v.type.replace('_', ' ') | title }}
             </td>
-            <td style="color:var(--text-muted);">{{ v.details }}</td>
+            <td style="color:var(--text-muted)">{{ v.details }}</td>
             <td><span class="sev-badge {{ v.severity }}">{{ v.severity | upper }}</span></td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
       {% else %}
-      <div class="no-violations">✅ No suspicious activity was detected during this exam session.</div>
+      <div class="no-violations">✅ No suspicious activity detected during this session.</div>
       {% endif %}
     </div>
 
@@ -206,20 +283,17 @@
   </div>
 
   <div class="page-footer">
-    ExamGuard · Report generated {{ report.end_time }} · Session {{ report.session_id }}
+    ExamGuard v2.0 · Report generated {{ report.end_time }} · Session {{ report.session_id }}
   </div>
 
   <script>
     const reportData = {{ report | tojson }};
     function downloadJSON() {
-      const blob = new Blob([JSON.stringify(reportData, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `examguard_report_${reportData.session_id}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
+      const blob=new Blob([JSON.stringify(reportData,null,2)],{type:'application/json'});
+      const url=URL.createObjectURL(blob); const a=document.createElement('a');
+      a.href=url; a.download=`examguard_report_${reportData.session_id}.json`; a.click(); URL.revokeObjectURL(url);
     }
+    function downloadCSV() { window.location.href=`/api/download_csv/${reportData.session_id}`; }
   </script>
 </body>
 </html>

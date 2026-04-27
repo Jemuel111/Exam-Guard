@@ -9,188 +9,155 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --navy: #0b1426; --navy-mid: #111d35; --navy-light: #1a2d50;
-      --blue: #2563eb; --cyan: #06b6d4; --amber: #f59e0b;
-      --red: #ef4444; --green: #22c55e; --orange: #f97316;
-      --text: #e2e8f0; --text-muted: #94a3b8; --border: rgba(148,163,184,0.12);
-      --glass: rgba(255,255,255,0.04);
+      --navy:#0b1426; --navy-mid:#111d35; --navy-light:#1a2d50;
+      --blue:#2563eb; --cyan:#06b6d4; --amber:#f59e0b;
+      --red:#ef4444; --green:#22c55e;
+      --text:#e2e8f0; --text-muted:#94a3b8; --border:rgba(148,163,184,0.12);
     }
-    html, body { height: 100%; }
-    body { font-family: 'Outfit', sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; }
-    .topbar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 24px;
-      background: var(--navy-mid); border-bottom: 1px solid var(--border);
-      position: sticky; top: 0; z-index: 100;
-    }
-    .topbar-left { display: flex; align-items: center; gap: 16px; }
-    .logo-sm { font-family: 'DM Serif Display', serif; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
-    .logo-sm span { color: var(--cyan); }
-    .session-id {
-      font-family: 'DM Mono', monospace; font-size: 0.72rem;
-      color: var(--text-muted); background: var(--navy-light);
-      padding: 4px 10px; border-radius: 6px;
-    }
-    .topbar-center { display: flex; align-items: center; gap: 24px; }
-    .timer-display {
-      font-family: 'DM Mono', monospace; font-size: 1.5rem;
-      color: var(--text); letter-spacing: 0.05em;
-    }
-    .timer-display.warning { color: var(--amber); animation: blink 1s infinite; }
-    .timer-display.critical { color: var(--red); }
+    html, body { height:100%; }
+    body { font-family:'Outfit',sans-serif; background:var(--navy); color:var(--text); min-height:100vh; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; padding:12px 24px;
+      background:var(--navy-mid); border-bottom:1px solid var(--border);
+      position:sticky; top:0; z-index:100; }
+    .topbar-left { display:flex; align-items:center; gap:16px; }
+    .logo-sm { font-family:'DM Serif Display',serif; font-size:1.1rem; display:flex; align-items:center; gap:8px; }
+    .logo-sm span { color:var(--cyan); }
+    .session-id { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--text-muted);
+      background:var(--navy-light); padding:4px 10px; border-radius:6px; }
+    .topbar-center { display:flex; align-items:center; gap:24px; }
+    .timer-display { font-family:'DM Mono',monospace; font-size:1.5rem; color:var(--text); letter-spacing:0.05em; }
+    .timer-display.warning { color:var(--amber); animation:blink 1s infinite; }
+    .timer-display.critical { color:var(--red); }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.5} }
-    .violation-badge {
-      font-family: 'DM Mono', monospace; font-size: 0.75rem;
-      background: rgba(239,68,68,0.15); color: var(--red);
-      border: 1px solid rgba(239,68,68,0.3); padding: 4px 12px; border-radius: 20px;
-    }
-    .topbar-right { display: flex; gap: 10px; }
-    .btn-end {
-      background: rgba(239,68,68,0.15); color: var(--red);
-      border: 1px solid rgba(239,68,68,0.3); padding: 8px 18px; border-radius: 8px;
-      font-family: 'Outfit', sans-serif; font-size: 0.85rem; font-weight: 600;
-      cursor: pointer; transition: all 0.2s;
-    }
-    .btn-end:hover { background: rgba(239,68,68,0.25); }
-    .main { display: grid; grid-template-columns: 320px 1fr; gap: 0; height: calc(100vh - 57px); }
-    .left-panel {
-      background: var(--navy-mid); border-right: 1px solid var(--border);
-      display: flex; flex-direction: column; overflow-y: auto;
-    }
-    .cam-section { padding: 16px; border-bottom: 1px solid var(--border); }
-    .cam-label {
-      font-family: 'DM Mono', monospace; font-size: 0.7rem;
-      color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em;
-      margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
-    }
-    .cam-status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+    .violation-badge { font-family:'DM Mono',monospace; font-size:0.75rem; background:rgba(239,68,68,0.15);
+      color:var(--red); border:1px solid rgba(239,68,68,0.3); padding:4px 12px; border-radius:20px; }
+    .topbar-right { display:flex; gap:10px; }
+    .btn-end { background:rgba(239,68,68,0.15); color:var(--red); border:1px solid rgba(239,68,68,0.3);
+      padding:8px 18px; border-radius:8px; font-family:'Outfit',sans-serif; font-size:0.85rem; font-weight:600; cursor:pointer; transition:all 0.2s; }
+    .btn-end:hover { background:rgba(239,68,68,0.25); }
+    .main { display:grid; grid-template-columns:320px 1fr; height:calc(100vh - 57px); }
+    .left-panel { background:var(--navy-mid); border-right:1px solid var(--border); display:flex; flex-direction:column; overflow-y:auto; }
+    .cam-section { padding:16px; border-bottom:1px solid var(--border); }
+    .cam-label { font-family:'DM Mono',monospace; font-size:0.7rem; color:var(--text-muted);
+      text-transform:uppercase; letter-spacing:0.1em; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+    .cam-status-dot { width:6px; height:6px; border-radius:50%; background:var(--green); animation:pulse 2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-    .cam-wrapper { position: relative; border-radius: 12px; overflow: hidden; background: #000; aspect-ratio: 4/3; }
-    #webcamVideo { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
-    #camCanvas { display: none; }
-    .cam-overlay { position: absolute; inset: 0; border: 2px solid transparent; border-radius: 12px; transition: border-color 0.3s; pointer-events: none; }
-    .cam-overlay.ok { border-color: rgba(34,197,94,0.4); }
-    .cam-overlay.warning { border-color: rgba(245,158,11,0.6); }
-    .cam-overlay.alert { border-color: rgba(239,68,68,0.8); animation: flash 0.5s infinite; }
+    .cam-wrapper { position:relative; border-radius:12px; overflow:hidden; background:#000; aspect-ratio:4/3; }
+    #webcamVideo { width:100%; height:100%; object-fit:cover; transform:scaleX(-1); }
+    #camCanvas { display:none; }
+    .cam-overlay { position:absolute; inset:0; border:2px solid transparent; border-radius:12px; transition:border-color 0.3s; pointer-events:none; }
+    .cam-overlay.ok { border-color:rgba(34,197,94,0.4); }
+    .cam-overlay.warning { border-color:rgba(245,158,11,0.6); }
+    .cam-overlay.alert { border-color:rgba(239,68,68,0.8); animation:flash 0.5s infinite; }
     @keyframes flash { 0%,100%{opacity:1} 50%{opacity:0.5} }
-    .cam-indicators { position: absolute; bottom: 8px; left: 8px; right: 8px; display: flex; flex-wrap: wrap; gap: 4px; }
-    .cam-badge { font-family: 'DM Mono', monospace; font-size: 0.62rem; padding: 3px 8px; border-radius: 4px; backdrop-filter: blur(8px); }
-    .cam-badge.green { background: rgba(34,197,94,0.8); color: #fff; }
-    .cam-badge.red { background: rgba(239,68,68,0.85); color: #fff; }
-    .cam-badge.amber { background: rgba(245,158,11,0.85); color: #000; }
-    .cam-badge.gray { background: rgba(100,116,139,0.8); color: #fff; }
-    .status-section { padding: 16px; border-bottom: 1px solid var(--border); }
-    .status-title { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
-    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .status-item { background: var(--navy-light); border-radius: 8px; padding: 10px 12px; text-align: center; }
-    .status-item-val { font-family: 'DM Mono', monospace; font-size: 1.1rem; font-weight: 500; color: var(--cyan); }
-    .status-item-label { font-size: 0.68rem; color: var(--text-muted); margin-top: 2px; }
-    .light-bar-wrap { padding: 12px 16px; border-bottom: 1px solid var(--border); }
-    .light-bar-label { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 6px; display: flex; justify-content: space-between; }
-    .light-bar { height: 6px; background: var(--navy-light); border-radius: 3px; overflow: hidden; }
-    .light-bar-fill { height: 100%; border-radius: 3px; transition: width 0.5s, background 0.5s; background: var(--green); }
-    .log-section { flex: 1; padding: 16px; overflow-y: auto; }
-    .log-title { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
-    .log-empty { text-align: center; color: var(--text-muted); font-size: 0.8rem; padding: 20px; opacity: 0.6; }
-    .log-item {
-      display: flex; gap: 10px; align-items: flex-start;
-      padding: 8px 10px; border-radius: 8px; margin-bottom: 6px;
-      font-size: 0.78rem; animation: slideIn 0.3s ease;
-    }
+    .cam-indicators { position:absolute; bottom:8px; left:8px; right:8px; display:flex; flex-wrap:wrap; gap:4px; }
+    .cam-badge { font-family:'DM Mono',monospace; font-size:0.62rem; padding:3px 8px; border-radius:4px; backdrop-filter:blur(8px); }
+    .cam-badge.green { background:rgba(34,197,94,0.8); color:#fff; }
+    .cam-badge.red   { background:rgba(239,68,68,0.85); color:#fff; }
+    .cam-badge.amber { background:rgba(245,158,11,0.85); color:#000; }
+
+    /* Audio meter */
+    .audio-meter { padding:10px 16px; border-bottom:1px solid var(--border); }
+    .audio-label { font-family:'DM Mono',monospace; font-size:0.62rem; color:var(--text-muted); display:flex; justify-content:space-between; margin-bottom:6px; }
+    .audio-bar { height:4px; background:var(--navy-light); border-radius:2px; overflow:hidden; }
+    .audio-fill { height:100%; width:0%; background:var(--green); transition:width 0.1s; border-radius:2px; }
+    .audio-fill.warn { background:var(--amber); }
+    .audio-fill.danger { background:var(--red); }
+
+    .status-section { padding:16px; border-bottom:1px solid var(--border); }
+    .status-title { font-size:0.75rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:12px; }
+    .status-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .status-item { background:var(--navy-light); border-radius:8px; padding:10px 12px; text-align:center; }
+    .status-item-val { font-family:'DM Mono',monospace; font-size:1.1rem; font-weight:500; color:var(--cyan); }
+    .status-item-label { font-size:0.68rem; color:var(--text-muted); margin-top:2px; }
+    .light-bar-wrap { padding:12px 16px; border-bottom:1px solid var(--border); }
+    .light-bar-label { font-size:0.72rem; color:var(--text-muted); margin-bottom:6px; display:flex; justify-content:space-between; }
+    .light-bar { height:6px; background:var(--navy-light); border-radius:3px; overflow:hidden; }
+    .light-bar-fill { height:100%; border-radius:3px; transition:width 0.5s, background 0.5s; background:var(--green); }
+    .log-section { flex:1; padding:16px; overflow-y:auto; }
+    .log-title { font-size:0.75rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.08em; margin-bottom:12px; }
+    .log-item { display:flex; gap:10px; align-items:flex-start; padding:8px 10px; border-radius:8px; margin-bottom:6px; font-size:0.78rem; animation:slideIn 0.3s ease; }
     @keyframes slideIn { from{opacity:0;transform:translateX(-10px)} to{opacity:1;transform:translateX(0)} }
-    .log-item.high { background: rgba(239,68,68,0.1); border-left: 3px solid var(--red); }
-    .log-item.critical { background: rgba(239,68,68,0.15); border-left: 3px solid #b91c1c; }
-    .log-item.medium { background: rgba(245,158,11,0.08); border-left: 3px solid var(--amber); }
-    .log-time { font-family: 'DM Mono', monospace; font-size: 0.68rem; color: var(--text-muted); white-space: nowrap; margin-top: 2px; }
-    .log-msg { color: var(--text); line-height: 1.4; }
-    .log-detail { color: var(--text-muted); font-size: 0.72rem; }
-    .right-panel { overflow-y: auto; padding: 32px 40px; }
-    .exam-header { margin-bottom: 32px; }
-    .exam-title { font-family: 'DM Serif Display', serif; font-size: 1.8rem; margin-bottom: 8px; }
-    .exam-meta { color: var(--text-muted); font-size: 0.85rem; display: flex; gap: 20px; flex-wrap: wrap; }
-    .progress-bar { height: 4px; background: var(--navy-light); border-radius: 2px; margin-bottom: 32px; overflow: hidden; }
-    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--cyan)); border-radius: 2px; transition: width 0.5s; }
-    .question-card {
-      background: var(--navy-mid); border: 1px solid var(--border); border-radius: 16px;
-      padding: 28px; margin-bottom: 20px; transition: border-color 0.2s;
-    }
-    .question-card:hover { border-color: rgba(37,99,235,0.2); }
-    .question-num { font-family: 'DM Mono', monospace; font-size: 0.72rem; color: var(--cyan); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
-    .question-text { font-size: 1rem; line-height: 1.6; margin-bottom: 20px; font-weight: 500; }
-    .choices { display: flex; flex-direction: column; gap: 10px; }
-    .choice {
-      display: flex; align-items: center; gap: 12px; background: var(--navy-light);
-      border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px;
-      cursor: pointer; transition: all 0.2s;
-    }
-    .choice:hover { border-color: var(--blue); background: rgba(37,99,235,0.08); }
-    .choice input[type="radio"] { accent-color: var(--blue); width: 16px; height: 16px; }
-    .choice label { cursor: pointer; font-size: 0.92rem; flex: 1; }
-    .choice.selected { border-color: var(--blue); background: rgba(37,99,235,0.12); }
-    textarea {
-      width: 100%; background: var(--navy-light); border: 1px solid var(--border);
-      color: var(--text); padding: 14px 16px; border-radius: 10px;
-      font-family: 'Outfit', sans-serif; font-size: 0.9rem;
-      resize: vertical; min-height: 100px; outline: none; transition: border-color 0.2s;
-    }
-    textarea:focus { border-color: var(--blue); }
-    .submit-section { text-align: center; padding: 32px 0 16px; }
-    .btn-submit {
-      background: linear-gradient(135deg, var(--blue), #1d4ed8); color: white;
-      border: none; padding: 14px 48px; border-radius: 12px;
-      font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 600;
-      cursor: pointer; transition: all 0.3s;
-    }
-    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,235,0.4); }
-    #alertToast { position: fixed; bottom: 24px; right: 24px; z-index: 999; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
-    .toast {
-      background: var(--navy-mid); border-radius: 10px; padding: 12px 18px;
-      font-size: 0.85rem; border-left: 4px solid var(--red);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-      animation: toastIn 0.3s ease, toastOut 0.3s ease 3.7s forwards; max-width: 300px;
-    }
-    .toast.medium { border-left-color: var(--amber); }
-    .toast.critical { border-left-color: #b91c1c; background: rgba(185,28,28,0.15); }
+    .log-item.high     { background:rgba(239,68,68,0.1); border-left:3px solid var(--red); }
+    .log-item.critical { background:rgba(239,68,68,0.15); border-left:3px solid #b91c1c; }
+    .log-item.medium   { background:rgba(245,158,11,0.08); border-left:3px solid var(--amber); }
+    .log-time   { font-family:'DM Mono',monospace; font-size:0.68rem; color:var(--text-muted); white-space:nowrap; margin-top:2px; }
+    .log-msg    { color:var(--text); line-height:1.4; }
+    .log-detail { color:var(--text-muted); font-size:0.72rem; }
+
+    .right-panel { overflow-y:auto; padding:32px 40px; }
+    .exam-header { margin-bottom:32px; }
+    .exam-title { font-family:'DM Serif Display',serif; font-size:1.8rem; margin-bottom:8px; }
+    .exam-meta { color:var(--text-muted); font-size:0.85rem; display:flex; gap:20px; flex-wrap:wrap; }
+    .progress-bar { height:4px; background:var(--navy-light); border-radius:2px; margin-bottom:32px; overflow:hidden; }
+    .progress-fill { height:100%; background:linear-gradient(90deg,var(--blue),var(--cyan)); border-radius:2px; transition:width 0.5s; }
+
+    .question-card { background:var(--navy-mid); border:1px solid var(--border); border-radius:16px; padding:28px; margin-bottom:20px; transition:border-color 0.2s; }
+    .question-card:hover { border-color:rgba(37,99,235,0.2); }
+    .question-num  { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--cyan); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:10px; display:flex; justify-content:space-between; }
+    .question-pts  { color:var(--text-muted); }
+    .question-text { font-size:1rem; line-height:1.6; margin-bottom:20px; font-weight:500; }
+    .choices { display:flex; flex-direction:column; gap:10px; }
+    .choice { display:flex; align-items:center; gap:12px; background:var(--navy-light);
+      border:1px solid var(--border); border-radius:10px; padding:12px 16px; cursor:pointer; transition:all 0.2s; }
+    .choice:hover { border-color:var(--blue); background:rgba(37,99,235,0.08); }
+    .choice input[type="radio"] { accent-color:var(--blue); width:16px; height:16px; }
+    .choice label { cursor:pointer; font-size:0.92rem; flex:1; }
+    .choice.selected { border-color:var(--blue); background:rgba(37,99,235,0.12); }
+    textarea { width:100%; background:var(--navy-light); border:1px solid var(--border); color:var(--text);
+      padding:14px 16px; border-radius:10px; font-family:'Outfit',sans-serif; font-size:0.9rem;
+      resize:vertical; min-height:100px; outline:none; transition:border-color 0.2s; }
+    textarea:focus { border-color:var(--blue); }
+    .fitb-input { width:100%; background:var(--navy-light); border:1px solid var(--border); color:var(--text);
+      padding:12px 16px; border-radius:10px; font-family:'DM Mono',monospace; font-size:0.95rem;
+      outline:none; transition:border-color 0.2s; }
+    .fitb-input:focus { border-color:var(--blue); }
+
+    .submit-section { text-align:center; padding:32px 0 16px; }
+    .btn-submit { background:linear-gradient(135deg,var(--blue),#1d4ed8); color:white; border:none;
+      padding:14px 48px; border-radius:12px; font-family:'Outfit',sans-serif; font-size:1rem; font-weight:600;
+      cursor:pointer; transition:all 0.3s; }
+    .btn-submit:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(37,99,235,0.4); }
+
+    /* Progress counter */
+    .progress-counter { display:flex; justify-content:space-between; font-family:'DM Mono',monospace;
+      font-size:0.68rem; color:var(--text-muted); margin-bottom:8px; }
+
+    #alertToast { position:fixed; bottom:24px; right:24px; z-index:999; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
+    .toast { background:var(--navy-mid); border-radius:10px; padding:12px 18px; font-size:0.85rem;
+      border-left:4px solid var(--red); box-shadow:0 8px 24px rgba(0,0,0,0.4);
+      animation:toastIn 0.3s ease, toastOut 0.3s ease 3.7s forwards; max-width:300px; }
+    .toast.medium { border-left-color:var(--amber); }
+    .toast.critical { border-left-color:#b91c1c; background:rgba(185,28,28,0.15); }
     @keyframes toastIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
     @keyframes toastOut { from{opacity:1} to{opacity:0} }
-    #tabSwitchOverlay {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85);
-      z-index: 500; align-items: center; justify-content: center;
-      flex-direction: column; gap: 16px;
-    }
-    #tabSwitchOverlay.show { display: flex; }
-    .tab-warning-icon { font-size: 4rem; }
-    .tab-warning-text { font-family: 'DM Serif Display', serif; font-size: 2rem; color: var(--red); }
-    .tab-warning-sub { color: var(--text-muted); font-size: 0.9rem; }
-    .btn-resume {
-      background: var(--blue); color: white; border: none;
-      padding: 12px 32px; border-radius: 10px;
-      font-family: 'Outfit', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; margin-top: 8px;
-    }
-    #camPrompt {
-      position: fixed; inset: 0; background: var(--navy); z-index: 200;
-      display: flex; align-items: center; justify-content: center;
-      flex-direction: column; gap: 16px;
-    }
-    .cam-prompt-icon { font-size: 3rem; }
-    .cam-prompt-title { font-family: 'DM Serif Display', serif; font-size: 1.6rem; }
-    .cam-prompt-sub { color: var(--text-muted); font-size: 0.9rem; max-width: 400px; text-align: center; }
-    .btn-allow {
-      background: var(--green); color: #000; border: none; padding: 12px 32px;
-      border-radius: 10px; font-weight: 700; font-size: 0.95rem; cursor: pointer; margin-top: 8px;
-    }
+
+    #tabSwitchOverlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:500;
+      align-items:center; justify-content:center; flex-direction:column; gap:16px; }
+    #tabSwitchOverlay.show { display:flex; }
+    .tab-warning-text { font-family:'DM Serif Display',serif; font-size:2rem; color:var(--red); }
+    .tab-warning-sub { color:var(--text-muted); font-size:0.9rem; }
+    .btn-resume { background:var(--blue); color:white; border:none; padding:12px 32px; border-radius:10px;
+      font-family:'Outfit',sans-serif; font-size:0.95rem; font-weight:600; cursor:pointer; margin-top:8px; }
+
+    #camPrompt { position:fixed; inset:0; background:var(--navy); z-index:200;
+      display:flex; align-items:center; justify-content:center; flex-direction:column; gap:16px; }
+    .cam-prompt-title { font-family:'DM Serif Display',serif; font-size:1.6rem; }
+    .cam-prompt-sub { color:var(--text-muted); font-size:0.9rem; max-width:400px; text-align:center; }
+    .btn-allow { background:var(--green); color:#000; border:none; padding:12px 32px;
+      border-radius:10px; font-weight:700; font-size:0.95rem; cursor:pointer; margin-top:8px; }
   </style>
 </head>
 <body>
   <div id="camPrompt">
-    <div class="cam-prompt-icon">📷</div>
+    <div style="font-size:3rem">📷</div>
     <div class="cam-prompt-title">Camera Access Required</div>
-    <div class="cam-prompt-sub">ExamGuard needs access to your webcam to monitor your exam session. No video is recorded or stored.</div>
+    <div class="cam-prompt-sub">ExamGuard needs webcam access to monitor your session. No video is recorded or stored.</div>
     <button class="btn-allow" onclick="initCamera()">Allow Camera &amp; Begin Exam</button>
   </div>
 
   <div id="tabSwitchOverlay">
-    <div class="tab-warning-icon">⚠️</div>
+    <div style="font-size:4rem">⚠️</div>
     <div class="tab-warning-text">Tab Switch Detected</div>
     <div class="tab-warning-sub">This event has been logged. Please stay on the exam tab.</div>
     <button class="btn-resume" onclick="resumeExam()">Return to Exam</button>
@@ -201,10 +168,10 @@
   <div class="topbar">
     <div class="topbar-left">
       <div class="logo-sm">Exam<span>Guard</span> 🛡</div>
-      <div class="session-id" id="sessionIdDisplay">Loading...</div>
+      <div class="session-id" id="sessionIdDisplay">Starting...</div>
     </div>
     <div class="topbar-center">
-      <div class="timer-display" id="timerDisplay">60:00</div>
+      <div class="timer-display" id="timerDisplay">—:—</div>
       <div class="violation-badge">⚠ <span id="violationCount">0</span> flags</div>
     </div>
     <div class="topbar-right">
@@ -215,9 +182,7 @@
   <div class="main">
     <div class="left-panel">
       <div class="cam-section">
-        <div class="cam-label">
-          <span class="cam-status-dot"></span> Live Monitor
-        </div>
+        <div class="cam-label"><span class="cam-status-dot"></span> Live Monitor</div>
         <div class="cam-wrapper">
           <video id="webcamVideo" autoplay playsinline muted></video>
           <canvas id="camCanvas"></canvas>
@@ -226,14 +191,14 @@
         </div>
       </div>
 
+      <div class="audio-meter">
+        <div class="audio-label"><span>🎤 Audio Level</span><span id="audioDbLabel">— dB</span></div>
+        <div class="audio-bar"><div class="audio-fill" id="audioFill"></div></div>
+      </div>
+
       <div class="light-bar-wrap">
-        <div class="light-bar-label">
-          <span>Lighting Quality</span>
-          <span id="lightLabel" style="font-family:'DM Mono',monospace;font-size:0.7rem;">—</span>
-        </div>
-        <div class="light-bar">
-          <div class="light-bar-fill" id="lightFill" style="width:60%"></div>
-        </div>
+        <div class="light-bar-label"><span>Lighting Quality</span><span id="lightLabel" style="font-family:'DM Mono',monospace;font-size:0.7rem">—</span></div>
+        <div class="light-bar"><div class="light-bar-fill" id="lightFill" style="width:60%"></div></div>
       </div>
 
       <div class="status-section">
@@ -248,28 +213,22 @@
 
       <div class="log-section">
         <div class="log-title">Activity Log</div>
-        <div id="logList">
-          <div class="log-empty">No events logged yet.<br>Monitoring is active.</div>
-        </div>
+        <div id="logList"><div style="color:var(--text-muted);font-size:0.78rem;text-align:center;padding:20px">No events logged.<br>Monitoring is active.</div></div>
       </div>
     </div>
 
     <div class="right-panel">
       <div class="exam-header">
-        <div class="exam-title">Sample Examination</div>
+        <div class="exam-title" id="examTitle">Loading Exam…</div>
         <div class="exam-meta">
-          <span>📚 Computer Science Fundamentals</span>
-          <span>⏱ 10 Questions</span>
+          <span id="examSubject">—</span>
+          <span id="examQCount">—</span>
           <span>👤 <span id="studentLabel">—</span></span>
         </div>
       </div>
-
-      <div class="progress-bar">
-        <div class="progress-fill" id="progressFill" style="width:0%"></div>
-      </div>
-
+      <div class="progress-counter"><span id="progressLabel">0 of 0 answered</span><span id="progressPct">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
       <div id="questionsContainer"></div>
-
       <div class="submit-section">
         <button class="btn-submit" onclick="confirmEndExam()">📋 Submit Exam &amp; Generate Report</button>
       </div>
@@ -277,259 +236,277 @@
   </div>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    let SESSION_ID = params.get('session') || '';
-    const STUDENT_NAME = params.get('name') || 'Student';
-    const EXAM_DURATION = parseInt(params.get('duration') || '60');
+    const params       = new URLSearchParams(window.location.search);
+    let SESSION_ID     = params.get('session') || '';
+    const STUDENT_NAME = params.get('name') || localStorage.getItem('eg_name') || 'Student';
+    const EXAM_DURATION= parseInt(params.get('duration') || '60');
+    const EXAM_ID      = params.get('exam_id') || null;
+    const token        = params.get('token') || localStorage.getItem('eg_token') || '';
+    const authH        = {'Content-Type':'application/json','X-Demo-Mode':'1','Authorization':`Bearer ${token}`};
 
     document.getElementById('studentLabel').textContent = STUDENT_NAME;
 
-    const questions = [
-      { id: 1, type: 'mc', text: 'What is the time complexity of binary search on a sorted array?', choices: ['O(n)', 'O(log n)', 'O(n²)', 'O(1)'] },
-      { id: 2, type: 'mc', text: 'Which data structure uses LIFO (Last In, First Out) ordering?', choices: ['Queue', 'Heap', 'Stack', 'Linked List'] },
-      { id: 3, type: 'mc', text: 'What does HTTP stand for?', choices: ['HyperText Transfer Protocol', 'High Traffic Transfer Process', 'Hyper Transfer Text Protocol', 'Home Text Transfer Protocol'] },
-      { id: 4, type: 'mc', text: 'Which of the following is NOT an object-oriented programming principle?', choices: ['Encapsulation', 'Polymorphism', 'Compilation', 'Inheritance'] },
-      { id: 5, type: 'mc', text: 'What is the output of: 2 ** 10 in Python?', choices: ['20', '512', '1024', '2048'] },
-      { id: 6, type: 'text', text: 'Briefly explain the difference between a process and a thread in operating systems.' },
-      { id: 7, type: 'mc', text: 'In SQL, which clause is used to filter groups of rows?', choices: ['WHERE', 'HAVING', 'GROUP BY', 'FILTER'] },
-      { id: 8, type: 'mc', text: 'What type of attack involves intercepting communication between two parties?', choices: ['SQL Injection', 'XSS Attack', 'Man-in-the-Middle', 'Phishing'] },
-      { id: 9, type: 'text', text: 'What is the difference between symmetric and asymmetric encryption? Give one example of each.' },
-      { id: 10, type: 'mc', text: 'Which sorting algorithm has the best worst-case time complexity?', choices: ['Bubble Sort', 'Quick Sort', 'Merge Sort', 'Selection Sort'] },
-    ];
+    // ── Questions (dynamic from server or fallback demo) ─────────────────────
+    let questions = [];
+    const userAnswers = {};
+
+    async function loadQuestions() {
+      if (EXAM_ID) {
+        try {
+          const data = await fetch(`/api/exams/${EXAM_ID}`, {headers:authH}).then(r=>r.json());
+          if (data && data.questions && data.questions.length) {
+            document.getElementById('examTitle').textContent   = data.title || 'Examination';
+            document.getElementById('examSubject').textContent = '📚 ' + (data.subject || 'General');
+            questions = data.questions;
+            document.getElementById('examQCount').textContent  = `⏱ ${questions.length} Questions`;
+            renderQuestions();
+            return;
+          }
+        } catch(e) {}
+      }
+      // Fallback demo questions
+      document.getElementById('examTitle').textContent   = 'Computer Science Fundamentals';
+      document.getElementById('examSubject').textContent = '📚 Computer Science';
+      questions = [
+        {id:1,question_type:'mc',question_text:'What is the time complexity of binary search?',choices:JSON.stringify(['O(n)','O(log n)','O(n²)','O(1)']),points:2},
+        {id:2,question_type:'mc',question_text:'Which data structure uses LIFO ordering?',choices:JSON.stringify(['Queue','Heap','Stack','Linked List']),points:1},
+        {id:3,question_type:'tf',question_text:'HTTP stands for HyperText Transfer Protocol.',choices:JSON.stringify(['True','False']),points:1},
+        {id:4,question_type:'fitb',question_text:'The sorting algorithm with O(n log n) worst-case complexity is ________.',points:2},
+        {id:5,question_type:'mc',question_text:'In SQL, which clause filters groups of rows?',choices:JSON.stringify(['WHERE','HAVING','GROUP BY','FILTER']),points:1},
+        {id:6,question_type:'essay',question_text:'Explain the difference between a process and a thread.',points:3},
+        {id:7,question_type:'mc',question_text:'What type of attack intercepts communication between two parties?',choices:JSON.stringify(['SQL Injection','XSS','Man-in-the-Middle','Phishing']),points:2},
+        {id:8,question_type:'fitb',question_text:'The primary key constraint ensures that values are ________ and NOT NULL.',points:1},
+        {id:9,question_type:'mc',question_text:'Which sorting algorithm has best worst-case time complexity?',choices:JSON.stringify(['Bubble Sort','Quick Sort','Merge Sort','Selection Sort']),points:2},
+        {id:10,question_type:'essay',question_text:'Describe the difference between symmetric and asymmetric encryption. Give one example of each.',points:4},
+      ];
+      document.getElementById('examQCount').textContent = `⏱ ${questions.length} Questions`;
+      renderQuestions();
+    }
 
     function renderQuestions() {
       const container = document.getElementById('questionsContainer');
       container.innerHTML = questions.map((q, i) => {
-        if (q.type === 'mc') {
+        const choices = q.choices ? JSON.parse(q.choices) : [];
+        const pts = q.points || 1;
+        if (q.question_type === 'mc' || q.question_type === 'tf') {
           return `<div class="question-card" id="qcard-${q.id}">
-            <div class="question-num">Question ${i+1} of ${questions.length}</div>
-            <div class="question-text">${q.text}</div>
+            <div class="question-num"><span>Question ${i+1} of ${questions.length}</span><span class="question-pts">${pts} pt${pts!==1?'s':''}</span></div>
+            <div class="question-text">${q.question_text}</div>
             <div class="choices">
-              ${q.choices.map((c, ci) => `
-                <div class="choice" id="choice-${q.id}-${ci}" onclick="selectChoice(${q.id}, ${ci})">
-                  <input type="radio" name="q${q.id}" id="r${q.id}-${ci}" value="${ci}" />
+              ${choices.map((c,ci)=>`
+                <div class="choice" id="choice-${q.id}-${ci}" onclick="selectChoice(${q.id},${ci})">
+                  <input type="radio" name="q${q.id}" id="r${q.id}-${ci}" value="${ci}"/>
                   <label for="r${q.id}-${ci}">${c}</label>
-                </div>
-              `).join('')}
+                </div>`).join('')}
             </div>
+          </div>`;
+        } else if (q.question_type === 'fitb') {
+          return `<div class="question-card" id="qcard-${q.id}">
+            <div class="question-num"><span>Question ${i+1} of ${questions.length}</span><span class="question-pts">${pts} pt${pts!==1?'s':''}</span></div>
+            <div class="question-text">${q.question_text}</div>
+            <input class="fitb-input" placeholder="Type your answer here…" oninput="recordAnswer(${q.id},this.value)" />
           </div>`;
         } else {
           return `<div class="question-card" id="qcard-${q.id}">
-            <div class="question-num">Question ${i+1} of ${questions.length}</div>
-            <div class="question-text">${q.text}</div>
-            <textarea placeholder="Type your answer here..." oninput="updateProgress()" rows="5"></textarea>
+            <div class="question-num"><span>Question ${i+1} of ${questions.length}</span><span class="question-pts">${pts} pt${pts!==1?'s':''}</span></div>
+            <div class="question-text">${q.question_text}</div>
+            <textarea placeholder="Type your answer here…" rows="5" oninput="recordAnswer(${q.id},this.value)"></textarea>
           </div>`;
         }
       }).join('');
     }
 
-    function selectChoice(qId, choiceIdx) {
-      const q = questions.find(q => q.id === qId);
-      q.choices.forEach((_, ci) => {
-        const el = document.getElementById(`choice-${qId}-${ci}`);
-        if (el) el.classList.remove('selected');
-      });
-      const chosen = document.getElementById(`choice-${qId}-${choiceIdx}`);
-      if (chosen) {
-        chosen.classList.add('selected');
-        document.getElementById(`r${qId}-${choiceIdx}`).checked = true;
-      }
+    function selectChoice(qId, idx) {
+      const q = questions.find(q=>q.id===qId);
+      const choices = q.choices ? JSON.parse(q.choices) : [];
+      choices.forEach((_,ci)=>{ const el=document.getElementById(`choice-${qId}-${ci}`); if(el) el.classList.remove('selected'); });
+      const el=document.getElementById(`choice-${qId}-${idx}`);
+      if (el) { el.classList.add('selected'); document.getElementById(`r${qId}-${idx}`).checked=true; }
+      userAnswers[qId] = idx;
+      updateProgress();
+    }
+
+    function recordAnswer(qId, val) {
+      userAnswers[qId] = val;
       updateProgress();
     }
 
     function updateProgress() {
-      let answered = 0;
+      let answered=0;
       questions.forEach(q => {
-        if (q.type === 'mc') {
+        if (q.question_type==='mc'||q.question_type==='tf') {
           if (document.querySelector(`input[name="q${q.id}"]:checked`)) answered++;
         } else {
-          const ta = document.querySelector(`#qcard-${q.id} textarea`);
-          if (ta && ta.value.trim().length > 5) answered++;
+          const val = userAnswers[q.id];
+          if (val && val.toString().trim().length>0) answered++;
         }
       });
-      document.getElementById('progressFill').style.width = ((answered / questions.length) * 100) + '%';
+      const pct = questions.length ? Math.round(answered/questions.length*100) : 0;
+      document.getElementById('progressFill').style.width  = pct+'%';
+      document.getElementById('progressLabel').textContent = `${answered} of ${questions.length} answered`;
+      document.getElementById('progressPct').textContent   = pct+'%';
     }
 
-    renderQuestions();
-
-    let stream = null;
-    let analyzeInterval = null;
-    const video = document.getElementById('webcamVideo');
-    const canvas = document.getElementById('camCanvas');
-    const ctx = canvas.getContext('2d');
+    // ── Camera & Audio ──────────────────────────────────────────────────────
+    let stream=null, analyzeInterval=null, audioContext=null, analyser=null;
+    const video=document.getElementById('webcamVideo');
+    const canvas=document.getElementById('camCanvas');
+    const ctx=canvas.getContext('2d');
 
     async function initCamera() {
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480, facingMode: 'user' } });
+        stream = await navigator.mediaDevices.getUserMedia({video:{width:640,height:480,facingMode:'user'},audio:true});
         video.srcObject = stream;
-        document.getElementById('camPrompt').style.display = 'none';
+        document.getElementById('camPrompt').style.display='none';
 
-        // Start a session with the server
-        const res = await fetch('/api/start_session', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ student_name: STUDENT_NAME, duration: EXAM_DURATION })
-        });
+        // Start audio monitoring
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        audioContext.createMediaStreamSource(stream).connect(analyser);
+        analyser.fftSize = 256;
+        startAudioMonitor();
+
+        const res = await fetch('/api/start_session',{method:'POST',headers:authH,body:JSON.stringify({student_name:STUDENT_NAME,duration:EXAM_DURATION,exam_id:EXAM_ID})});
         const data = await res.json();
         SESSION_ID = data.session_id;
         document.getElementById('sessionIdDisplay').textContent = SESSION_ID;
 
-        startAnalysis();
-        startTimer();
-        startTabDetection();
-      } catch (e) {
+        startAnalysis(); startTimer(); startTabDetection();
+      } catch(e) {
         alert('Camera access denied. Please allow camera access to continue.');
       }
     }
 
+    // Audio anomaly detection
+    let audioAlertCooldown = false;
+    function startAudioMonitor() {
+      const buf = new Uint8Array(analyser.frequencyBinCount);
+      const fill = document.getElementById('audioFill');
+      const lbl  = document.getElementById('audioDbLabel');
+      const tick = () => {
+        analyser.getByteFrequencyData(buf);
+        const avg = buf.reduce((a,v)=>a+v,0)/buf.length;
+        const pct = Math.min(avg/128*100, 100);
+        fill.style.width = pct+'%';
+        fill.className = 'audio-fill' + (pct>70?' danger':pct>45?' warn':'');
+        lbl.textContent = Math.round(avg)+' dB';
+        if (pct > 70 && !audioAlertCooldown && SESSION_ID) {
+          audioAlertCooldown=true;
+          fetch('/api/audio_alert',{method:'POST',headers:authH,body:JSON.stringify({session_id:SESSION_ID,level:Math.round(avg)})});
+          addLogItem({timestamp:new Date().toLocaleTimeString(),type:'AUDIO_ANOMALY',details:`High audio level detected (${Math.round(avg)} dB)`,severity:'medium'});
+          showToast('Audio anomaly detected','medium');
+          setTimeout(()=>audioAlertCooldown=false, 10000);
+        }
+        requestAnimationFrame(tick);
+      };
+      tick();
+    }
+
     function captureFrame() {
-      canvas.width = video.videoWidth || 640;
-      canvas.height = video.videoHeight || 480;
-      ctx.drawImage(video, 0, 0);
-      return canvas.toDataURL('image/jpeg', 0.7);
+      canvas.width=video.videoWidth||640; canvas.height=video.videoHeight||480;
+      ctx.drawImage(video,0,0);
+      return canvas.toDataURL('image/jpeg',0.7);
     }
 
     async function analyzeFrame() {
-      if (!stream || !SESSION_ID) return;
-      const frame = captureFrame();
+      if (!stream||!SESSION_ID) return;
       try {
-        const res = await fetch('/api/analyze_frame', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ session_id: SESSION_ID, frame })
-        });
-        const data = await res.json();
-        if (data.status === 'ok') handleAnalysisResult(data);
-      } catch (e) {}
+        const res=await fetch('/api/analyze_frame',{method:'POST',headers:authH,body:JSON.stringify({session_id:SESSION_ID,frame:captureFrame()})});
+        const data=await res.json();
+        if (data.status==='ok') handleAnalysisResult(data);
+      } catch(e) {}
     }
 
     function handleAnalysisResult(data) {
-      const { alerts, violation_count, stats } = data;
-      document.getElementById('violationCount').textContent = violation_count || 0;
-
-      const overlay = document.getElementById('camOverlay');
-      if (alerts && alerts.length > 0) {
-        const hasHighSev = alerts.some(a => a.violation && (a.violation.severity === 'critical' || a.violation.severity === 'high'));
-        overlay.className = 'cam-overlay ' + (hasHighSev ? 'alert' : 'warning');
-      } else {
-        overlay.className = 'cam-overlay ok';
-      }
-
-      const indEl = document.getElementById('camIndicators');
-      const badges = [];
-      const faceAlert = alerts ? alerts.find(a => a.type === 'NO_FACE' || a.type === 'MULTIPLE_FACES') : null;
+      const {alerts,violation_count,stats}=data;
+      document.getElementById('violationCount').textContent=violation_count||0;
+      const overlay=document.getElementById('camOverlay');
+      const hasHigh=alerts&&alerts.some(a=>a.violation&&(a.violation.severity==='critical'||a.violation.severity==='high'));
+      overlay.className='cam-overlay '+(hasHigh?'alert':alerts&&alerts.length?'warning':'ok');
+      const indEl=document.getElementById('camIndicators'); const badges=[];
+      const faceAlert=alerts&&alerts.find(a=>a.type==='NO_FACE'||a.type==='MULTIPLE_FACES');
       if (!faceAlert) badges.push('<span class="cam-badge green">Face OK ✓</span>');
-      if (faceAlert && faceAlert.type === 'NO_FACE') badges.push('<span class="cam-badge red">No Face</span>');
-      if (faceAlert && faceAlert.type === 'MULTIPLE_FACES') badges.push(`<span class="cam-badge red">${faceAlert.count} Faces</span>`);
-      if (alerts && alerts.find(a => a.type === 'LOOK_AWAY')) badges.push('<span class="cam-badge amber">Looking Away</span>');
-      if (alerts && alerts.find(a => a.type === 'POOR_LIGHTING')) badges.push('<span class="cam-badge red">Poor Light</span>');
-      indEl.innerHTML = badges.join('');
-
+      if (faceAlert&&faceAlert.type==='NO_FACE') badges.push('<span class="cam-badge red">No Face</span>');
+      if (faceAlert&&faceAlert.type==='MULTIPLE_FACES') badges.push(`<span class="cam-badge red">${faceAlert.count} Faces</span>`);
+      if (alerts&&alerts.find(a=>a.type==='LOOK_AWAY')) badges.push('<span class="cam-badge amber">Looking Away</span>');
+      if (alerts&&alerts.find(a=>a.type==='POOR_LIGHTING')) badges.push('<span class="cam-badge red">Poor Light</span>');
+      indEl.innerHTML=badges.join('');
       if (stats) {
-        document.getElementById('statFaceAbs').textContent = stats.face_absence_events;
-        document.getElementById('statMultiFace').textContent = stats.multiple_face_events;
-        document.getElementById('statLookAway').textContent = stats.look_away_events;
-        document.getElementById('statTabSwitch').textContent = stats.tab_switches;
+        document.getElementById('statFaceAbs').textContent  =stats.face_absence_events;
+        document.getElementById('statMultiFace').textContent=stats.multiple_face_events;
+        document.getElementById('statLookAway').textContent =stats.look_away_events;
+        document.getElementById('statTabSwitch').textContent=stats.tab_switches;
       }
-
-      if (alerts) {
-        alerts.forEach(a => {
-          if (a.violation) {
-            addLogItem(a.violation);
-            showToast(`${a.type.replace('_',' ')} detected`, a.violation.severity);
-          }
-        });
-      }
+      if (alerts) alerts.forEach(a=>{ if(a.violation){addLogItem(a.violation);showToast(a.type.replace('_',' '),a.violation.severity);} });
     }
 
-    function startAnalysis() {
-      analyzeInterval = setInterval(analyzeFrame, 1500);
-    }
+    function startAnalysis() { analyzeInterval=setInterval(analyzeFrame,1500); }
 
-    let timerEl = document.getElementById('timerDisplay');
-    let examStart = Date.now();
-    let examDurationMs = EXAM_DURATION * 60 * 1000;
-
+    let examStart=Date.now(), examDurationMs=EXAM_DURATION*60000;
     function startTimer() {
-      setInterval(() => {
-        const elapsed = Date.now() - examStart;
-        const remaining = Math.max(0, examDurationMs - elapsed);
-        const m = Math.floor(remaining / 60000);
-        const s = Math.floor((remaining % 60000) / 1000);
-        timerEl.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-        if (remaining < 300000) timerEl.className = 'timer-display warning';
-        if (remaining < 60000) timerEl.className = 'timer-display critical';
-        if (remaining === 0) confirmEndExam();
-      }, 1000);
+      setInterval(()=>{
+        const remaining=Math.max(0,examDurationMs-(Date.now()-examStart));
+        const m=Math.floor(remaining/60000), s=Math.floor((remaining%60000)/1000);
+        document.getElementById('timerDisplay').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        if (remaining<300000) document.getElementById('timerDisplay').className='timer-display warning';
+        if (remaining<60000)  document.getElementById('timerDisplay').className='timer-display critical';
+        if (remaining===0) endExam();
+      },1000);
     }
 
     function startTabDetection() {
-      document.addEventListener('visibilitychange', async () => {
+      document.addEventListener('visibilitychange',async()=>{
         if (document.hidden) {
           document.getElementById('tabSwitchOverlay').classList.add('show');
-          if (SESSION_ID) {
-            try {
-              await fetch('/api/tab_switch', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ session_id: SESSION_ID })
-              });
-            } catch(e) {}
-          }
-          addLogItem({ timestamp: new Date().toLocaleTimeString(), type: 'TAB_SWITCH', details: 'Tab switch detected', severity: 'high' });
+          if (SESSION_ID) try { await fetch('/api/tab_switch',{method:'POST',headers:authH,body:JSON.stringify({session_id:SESSION_ID})}); } catch(e){}
+          addLogItem({timestamp:new Date().toLocaleTimeString(),type:'TAB_SWITCH',details:'Student switched browser tab',severity:'high'});
         }
       });
     }
 
-    function resumeExam() {
-      document.getElementById('tabSwitchOverlay').classList.remove('show');
-    }
+    function resumeExam() { document.getElementById('tabSwitchOverlay').classList.remove('show'); }
 
     function addLogItem(v) {
-      const logList = document.getElementById('logList');
-      const empty = logList.querySelector('.log-empty');
-      if (empty) empty.remove();
-      const icons = { NO_FACE: '👤', MULTIPLE_FACES: '👥', LOOK_AWAY: '👁', TAB_SWITCH: '🪟', DEFAULT: '⚠️' };
-      const icon = icons[v.type] || icons.DEFAULT;
-      const div = document.createElement('div');
-      div.className = `log-item ${v.severity}`;
-      div.innerHTML = `<div>
-        <div class="log-msg">${icon} ${v.type.replace('_', ' ')}</div>
-        <div class="log-detail">${v.details}</div>
-        <div class="log-time">${v.timestamp}</div>
-      </div>`;
-      logList.insertBefore(div, logList.firstChild);
+      const logList=document.getElementById('logList');
+      const empty=logList.querySelector('[style]'); if(empty&&empty.style.textAlign) empty.remove();
+      const icons={NO_FACE:'👤',MULTIPLE_FACES:'👥',LOOK_AWAY:'👁',TAB_SWITCH:'🪟',AUDIO_ANOMALY:'🎤',DEFAULT:'⚠️'};
+      const div=document.createElement('div'); div.className=`log-item ${v.severity}`;
+      div.innerHTML=`<div><div class="log-msg">${icons[v.type]||icons.DEFAULT} ${v.type.replace('_',' ')}</div><div class="log-detail">${v.details}</div><div class="log-time">${v.timestamp}</div></div>`;
+      logList.insertBefore(div,logList.firstChild);
     }
 
-    function showToast(msg, severity = 'high') {
-      const container = document.getElementById('alertToast');
-      const div = document.createElement('div');
-      div.className = `toast ${severity}`;
-      div.textContent = '⚠ ' + msg;
-      container.appendChild(div);
-      setTimeout(() => div.remove(), 4200);
+    function showToast(msg,sev='high') {
+      const c=document.getElementById('alertToast'); const d=document.createElement('div');
+      d.className=`toast ${sev}`; d.textContent='⚠ '+msg; c.appendChild(d);
+      setTimeout(()=>d.remove(),4200);
     }
 
     async function confirmEndExam() {
-      if (!confirm('Are you sure you want to submit and end the exam? A monitoring report will be generated.')) return;
+      if (!confirm('Submit and end the exam? A monitoring report and your grade will be generated.')) return;
       endExam();
     }
 
     async function endExam() {
       clearInterval(analyzeInterval);
-      if (stream) stream.getTracks().forEach(t => t.stop());
-      if (!SESSION_ID) { window.location.href = '/'; return; }
-      try {
-        await fetch('/api/end_session', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ session_id: SESSION_ID })
-        });
-        window.location.href = `/report/${SESSION_ID}`;
-      } catch (e) {
-        alert('Error ending session. Please contact the instructor.');
+      if (stream) stream.getTracks().forEach(t=>t.stop());
+      if (audioContext) audioContext.close();
+      if (!SESSION_ID) { window.location.href='/'; return; }
+      // Submit answers for grading
+      if (EXAM_ID) {
+        try {
+          await fetch('/api/submit_exam',{method:'POST',headers:authH,body:JSON.stringify({
+            session_id:SESSION_ID, exam_id:parseInt(EXAM_ID),
+            student_id:null, answers:userAnswers
+          })});
+        } catch(e) {}
       }
+      try {
+        await fetch('/api/end_session',{method:'POST',headers:authH,body:JSON.stringify({session_id:SESSION_ID})});
+        window.location.href=`/report/${SESSION_ID}`;
+      } catch(e) { alert('Error ending session. Contact instructor.'); }
     }
+
+    loadQuestions();
   </script>
 </body>
 </html>

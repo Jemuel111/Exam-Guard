@@ -11,299 +11,158 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg:      #080c14;
-      --bg1:     #0d1424;
-      --bg2:     #111c30;
-      --acc:     #3b82f6;
-      --acc2:    #60a5fa;
-      --ok:      #22c55e;
-      --warn:    #f59e0b;
-      --danger:  #ef4444;
-      --hi:      #f0f6ff;
-      --mid:     #6b84a8;
-      --low:     #2d4060;
-      --bd:      rgba(255,255,255,0.06);
-      --sans:    'Space Grotesk', sans-serif;
-      --mono:    'Space Mono', monospace;
+      --bg:#080c14; --bg1:#0d1424; --bg2:#111c30;
+      --acc:#3b82f6; --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
+      --hi:#f0f6ff; --mid:#6b84a8; --low:#2d4060;
+      --bd:rgba(255,255,255,0.06);
+      --sans:'Space Grotesk',sans-serif; --mono:'Space Mono',monospace;
     }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: var(--sans);
-      background: var(--bg);
-      color: var(--hi);
-      min-height: 100vh;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-    }
+    html { scroll-behavior:smooth; }
+    body { font-family:var(--sans); background:var(--bg); color:var(--hi); min-height:100vh; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+    body::before { content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+      background-image: linear-gradient(rgba(59,130,246,0.04) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(59,130,246,0.04) 1px,transparent 1px);
+      background-size:52px 52px; }
+    body::after { content:''; position:fixed; top:-200px; left:50%; transform:translateX(-50%);
+      width:800px; height:600px;
+      background:radial-gradient(ellipse,rgba(59,130,246,0.12) 0%,transparent 70%);
+      z-index:0; pointer-events:none; }
 
-    /* Grid background */
-    body::before {
-      content: '';
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background-image:
-        linear-gradient(rgba(59,130,246,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(59,130,246,0.04) 1px, transparent 1px);
-      background-size: 52px 52px;
-    }
+    nav { position:fixed; top:0; left:0; right:0; z-index:100; height:56px;
+      display:flex; align-items:center; justify-content:space-between; padding:0 48px;
+      background:rgba(8,12,20,0.85); backdrop-filter:blur(20px);
+      border-bottom:1px solid var(--bd); }
+    .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+    .logo-mark { width:28px; height:28px; background:var(--acc); display:flex; align-items:center; justify-content:center;
+      clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); }
+    .logo-mark svg { width:14px; height:14px; fill:white; }
+    .logo-name { font-family:var(--mono); font-size:0.82rem; font-weight:700; letter-spacing:0.05em; color:var(--hi); }
+    .logo-name b { color:var(--acc); }
+    .nav-center { display:flex; gap:4px; }
+    .nav-link { font-family:var(--mono); font-size:0.65rem; letter-spacing:0.06em;
+      color:var(--mid); padding:6px 14px; text-decoration:none; border:1px solid transparent; transition:all 0.15s; }
+    .nav-link:hover { color:var(--hi); border-color:var(--bd); }
+    .nav-right { display:flex; gap:8px; }
+    .btn { font-family:var(--mono); font-size:0.68rem; letter-spacing:0.04em; font-weight:700;
+      padding:8px 20px; border:1px solid; cursor:pointer; text-decoration:none;
+      display:inline-flex; align-items:center; gap:8px; transition:all 0.15s; background:none; }
+    .btn-ghost { color:var(--mid); border-color:var(--bd); }
+    .btn-ghost:hover { color:var(--hi); border-color:rgba(255,255,255,0.15); background:rgba(255,255,255,0.03); }
+    .btn-solid { color:#fff; background:var(--acc); border-color:var(--acc); }
+    .btn-solid:hover { background:#2563eb; border-color:#2563eb; }
 
-    /* Glow orb */
-    body::after {
-      content: '';
-      position: fixed; top: -200px; left: 50%; transform: translateX(-50%);
-      width: 800px; height: 600px;
-      background: radial-gradient(ellipse, rgba(59,130,246,0.12) 0%, transparent 70%);
-      z-index: 0; pointer-events: none;
-    }
-
-    /* ── NAV ── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      height: 56px; display: flex; align-items: center; justify-content: space-between;
-      padding: 0 48px;
-      background: rgba(8,12,20,0.85); backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--bd);
-    }
-    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    .logo-mark {
-      width: 28px; height: 28px; background: var(--acc);
-      display: flex; align-items: center; justify-content: center; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    }
-    .logo-mark svg { width: 14px; height: 14px; fill: white; }
-    .logo-name { font-family: var(--mono); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.05em; color: var(--hi); }
-    .logo-name b { color: var(--acc); }
-    .nav-center { display: flex; gap: 4px; }
-    .nav-link {
-      font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.06em;
-      color: var(--mid); padding: 6px 14px; text-decoration: none;
-      border: 1px solid transparent; transition: all 0.15s;
-    }
-    .nav-link:hover { color: var(--hi); border-color: var(--bd); }
-    .nav-right { display: flex; gap: 8px; }
-    .btn {
-      font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.04em; font-weight: 700;
-      padding: 8px 20px; border: 1px solid; cursor: pointer;
-      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
-      transition: all 0.15s; background: none;
-    }
-    .btn-ghost { color: var(--mid); border-color: var(--bd); }
-    .btn-ghost:hover { color: var(--hi); border-color: rgba(255,255,255,0.15); background: rgba(255,255,255,0.03); }
-    .btn-solid { color: #fff; background: var(--acc); border-color: var(--acc); }
-    .btn-solid:hover { background: #2563eb; border-color: #2563eb; }
-
-    /* ── HERO ── */
-    .hero {
-      position: relative; z-index: 5;
-      min-height: 100vh; display: flex; align-items: center; justify-content: center;
-      padding: 120px 48px 80px;
-      text-align: center;
-    }
-    .hero-inner { max-width: 780px; }
-
-    .status-pill {
-      display: inline-flex; align-items: center; gap: 8px;
-      border: 1px solid rgba(34,197,94,0.3); padding: 5px 14px;
-      font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em;
-      color: var(--ok); margin-bottom: 36px;
-      animation: fade-up 0.6s ease both;
-    }
-    .pulse-dot { width: 6px; height: 6px; background: var(--ok); border-radius: 50%; animation: pulse 2s infinite; }
+    .hero { position:relative; z-index:5; min-height:100vh; display:flex; align-items:center; justify-content:center;
+      padding:120px 48px 80px; text-align:center; }
+    .hero-inner { max-width:780px; }
+    .status-pill { display:inline-flex; align-items:center; gap:8px; border:1px solid rgba(34,197,94,0.3);
+      padding:5px 14px; font-family:var(--mono); font-size:0.6rem; letter-spacing:0.12em;
+      color:var(--ok); margin-bottom:36px; animation:fade-up 0.6s ease both; }
+    .pulse-dot { width:6px; height:6px; background:var(--ok); border-radius:50%; animation:pulse 2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
-
-    .hero-title {
-      font-family: var(--sans); font-size: clamp(2.4rem, 5.5vw, 4.2rem);
-      font-weight: 700; line-height: 1.06; letter-spacing: -0.03em;
-      color: var(--hi); margin-bottom: 24px;
-      animation: fade-up 0.6s 0.08s ease both;
-    }
-    .hero-title .hl { color: var(--acc); }
-    .hero-title .dim { color: var(--mid); }
-
-    .hero-sub {
-      font-size: 1rem; color: var(--mid); line-height: 1.75; max-width: 500px;
-      margin: 0 auto 48px;
-      animation: fade-up 0.6s 0.16s ease both;
-    }
-
-    .hero-actions {
-      display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;
-      margin-bottom: 80px;
-      animation: fade-up 0.6s 0.24s ease both;
-    }
-    .btn-lg { font-size: 0.75rem; padding: 12px 28px; }
-
-    /* Metrics strip */
-    .metrics-strip {
-      display: flex; align-items: center; justify-content: center; gap: 0;
-      border: 1px solid var(--bd); max-width: 540px; margin: 0 auto;
-      animation: fade-up 0.6s 0.32s ease both;
-    }
-    .metric {
-      flex: 1; padding: 16px 20px; text-align: center;
-      border-right: 1px solid var(--bd);
-    }
-    .metric:last-child { border-right: none; }
-    .metric-num { font-family: var(--mono); font-size: 1.4rem; font-weight: 700; color: var(--hi); display: block; }
-    .metric-lbl { font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.12em; color: var(--low); text-transform: uppercase; display: block; margin-top: 2px; }
-
+    .hero-title { font-size:clamp(2.4rem,5.5vw,4.2rem); font-weight:700; line-height:1.06;
+      letter-spacing:-0.03em; color:var(--hi); margin-bottom:24px; animation:fade-up 0.6s 0.08s ease both; }
+    .hero-title .hl { color:var(--acc); }
+    .hero-sub { font-size:1rem; color:var(--mid); line-height:1.75; max-width:500px;
+      margin:0 auto 48px; animation:fade-up 0.6s 0.16s ease both; }
+    .hero-actions { display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap;
+      margin-bottom:80px; animation:fade-up 0.6s 0.24s ease both; }
+    .btn-lg { font-size:0.75rem; padding:12px 28px; }
+    .metrics-strip { display:flex; align-items:center; justify-content:center;
+      border:1px solid var(--bd); max-width:540px; margin:0 auto; animation:fade-up 0.6s 0.32s ease both; }
+    .metric { flex:1; padding:16px 20px; text-align:center; border-right:1px solid var(--bd); }
+    .metric:last-child { border-right:none; }
+    .metric-num { font-family:var(--mono); font-size:1.4rem; font-weight:700; color:var(--hi); display:block; transition:color 0.3s; }
+    .metric-lbl { font-family:var(--mono); font-size:0.52rem; letter-spacing:0.12em; color:var(--low); text-transform:uppercase; display:block; margin-top:2px; }
     @keyframes fade-up { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 
-    /* ── ROLE CARDS ── */
-    .roles-section {
-      position: relative; z-index: 5;
-      max-width: 960px; margin: 0 auto; padding: 0 48px 100px;
-    }
-    .section-label {
-      font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.16em;
-      text-transform: uppercase; color: var(--low); margin-bottom: 6px;
-    }
-    .section-title {
-      font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 32px;
-    }
-    .roles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .role-card {
-      background: var(--bg1); border: 1px solid var(--bd);
-      padding: 36px; cursor: pointer; text-decoration: none; color: inherit;
-      display: block; position: relative; overflow: hidden;
-      transition: border-color 0.2s, background 0.2s;
-    }
-    .role-card::before {
-      content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-      width: 3px; background: transparent; transition: background 0.2s;
-    }
-    .role-card:hover { border-color: rgba(59,130,246,0.3); background: var(--bg2); }
-    .role-card:hover::before { background: var(--acc); }
-    .role-card-num {
-      font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.12em;
-      color: var(--low); margin-bottom: 24px; display: block;
-    }
-    .role-icon {
-      width: 40px; height: 40px; border: 1px solid var(--bd);
-      display: flex; align-items: center; justify-content: center; margin-bottom: 20px;
-      background: rgba(59,130,246,0.06);
-    }
-    .role-icon svg { width: 18px; height: 18px; stroke: var(--acc); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-    .role-name { font-size: 1.1rem; font-weight: 600; margin-bottom: 10px; letter-spacing: -0.01em; }
-    .role-desc { font-size: 0.82rem; color: var(--mid); line-height: 1.65; margin-bottom: 28px; }
-    .role-features { list-style: none; margin-bottom: 32px; }
-    .role-features li {
-      font-family: var(--mono); font-size: 0.65rem; color: var(--low);
-      padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.03);
-      display: flex; align-items: center; gap: 10px;
-    }
-    .role-features li:last-child { border: none; }
-    .role-features li::before { content: '→'; color: var(--acc); font-size: 0.62rem; flex-shrink: 0; }
-    .role-cta { font-family: var(--mono); font-size: 0.65rem; font-weight: 700; color: var(--acc); letter-spacing: 0.04em; }
+    .roles-section { position:relative; z-index:5; max-width:960px; margin:0 auto; padding:0 48px 100px; }
+    .section-label { font-family:var(--mono); font-size:0.58rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--low); margin-bottom:6px; }
+    .section-title { font-size:1.5rem; font-weight:600; letter-spacing:-0.02em; margin-bottom:32px; }
+    .roles-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .role-card { background:var(--bg1); border:1px solid var(--bd); padding:36px; cursor:pointer;
+      text-decoration:none; color:inherit; display:block; position:relative; overflow:hidden; transition:border-color 0.2s, background 0.2s; }
+    .role-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:transparent; transition:background 0.2s; }
+    .role-card:hover { border-color:rgba(59,130,246,0.3); background:var(--bg2); }
+    .role-card:hover::before { background:var(--acc); }
+    .role-card-num { font-family:var(--mono); font-size:0.58rem; letter-spacing:0.12em; color:var(--low); margin-bottom:24px; display:block; }
+    .role-icon { width:40px; height:40px; border:1px solid var(--bd); display:flex; align-items:center; justify-content:center; margin-bottom:20px; background:rgba(59,130,246,0.06); }
+    .role-icon svg { width:18px; height:18px; stroke:var(--acc); fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
+    .role-name { font-size:1.1rem; font-weight:600; margin-bottom:10px; letter-spacing:-0.01em; }
+    .role-desc { font-size:0.82rem; color:var(--mid); line-height:1.65; margin-bottom:28px; }
+    .role-features { list-style:none; margin-bottom:32px; }
+    .role-features li { font-family:var(--mono); font-size:0.65rem; color:var(--low);
+      padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.03); display:flex; align-items:center; gap:10px; }
+    .role-features li:last-child { border:none; }
+    .role-features li::before { content:'→'; color:var(--acc); font-size:0.62rem; flex-shrink:0; }
+    .role-cta { font-family:var(--mono); font-size:0.65rem; font-weight:700; color:var(--acc); letter-spacing:0.04em; }
 
-    /* ── FEATURES GRID ── */
-    .features-section {
-      position: relative; z-index: 5;
-      max-width: 960px; margin: 0 auto; padding: 0 48px 100px;
-    }
-    .feat-grid {
-      display: grid; grid-template-columns: repeat(3,1fr); gap: 1px;
-      background: var(--bd); border: 1px solid var(--bd);
-    }
-    .feat-cell { background: var(--bg); padding: 28px 24px; }
-    .feat-tag {
-      font-family: var(--mono); font-size: 0.55rem; font-weight: 700;
-      letter-spacing: 0.12em; text-transform: uppercase; color: var(--acc);
-      margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
-    }
-    .feat-tag::before { content: ''; display: block; width: 16px; height: 1px; background: var(--acc); }
-    .feat-name { font-size: 0.88rem; font-weight: 600; margin-bottom: 8px; }
-    .feat-desc { font-size: 0.75rem; color: var(--mid); line-height: 1.65; }
+    .features-section { position:relative; z-index:5; max-width:960px; margin:0 auto; padding:0 48px 100px; }
+    .feat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--bd); border:1px solid var(--bd); }
+    .feat-cell { background:var(--bg); padding:28px 24px; }
+    .feat-tag { font-family:var(--mono); font-size:0.55rem; font-weight:700; letter-spacing:0.12em;
+      text-transform:uppercase; color:var(--acc); margin-bottom:12px; display:flex; align-items:center; gap:6px; }
+    .feat-tag::before { content:''; display:block; width:16px; height:1px; background:var(--acc); }
+    .feat-name { font-size:0.88rem; font-weight:600; margin-bottom:8px; }
+    .feat-desc { font-size:0.75rem; color:var(--mid); line-height:1.65; }
 
-    /* ── FOOTER ── */
-    footer {
-      position: relative; z-index: 5;
-      border-top: 1px solid var(--bd); padding: 24px 48px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .footer-text { font-family: var(--mono); font-size: 0.58rem; color: var(--low); letter-spacing: 0.06em; }
+    footer { position:relative; z-index:5; border-top:1px solid var(--bd); padding:24px 48px;
+      display:flex; align-items:center; justify-content:space-between; }
+    .footer-text { font-family:var(--mono); font-size:0.58rem; color:var(--low); letter-spacing:0.06em; }
+    .pill { display:inline-block; font-family:var(--mono); font-size:0.55rem; font-weight:700; letter-spacing:0.1em; padding:2px 7px; border:1px solid; }
+    .pill-live { color:var(--ok); border-color:rgba(34,197,94,0.35); }
+    .pill-draft { color:var(--acc); border-color:rgba(59,130,246,0.35); }
 
-    /* ── LOGIN MODAL ── */
-    .modal-overlay {
-      position: fixed; inset: 0; z-index: 500;
-      background: rgba(4,6,12,0.9); backdrop-filter: blur(16px);
-      display: flex; align-items: center; justify-content: center; padding: 24px;
-      opacity: 0; pointer-events: none; transition: opacity 0.2s;
-    }
-    .modal-overlay.open { opacity: 1; pointer-events: all; }
-    .modal {
-      background: var(--bg1); border: 1px solid rgba(59,130,246,0.3);
-      padding: 40px; width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto;
-      transform: translateY(16px); transition: transform 0.2s;
-      position: relative;
-    }
-    .modal-overlay.open .modal { transform: translateY(0); }
-    .modal-accent { position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--acc); }
-    .modal-close {
-      position: absolute; top: 16px; right: 16px;
-      background: none; border: 1px solid var(--bd); color: var(--mid);
-      font-family: var(--mono); font-size: 0.58rem; padding: 3px 8px; cursor: pointer;
-      transition: all 0.15s;
-    }
-    .modal-close:hover { border-color: var(--danger); color: var(--danger); }
-    .modal-eyebrow { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.12em; color: var(--acc); margin-bottom: 6px; }
-    .modal-title { font-size: 1.3rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 4px; }
-    .modal-sub { font-size: 0.78rem; color: var(--mid); margin-bottom: 28px; line-height: 1.6; }
-    .hint-box {
-      background: var(--bg2); border: 1px solid var(--bd); padding: 12px 16px;
-      font-family: var(--mono); font-size: 0.62rem; color: var(--mid); line-height: 1.8;
-      margin-bottom: 24px;
-    }
-    .form-group { margin-bottom: 16px; }
-    .form-label { display: block; font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--low); margin-bottom: 6px; }
-    .field {
-      width: 100%; padding: 10px 14px; background: var(--bg); border: 1px solid var(--bd);
-      color: var(--hi); font-family: var(--sans); font-size: 0.875rem;
-      outline: none; transition: border-color 0.15s;
-    }
-    .field:focus { border-color: var(--acc); }
-    .field::placeholder { color: var(--low); }
-    .error-msg {
-      background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.25);
-      padding: 10px 14px; font-family: var(--mono); font-size: 0.68rem; color: var(--danger);
-      margin-bottom: 16px; display: none;
-    }
-    .error-msg.show { display: block; }
-    .modal-footer { margin-top: 20px; text-align: center; font-family: var(--mono); font-size: 0.62rem; color: var(--low); }
-    .modal-footer a { color: var(--acc); cursor: pointer; text-decoration: none; }
-    .modal-footer a:hover { text-decoration: underline; }
+    /* Modal */
+    .modal-overlay { position:fixed; inset:0; z-index:500; background:rgba(4,6,12,0.9); backdrop-filter:blur(16px);
+      display:flex; align-items:center; justify-content:center; padding:24px;
+      opacity:0; pointer-events:none; transition:opacity 0.2s; }
+    .modal-overlay.open { opacity:1; pointer-events:all; }
+    .modal { background:var(--bg1); border:1px solid rgba(59,130,246,0.3); padding:40px;
+      width:100%; max-width:400px; max-height:90vh; overflow-y:auto;
+      transform:translateY(16px); transition:transform 0.2s; position:relative; }
+    .modal-overlay.open .modal { transform:translateY(0); }
+    .modal-accent { position:absolute; top:0; left:0; right:0; height:2px; background:var(--acc); }
+    .modal-close { position:absolute; top:16px; right:16px; background:none; border:1px solid var(--bd);
+      color:var(--mid); font-family:var(--mono); font-size:0.58rem; padding:3px 8px; cursor:pointer; transition:all 0.15s; }
+    .modal-close:hover { border-color:var(--danger); color:var(--danger); }
+    .modal-eyebrow { font-family:var(--mono); font-size:0.58rem; letter-spacing:0.12em; color:var(--acc); margin-bottom:6px; }
+    .modal-title { font-size:1.3rem; font-weight:600; letter-spacing:-0.02em; margin-bottom:4px; }
+    .modal-sub { font-size:0.78rem; color:var(--mid); margin-bottom:28px; line-height:1.6; }
+    .hint-box { background:var(--bg2); border:1px solid var(--bd); padding:12px 16px;
+      font-family:var(--mono); font-size:0.62rem; color:var(--mid); line-height:1.8; margin-bottom:24px; }
+    .form-group { margin-bottom:16px; }
+    .form-label { display:block; font-family:var(--mono); font-size:0.58rem; letter-spacing:0.1em;
+      text-transform:uppercase; color:var(--low); margin-bottom:6px; }
+    .field { width:100%; padding:10px 14px; background:var(--bg); border:1px solid var(--bd);
+      color:var(--hi); font-family:var(--sans); font-size:0.875rem; outline:none; transition:border-color 0.15s; }
+    .field:focus { border-color:var(--acc); }
+    .field::placeholder { color:var(--low); }
+    .error-msg { background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.25);
+      padding:10px 14px; font-family:var(--mono); font-size:0.68rem; color:var(--danger);
+      margin-bottom:16px; display:none; }
+    .error-msg.show { display:block; }
+    .modal-footer { margin-top:20px; text-align:center; font-family:var(--mono); font-size:0.62rem; color:var(--low); }
+    .modal-footer a { color:var(--acc); cursor:pointer; text-decoration:none; }
+    .modal-footer a:hover { text-decoration:underline; }
 
-    /* ── DEV BANNER ── */
-    .dev-banner {
-      position: fixed; top: 56px; left: 0; right: 0; z-index: 90;
-      height: 26px; display: flex; align-items: center; justify-content: center; gap: 16px;
-      background: rgba(245,158,11,0.06); border-bottom: 1px solid rgba(245,158,11,0.15);
-      font-family: var(--mono); font-size: 0.58rem; color: var(--warn); letter-spacing: 0.08em;
-    }
-    .progress-track { width: 100px; height: 2px; background: var(--bd); }
-    .progress-fill { height: 100%; background: var(--warn); width: 75%; }
-
-    /* Pill labels */
-    .pill {
-      display: inline-block; font-family: var(--mono); font-size: 0.55rem; font-weight: 700;
-      letter-spacing: 0.1em; padding: 2px 7px; border: 1px solid;
-    }
-    .pill-live   { color: var(--ok);     border-color: rgba(34,197,94,0.35); }
-    .pill-draft  { color: var(--acc);    border-color: rgba(59,130,246,0.35); }
-    .pill-php    { color: #8892bf;       border-color: rgba(136,146,191,0.3); }
+    .dev-banner { position:fixed; top:56px; left:0; right:0; z-index:90; height:26px;
+      display:flex; align-items:center; justify-content:center; gap:16px;
+      background:rgba(34,197,94,0.06); border-bottom:1px solid rgba(34,197,94,0.15);
+      font-family:var(--mono); font-size:0.58rem; color:var(--ok); letter-spacing:0.08em; }
+    .progress-track { width:100px; height:2px; background:var(--bd); }
+    .progress-fill { height:100%; background:var(--ok); width:60%; }
   </style>
 </head>
 <body>
-
   <div class="dev-banner">
-    <span>BUILD v0.75 · MOCK DEFENSE READY</span>
+    <span>BUILD v2.0 · JWT AUTH · GRADING ENGINE · ANALYTICS</span>
     <div class="progress-track"><div class="progress-fill"></div></div>
-    <span style="color:var(--low)">Flask + OpenCV + SQLite · PWA Enabled</span>
+    <span style="color:var(--low)">Flask + OpenCV + SQLite · PWA</span>
   </div>
 
   <nav>
     <a class="nav-logo" href="#">
-      <div class="logo-mark">
-        <svg viewBox="0 0 12 14"><path d="M6 0L0 2.5v4.5C0 10.5 6 14 6 14s6-3.5 6-7V2.5L6 0z"/></svg>
-      </div>
+      <div class="logo-mark"><svg viewBox="0 0 12 14"><path d="M6 0L0 2.5v4.5C0 10.5 6 14 6 14s6-3.5 6-7V2.5L6 0z"/></svg></div>
       <span class="logo-name">EXAM<b>GUARD</b></span>
     </a>
     <div class="nav-center">
@@ -318,43 +177,21 @@
 
   <section class="hero">
     <div class="hero-inner">
-      <div class="status-pill">
-        <span class="pulse-dot"></span>
-        MONITORING SYSTEM ACTIVE · PWA ENABLED
-      </div>
-      <h1 class="hero-title">
-        Exam integrity,<br>
-        <span class="hl">verified in real time.</span>
-      </h1>
-      <p class="hero-sub">
-        Computer vision proctoring for online examinations. Behavioral insights for instructors — never automated verdicts.
-      </p>
+      <div class="status-pill"><span class="pulse-dot"></span> MONITORING SYSTEM ACTIVE · v2.0</div>
+      <h1 class="hero-title">Exam integrity,<br><span class="hl">verified in real time.</span></h1>
+      <p class="hero-sub">Computer vision proctoring with auto-grading, analytics, and audit trails. Behavioral insights for instructors — never automated verdicts.</p>
       <div class="hero-actions">
         <button class="btn btn-solid btn-lg" onclick="openModal('teacher')">
           Teacher Portal
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
         </button>
-        <button class="btn btn-ghost btn-lg" onclick="openModal('student')">
-          Take an Exam
-        </button>
+        <button class="btn btn-ghost btn-lg" onclick="openModal('student')">Take an Exam</button>
       </div>
       <div class="metrics-strip">
-        <div class="metric">
-          <span class="metric-num" id="m-sessions">—</span>
-          <span class="metric-lbl">Sessions</span>
-        </div>
-        <div class="metric">
-          <span class="metric-num" id="m-students">—</span>
-          <span class="metric-lbl">Students</span>
-        </div>
-        <div class="metric">
-          <span class="metric-num" id="m-exams">—</span>
-          <span class="metric-lbl">Exams</span>
-        </div>
-        <div class="metric">
-          <span class="metric-num" id="m-flags">—</span>
-          <span class="metric-lbl">Flags Logged</span>
-        </div>
+        <div class="metric"><span class="metric-num" id="m-sessions">—</span><span class="metric-lbl">Sessions</span></div>
+        <div class="metric"><span class="metric-num" id="m-students">—</span><span class="metric-lbl">Students</span></div>
+        <div class="metric"><span class="metric-num" id="m-exams">—</span><span class="metric-lbl">Exams</span></div>
+        <div class="metric"><span class="metric-num" id="m-flags">—</span><span class="metric-lbl">Flags Logged</span></div>
       </div>
     </div>
   </section>
@@ -365,33 +202,30 @@
     <div class="roles-grid">
       <a class="role-card" href="#" onclick="event.preventDefault(); openModal('teacher')">
         <span class="role-card-num">01 / INSTRUCTOR</span>
-        <div class="role-icon">
-          <svg viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="10" rx="1"/><path d="M5 14h6M8 12v2"/></svg>
-        </div>
+        <div class="role-icon"><svg viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="10" rx="1"/><path d="M5 14h6M8 12v2"/></svg></div>
         <div class="role-name">Teacher Portal</div>
-        <p class="role-desc">Create exams, manage students, monitor live sessions, and review detailed behavioral reports.</p>
+        <p class="role-desc">Create exams, manage students, monitor live sessions, and review detailed behavioral reports with analytics.</p>
         <ul class="role-features">
-          <li>Create & manage exam question banks</li>
-          <li>Live student grid monitoring</li>
-          <li>Real-time violation alerts via WebSocket</li>
+          <li>Create & manage exam question banks with auto-grading</li>
+          <li>Live student grid monitoring via WebSocket</li>
+          <li>Real-time violation alerts & risk scoring</li>
           <li>Full session reports (JSON + CSV export)</li>
-          <li>Persistent SQLite student database</li>
+          <li>Analytics dashboard — pass rates, risk distribution</li>
+          <li>Email report delivery to instructors</li>
         </ul>
         <div class="role-cta">Enter Teacher Portal →</div>
       </a>
       <a class="role-card" href="#" onclick="event.preventDefault(); openModal('student')">
         <span class="role-card-num">02 / EXAMINEE</span>
-        <div class="role-icon">
-          <svg viewBox="0 0 16 16"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg>
-        </div>
+        <div class="role-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg></div>
         <div class="role-name">Student Access</div>
-        <p class="role-desc">View assigned exams, complete them under fair webcam monitoring, see results after review.</p>
+        <p class="role-desc">View assigned exams, complete them under fair webcam monitoring, and see your graded results.</p>
         <ul class="role-features">
-          <li>View assigned & upcoming exams</li>
-          <li>Consent-first camera setup flow</li>
-          <li>Live environment feedback (lighting, face)</li>
+          <li>View assigned & upcoming scheduled exams</li>
+          <li>Consent-first camera + audio setup flow</li>
+          <li>Real-time environment feedback (lighting, face)</li>
+          <li>Auto-graded results after submission</li>
           <li>Transparent monitoring — no hidden recording</li>
-          <li>Results after instructor review</li>
         </ul>
         <div class="role-cta">Start Exam →</div>
       </a>
@@ -402,49 +236,24 @@
     <div class="section-label">DETECTION CAPABILITIES</div>
     <div class="section-title" style="margin-bottom:28px">What ExamGuard monitors</div>
     <div class="feat-grid">
-      <div class="feat-cell">
-        <div class="feat-tag">NO_FACE</div>
-        <div class="feat-name">Face Absence</div>
-        <p class="feat-desc">Flags when no face is detected for more than 5 consecutive seconds. High severity.</p>
-      </div>
-      <div class="feat-cell">
-        <div class="feat-tag">MULTIPLE_FACES</div>
-        <div class="feat-name">Multiple Persons</div>
-        <p class="feat-desc">Detects when more than one person appears in frame. Critical — immediate alert.</p>
-      </div>
-      <div class="feat-cell">
-        <div class="feat-tag">LOOK_AWAY</div>
-        <div class="feat-name">Gaze Deviation</div>
-        <p class="feat-desc">Eye landmark analysis tracks sustained off-screen gaze beyond 3 seconds.</p>
-      </div>
-      <div class="feat-cell">
-        <div class="feat-tag">TAB_SWITCH</div>
-        <div class="feat-name">Tab Switch</div>
-        <p class="feat-desc">Browser Visibility API detects navigation away from the exam tab. Immediate log.</p>
-      </div>
-      <div class="feat-cell">
-        <div class="feat-tag">POOR_LIGHTING</div>
-        <div class="feat-name">Lighting Quality</div>
-        <p class="feat-desc">OpenCV brightness + contrast analysis ensures conditions are adequate per frame.</p>
-      </div>
-      <div class="feat-cell">
-        <div class="feat-tag">RISK_SCORE</div>
-        <div class="feat-name">Risk Assessment</div>
-        <p class="feat-desc">Weighted behavioral scoring: Low / Medium / High. All flags require human review.</p>
-      </div>
+      <div class="feat-cell"><div class="feat-tag">NO_FACE</div><div class="feat-name">Face Absence</div><p class="feat-desc">Flags when no face is detected for more than 5 consecutive seconds. High severity.</p></div>
+      <div class="feat-cell"><div class="feat-tag">MULTIPLE_FACES</div><div class="feat-name">Multiple Persons</div><p class="feat-desc">Detects when more than one person appears in frame. Critical — immediate alert.</p></div>
+      <div class="feat-cell"><div class="feat-tag">LOOK_AWAY</div><div class="feat-name">Gaze Deviation</div><p class="feat-desc">Eye landmark analysis tracks sustained off-screen gaze beyond 3 seconds.</p></div>
+      <div class="feat-cell"><div class="feat-tag">TAB_SWITCH</div><div class="feat-name">Tab Switch</div><p class="feat-desc">Browser Visibility API detects navigation away from the exam tab. Immediate log.</p></div>
+      <div class="feat-cell"><div class="feat-tag">AUDIO_ANOMALY</div><div class="feat-name">Audio Monitoring</div><p class="feat-desc">Web Audio API detects sustained loud noise or speech patterns above threshold.</p></div>
+      <div class="feat-cell"><div class="feat-tag">RISK_SCORE</div><div class="feat-name">Risk Assessment</div><p class="feat-desc">Weighted behavioral scoring: Low / Medium / High. All flags require human review.</p></div>
     </div>
   </section>
 
   <footer>
-    <span class="footer-text">EXAMGUARD · FLASK + OPENCV + SQLITE · EDUCATIONAL USE ONLY · HUMAN REVIEW REQUIRED</span>
+    <span class="footer-text">EXAMGUARD v2.0 · FLASK + OPENCV + SQLITE · EDUCATIONAL USE ONLY · HUMAN REVIEW REQUIRED</span>
     <div style="display:flex;gap:8px">
-      <span class="pill pill-php">PYTHON</span>
+      <span class="pill">PYTHON</span>
       <span class="pill pill-live">PWA</span>
-      <span class="pill pill-draft">SQLite</span>
+      <span class="pill pill-draft">JWT</span>
     </div>
   </footer>
 
-  <!-- LOGIN MODAL -->
   <div class="modal-overlay" id="loginModal">
     <div class="modal">
       <div class="modal-accent"></div>
@@ -458,37 +267,33 @@
         student@school.edu / student123
       </div>
       <div class="error-msg" id="errorMsg"></div>
-      <div class="form-group">
-        <label class="form-label">Email</label>
-        <input type="email" class="field" id="loginEmail" placeholder="you@school.edu"/>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Password</label>
-        <input type="password" class="field" id="loginPassword" placeholder="••••••••"/>
-      </div>
-      <div class="form-group" id="nameGroup" style="display:none">
-        <label class="form-label">Full Name</label>
-        <input type="text" class="field" id="loginName" placeholder="Your full name"/>
-      </div>
-      <div class="form-group" id="sidGroup" style="display:none">
-        <label class="form-label">Student ID</label>
-        <input type="text" class="field" id="loginSid" placeholder="STU-001"/>
-      </div>
+      <div class="form-group"><label class="form-label">Email</label><input type="email" class="field" id="loginEmail" placeholder="you@school.edu"/></div>
+      <div class="form-group"><label class="form-label">Password</label><input type="password" class="field" id="loginPassword" placeholder="••••••••"/></div>
+      <div class="form-group" id="nameGroup" style="display:none"><label class="form-label">Full Name</label><input type="text" class="field" id="loginName" placeholder="Your full name"/></div>
+      <div class="form-group" id="sidGroup" style="display:none"><label class="form-label">Student ID</label><input type="text" class="field" id="loginSid" placeholder="STU-001"/></div>
       <button class="btn btn-solid" style="width:100%;justify-content:center;font-size:0.75rem;padding:12px" id="loginBtn" onclick="handleLogin()">Sign In</button>
-      <div class="modal-footer">
-        <span id="switchText">New here?</span>
-        <a id="switchLink" onclick="toggleRegister()"> Create account</a>
-      </div>
+      <div class="modal-footer"><span id="switchText">New here?</span> <a id="switchLink" onclick="toggleRegister()">Create account</a></div>
     </div>
   </div>
 
   <script>
-    // Load live stats
     fetch('/api/dashboard_stats').then(r=>r.json()).then(d=>{
-      document.getElementById('m-sessions').textContent = d.total_sessions || '0';
-      document.getElementById('m-students').textContent = d.total_students || '0';
-      document.getElementById('m-exams').textContent = d.total_exams || '0';
-      document.getElementById('m-flags').textContent = d.total_violations || '0';
+      const animate = (el, val) => {
+        let start = 0, end = val, dur = 800;
+        let startTime = null;
+        const step = ts => {
+          if (!startTime) startTime = ts;
+          const progress = Math.min((ts - startTime) / dur, 1);
+          el.textContent = Math.floor(progress * end);
+          if (progress < 1) requestAnimationFrame(step);
+          else el.textContent = end;
+        };
+        requestAnimationFrame(step);
+      };
+      animate(document.getElementById('m-sessions'), d.total_sessions || 0);
+      animate(document.getElementById('m-students'), d.total_students || 0);
+      animate(document.getElementById('m-exams'),    d.total_exams || 0);
+      animate(document.getElementById('m-flags'),    d.total_violations || 0);
     }).catch(()=>{});
 
     let currentRole = 'teacher', isRegister = false;
@@ -498,77 +303,64 @@
       const isT = role === 'teacher';
       document.getElementById('modalEyebrow').textContent = isT ? 'TEACHER ACCESS' : 'STUDENT ACCESS';
       document.getElementById('modalTitle').textContent = 'Sign In';
-      document.getElementById('modalSub').textContent = isT ? 'Access the ExamGuard teacher portal' : 'Sign in to view your assigned exams';
-      document.getElementById('loginEmail').value = isT ? 'teacher@school.edu' : 'student@school.edu';
+      document.getElementById('modalSub').textContent   = isT ? 'Access the ExamGuard teacher portal' : 'Sign in to view your assigned exams';
+      document.getElementById('loginEmail').value    = isT ? 'teacher@school.edu' : 'student@school.edu';
       document.getElementById('loginPassword').value = isT ? 'teacher123' : 'student123';
-      document.getElementById('demoHint').style.display = 'block';
+      document.getElementById('demoHint').style.display  = 'block';
       document.getElementById('nameGroup').style.display = 'none';
-      document.getElementById('sidGroup').style.display = 'none';
+      document.getElementById('sidGroup').style.display  = 'none';
       document.getElementById('errorMsg').classList.remove('show');
-      document.getElementById('switchText').textContent = isT ? 'New teacher?' : 'New student?';
-      document.getElementById('switchLink').textContent = ' Create account';
-      document.getElementById('loginBtn').textContent = 'Sign In';
+      document.getElementById('switchText').textContent  = isT ? 'New teacher?' : 'New student?';
+      document.getElementById('switchLink').textContent  = 'Create account';
+      document.getElementById('loginBtn').textContent    = 'Sign In';
       document.getElementById('loginModal').classList.add('open');
     }
-
     function closeModal() { document.getElementById('loginModal').classList.remove('open'); }
-
     function toggleRegister() {
       isRegister = !isRegister;
       const isT = currentRole === 'teacher';
-      document.getElementById('modalTitle').textContent = isRegister ? 'Create Account' : 'Sign In';
-      document.getElementById('loginBtn').textContent = isRegister ? 'Create Account' : 'Sign In';
-      document.getElementById('nameGroup').style.display = isRegister ? 'block' : 'none';
-      document.getElementById('sidGroup').style.display = (isRegister && !isT) ? 'block' : 'none';
-      document.getElementById('demoHint').style.display = isRegister ? 'none' : 'block';
-      document.getElementById('switchLink').textContent = isRegister ? ' Back to login' : ' Create account';
-      document.getElementById('switchText').textContent = isRegister ? 'Already registered?' : (isT ? 'New teacher?' : 'New student?');
+      document.getElementById('modalTitle').textContent   = isRegister ? 'Create Account' : 'Sign In';
+      document.getElementById('loginBtn').textContent     = isRegister ? 'Create Account' : 'Sign In';
+      document.getElementById('nameGroup').style.display  = isRegister ? 'block' : 'none';
+      document.getElementById('sidGroup').style.display   = (isRegister && !isT) ? 'block' : 'none';
+      document.getElementById('demoHint').style.display   = isRegister ? 'none' : 'block';
+      document.getElementById('switchLink').textContent   = isRegister ? 'Back to login' : 'Create account';
+      document.getElementById('switchText').textContent   = isRegister ? 'Already registered?' : (isT ? 'New teacher?' : 'New student?');
     }
-
-    function handleLogin() {
+    async function handleLogin() {
       const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
       if (!email || !password) { showError('Please fill in all fields.'); return; }
       const btn = document.getElementById('loginBtn');
-      btn.textContent = isRegister ? 'Creating...' : 'Signing in...';
-      btn.disabled = true;
-      fetch('/api/login', {
-        method: 'POST', headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({
-          email, password, role: currentRole, register: isRegister,
-          name: document.getElementById('loginName').value,
-          student_id: document.getElementById('loginSid').value
-        })
-      }).then(r=>r.json()).then(data=>{
+      btn.textContent = isRegister ? 'Creating...' : 'Signing in...'; btn.disabled = true;
+      try {
+        const data = await fetch('/api/login', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({ email, password, role:currentRole, register:isRegister,
+            name: document.getElementById('loginName').value,
+            student_id: document.getElementById('loginSid').value })
+        }).then(r=>r.json());
         if (data.success) {
+          // Store JWT token
+          if (data.token) localStorage.setItem('eg_token', data.token);
+          localStorage.setItem('eg_role', currentRole);
+          localStorage.setItem('eg_name', data.name || email);
           window.location.href = currentRole === 'teacher' ? '/teacher/dashboard' : '/student/dashboard';
         } else {
           showError(data.error || 'Invalid credentials.');
-          btn.textContent = isRegister ? 'Create Account' : 'Sign In';
-          btn.disabled = false;
+          btn.textContent = isRegister ? 'Create Account' : 'Sign In'; btn.disabled = false;
         }
-      }).catch(()=>{
+      } catch(e) {
         window.location.href = currentRole === 'teacher' ? '/teacher/dashboard' : '/student/dashboard';
-      });
+      }
     }
-
-    function showError(msg) {
-      const el = document.getElementById('errorMsg');
-      el.textContent = msg; el.classList.add('show');
-    }
-
-    document.getElementById('loginModal').addEventListener('click', e => {
-      if (e.target === document.getElementById('loginModal')) closeModal();
-    });
+    function showError(msg) { const el=document.getElementById('errorMsg'); el.textContent=msg; el.classList.add('show'); }
+    document.getElementById('loginModal').addEventListener('click', e => { if(e.target===document.getElementById('loginModal')) closeModal(); });
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') closeModal();
       if (e.key === 'Enter' && document.getElementById('loginModal').classList.contains('open')) handleLogin();
     });
-
-    // PWA Service Worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/static/sw.js').catch(()=>{});
-    }
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/static/sw.js').catch(()=>{});
   </script>
 </body>
 </html>
