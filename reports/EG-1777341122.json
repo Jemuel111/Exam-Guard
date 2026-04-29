@@ -1,0 +1,49 @@
+{
+  "session_id": "EG-1777341122",
+  "student_name": "Juan dela Cruz",
+  "exam_id": "4",
+  "exam_date": "2026-04-28",
+  "start_time": "09:52:02",
+  "end_time": "09:52:36",
+  "duration_minutes": 0.57,
+  "total_violations": 3,
+  "violations": [
+    {
+      "timestamp": "09:52:10",
+      "elapsed_seconds": 8.5,
+      "type": "AUDIO_ANOMALY",
+      "details": "Suspicious audio: 99 dB",
+      "severity": "medium"
+    },
+    {
+      "timestamp": "09:52:20",
+      "elapsed_seconds": 18.1,
+      "type": "LOOK_AWAY",
+      "details": "Looking away for 3s",
+      "severity": "medium"
+    },
+    {
+      "timestamp": "09:52:22",
+      "elapsed_seconds": 20.5,
+      "type": "AUDIO_ANOMALY",
+      "details": "Suspicious audio: 100 dB",
+      "severity": "medium"
+    }
+  ],
+  "stats": {
+    "total_frames": 21,
+    "no_face_frames": 3,
+    "multiple_face_frames": 0,
+    "look_away_frames": 10,
+    "tab_switches": 0,
+    "audio_alerts": 2,
+    "face_absence_events": 0,
+    "multiple_face_events": 0,
+    "look_away_events": 1
+  },
+  "risk_assessment": {
+    "level": "High",
+    "score": 34.0,
+    "color": "#ef4444"
+  }
+}

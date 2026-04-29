@@ -151,6 +151,40 @@
       font-family:var(--mono); font-size:0.58rem; color:var(--ok); letter-spacing:0.08em; }
     .progress-track { width:100px; height:2px; background:var(--bd); }
     .progress-fill { height:100%; background:var(--ok); width:60%; }
+    .password-wrapper {
+  position: relative;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  padding-right: 42px;
+}
+
+.toggle-eye {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.toggle-eye svg {
+  width: 16px;
+  height: 16px;
+  stroke: var(--low);
+  fill: none;
+  stroke-width: 1.8;
+  transition: 0.15s;
+}
+
+.toggle-eye:hover svg {
+  stroke: var(--hi);
+}
   </style>
 </head>
 <body>
@@ -268,7 +302,28 @@
       </div>
       <div class="error-msg" id="errorMsg"></div>
       <div class="form-group"><label class="form-label">Email</label><input type="email" class="field" id="loginEmail" placeholder="you@school.edu"/></div>
-      <div class="form-group"><label class="form-label">Password</label><input type="password" class="field" id="loginPassword" placeholder="••••••••"/></div>
+      <div class="form-group">
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="password-wrapper">
+            <input type="password" class="field" id="loginPassword" placeholder="••••••••"/>
+            
+            <span class="toggle-eye" onclick="togglePassword()">
+              <!-- Eye icon -->
+              <svg id="eyeOpen" viewBox="0 0 24 24">
+                <path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+        
+              <!-- Eye off icon -->
+              <svg id="eyeClosed" viewBox="0 0 24 24" style="display:none;">
+                <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-6 0-10-7-10-7a21.77 21.77 0 0 1 5.06-5.94"/>
+                <path d="M1 1l22 22"/>
+                <path d="M9.9 4.24A10.94 10.94 0 0 1 12 5c6 0 10 7 10 7a21.77 21.77 0 0 1-4.24 5.27"/>
+              </svg>
+            </span>
+          </div>
+        </div>
       <div class="form-group" id="nameGroup" style="display:none"><label class="form-label">Full Name</label><input type="text" class="field" id="loginName" placeholder="Your full name"/></div>
       <div class="form-group" id="sidGroup" style="display:none"><label class="form-label">Student ID</label><input type="text" class="field" id="loginSid" placeholder="STU-001"/></div>
       <button class="btn btn-solid" style="width:100%;justify-content:center;font-size:0.75rem;padding:12px" id="loginBtn" onclick="handleLogin()">Sign In</button>
@@ -361,6 +416,21 @@
       if (e.key === 'Enter' && document.getElementById('loginModal').classList.contains('open')) handleLogin();
     });
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('/static/sw.js').catch(()=>{});
+    function togglePassword() {
+  const input = document.getElementById('loginPassword');
+  const eyeOpen = document.getElementById('eyeOpen');
+  const eyeClosed = document.getElementById('eyeClosed');
+
+  if (input.type === 'password') {
+    input.type = 'text';
+    eyeOpen.style.display = 'none';
+    eyeClosed.style.display = 'block';
+  } else {
+    input.type = 'password';
+    eyeOpen.style.display = 'block';
+    eyeClosed.style.display = 'none';
+  }
+}
   </script>
 </body>
 </html>

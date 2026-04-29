@@ -1,0 +1,4 @@
+timestamp,elapsed_seconds,type,details,severity
+09:52:10,8.5,AUDIO_ANOMALY,Suspicious audio: 99 dB,medium
+09:52:20,18.1,LOOK_AWAY,Looking away for 3s,medium
+09:52:22,20.5,AUDIO_ANOMALY,Suspicious audio: 100 dB,medium
