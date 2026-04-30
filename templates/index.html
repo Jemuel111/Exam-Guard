@@ -359,8 +359,6 @@
       document.getElementById('modalEyebrow').textContent = isT ? 'TEACHER ACCESS' : 'STUDENT ACCESS';
       document.getElementById('modalTitle').textContent = 'Sign In';
       document.getElementById('modalSub').textContent   = isT ? 'Access the ExamGuard teacher portal' : 'Sign in to view your assigned exams';
-      document.getElementById('loginEmail').value    = isT ? 'teacher@school.edu' : 'student@school.edu';
-      document.getElementById('loginPassword').value = isT ? 'teacher123' : 'student123';
       document.getElementById('demoHint').style.display  = 'block';
       document.getElementById('nameGroup').style.display = 'none';
       document.getElementById('sidGroup').style.display  = 'none';
@@ -369,6 +367,7 @@
       document.getElementById('switchLink').textContent  = 'Create account';
       document.getElementById('loginBtn').textContent    = 'Sign In';
       document.getElementById('loginModal').classList.add('open');
+      document.getElementById('demoHint').style.display = 'none'; // always hidden
     }
     function closeModal() { document.getElementById('loginModal').classList.remove('open'); }
     function toggleRegister() {
@@ -406,8 +405,10 @@
           btn.textContent = isRegister ? 'Create Account' : 'Sign In'; btn.disabled = false;
         }
       } catch(e) {
-        window.location.href = currentRole === 'teacher' ? '/teacher/dashboard' : '/student/dashboard';
-      }
+  showError('Connection error. Please try again.');
+  btn.textContent = isRegister ? 'Create Account' : 'Sign In';
+  btn.disabled = false;
+}
     }
     function showError(msg) { const el=document.getElementById('errorMsg'); el.textContent=msg; el.classList.add('show'); }
     document.getElementById('loginModal').addEventListener('click', e => { if(e.target===document.getElementById('loginModal')) closeModal(); });

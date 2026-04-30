@@ -1,16 +1,7 @@
+# -*- coding: utf-8 -*-
 """
-ExamGuard v2.1 — Main application
+ExamGuard v2.1 - Main application
 Clean factory pattern, blueprints, SocketIO, download routes, report routes.
-
-FIXES:
-- Version string in logger.info was "v3.0" but logs showed "v2.1" — unified
-  to v2.1 to match the actual feature set and log output.
-- config import now references 'config' (the corrected filename); the original
-  file was named "config,py" with a comma, which would cause ImportError on
-  case-sensitive filesystems (Linux/production).
-- submission data included in report fallback from DB now also pulls
-  breakdown from exam_submissions.answers JSON so the report page can
-  display score details rather than just "See JSON".
 """
 import json
 import logging
@@ -19,14 +10,14 @@ import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-from flask import Flask, render_template, jsonify, send_file, request
-from flask_socketio import SocketIO, join_room, emit
+from flask import Flask, render_template, jsonify, send_file, request, redirect
 
-from config import config as app_configs   # FIX: was "config,py" — now "config.py"
+from config import config as app_configs
 from database import get_db, close_db, init_db
 from blueprints import bp_auth, bp_exams, bp_sessions, bp_admin
+from auth import get_token_from_request, verify_token
 
-# ── Logging ───────────────────────────────────────────────────────────────────
+# Logging
 os.makedirs('logs',    exist_ok=True)
 os.makedirs('reports', exist_ok=True)
 
@@ -40,11 +31,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# ── App factory ───────────────────────────────────────────────────────────────
+# App factory
 app = Flask(__name__)
 env = os.environ.get('FLASK_ENV', 'development')
 app.config.from_object(app_configs.get(env, app_configs['default']))
 
+from flask_socketio import SocketIO, join_room, emit
 socketio = SocketIO(app, cors_allowed_origins='*', async_mode='threading')
 
 # Register blueprints
@@ -57,7 +49,7 @@ app.register_blueprint(bp_admin)
 app.teardown_appcontext(close_db)
 
 
-# ── Page routes ───────────────────────────────────────────────────────────────
+# Page routes
 
 @app.get('/')
 def index():
@@ -66,34 +58,48 @@ def index():
 
 @app.get('/exam')
 def exam():
+    token = get_token_from_request()
+    info  = verify_token(token)
+    if not info:
+        return redirect('/')
     return render_template('exam.html')
 
 
 @app.get('/teacher/dashboard')
 def teacher_dashboard():
+    token = get_token_from_request()
+    info  = verify_token(token)
+    if not info or info.get('role') != 'teacher':
+        return redirect('/')
     return render_template('teacher_dashboard.html')
 
 
 @app.get('/student/dashboard')
 def student_dashboard():
+    token = get_token_from_request()
+    info  = verify_token(token)
+    if not info or info.get('role') != 'student':
+        return redirect('/')
     return render_template('student_dashboard.html')
 
 
 @app.get('/report/<session_id>')
 def report(session_id):
+    token = get_token_from_request()
+    info  = verify_token(token)
+    if not info:
+        return redirect('/')
+
     from blueprints.sessions_bp import exam_sessions
-    # Check in-memory first
     session = exam_sessions.get(session_id)
     if session:
         return render_template('report.html', report=session.generate_report())
 
-    # Check saved JSON
     path = f'reports/{session_id}.json'
     if os.path.exists(path):
         with open(path) as f:
             return render_template('report.html', report=json.load(f))
 
-    # DB fallback
     db  = get_db()
     row = db.execute('SELECT * FROM sessions WHERE session_id=?', (session_id,)).fetchone()
     if row:
@@ -105,11 +111,9 @@ def report(session_id):
             'SELECT * FROM exam_submissions WHERE session_id=?', (session_id,)
         ).fetchone()
 
-        # FIX: include submission score details so report.html can render them
         sub_data = None
         if sub:
             sub_data = dict(sub)
-            # Parse breakdown from stored answers JSON if available
             try:
                 sub_data['answers'] = json.loads(sub['answers'] or '{}')
             except (json.JSONDecodeError, TypeError):
@@ -139,7 +143,7 @@ def report(session_id):
     return 'Session not found', 404
 
 
-# ── Static assets ─────────────────────────────────────────────────────────────
+# Static assets
 
 @app.get('/static/sw.js')
 def service_worker():
@@ -151,7 +155,7 @@ def manifest():
     return app.send_static_file('manifest.json')
 
 
-# ── Downloads ─────────────────────────────────────────────────────────────────
+# Downloads
 
 @app.get('/api/download_report/<session_id>')
 def download_report(session_id):
@@ -181,15 +185,15 @@ def download_csv(session_id):
                      download_name=f'{session_id}_violations.csv')
 
 
-# ── Email helper ──────────────────────────────────────────────────────────────
+# Email helper
 
-def send_report_email(to_email: str, student_name: str, session_id: str, report: dict):
+def send_report_email(to_email, student_name, session_id, report):
     if not app.config.get('MAIL_USER'):
         return
     try:
         risk = report['risk_assessment']
         msg  = MIMEMultipart('alternative')
-        msg['Subject'] = f'ExamGuard Report — {student_name} — {risk["level"]} Risk'
+        msg['Subject'] = f'ExamGuard Report - {student_name} - {risk["level"]} Risk'
         msg['From']    = app.config['MAIL_USER']
         msg['To']      = to_email
         body = f"""
@@ -210,7 +214,7 @@ def send_report_email(to_email: str, student_name: str, session_id: str, report:
         logger.warning('Email send failed: %s', e)
 
 
-# ── SocketIO ──────────────────────────────────────────────────────────────────
+# SocketIO
 
 @socketio.on('join')
 def on_join(data):
@@ -226,11 +230,11 @@ def on_join_teacher(data):
     emit('joined', {'room': 'teachers'})
 
 
-# ── Entry point ───────────────────────────────────────────────────────────────
+# Entry point
 
 if __name__ == '__main__':
     with app.app_context():
         init_db(app)
-    logger.info('ExamGuard v2.1 starting at http://localhost:5000')  # FIX: was v3.0
+    logger.info('ExamGuard v2.1 starting at http://localhost:5000')
     socketio.run(app, debug=app.config.get('DEBUG', True),
                  host='0.0.0.0', port=5000)
