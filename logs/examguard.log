@@ -1083,3 +1083,235 @@
 2026-04-30 21:38:48,452 [INFO] 127.0.0.1 - - [30/Apr/2026 21:38:48] "GET /api/dashboard_stats HTTP/1.1" 200 -
 2026-04-30 21:38:48,500 [INFO] 127.0.0.1 - - [30/Apr/2026 21:38:48] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
 2026-04-30 21:38:48,511 [INFO] 127.0.0.1 - - [30/Apr/2026 21:38:48] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-04-30 21:44:02,518 [INFO] Database initialized ✓
+2026-04-30 21:44:02,519 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-04-30 21:44:26,090 [INFO] Database initialized ✓
+2026-04-30 21:44:26,091 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-04-30 21:44:26,314 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.3:5000
+2026-04-30 21:44:26,314 [INFO] [33mPress CTRL+C to quit[0m
+2026-04-30 21:44:26,314 [INFO]  * Restarting with stat
+2026-04-30 21:44:26,844 [INFO] Database initialized ✓
+2026-04-30 21:44:26,844 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-04-30 21:44:26,870 [WARNING]  * Debugger is active!
+2026-04-30 21:44:26,878 [INFO]  * Debugger PIN: 130-332-172
+2026-04-30 21:44:33,740 [INFO] 127.0.0.1 - - [30/Apr/2026 21:44:33] "GET / HTTP/1.1" 200 -
+2026-04-30 21:44:33,764 [INFO] 127.0.0.1 - - [30/Apr/2026 21:44:33] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-04-30 21:44:33,970 [INFO] 127.0.0.1 - - [30/Apr/2026 21:44:33] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-04-30 21:44:34,211 [INFO] 127.0.0.1 - - [30/Apr/2026 21:44:34] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-04-30 21:45:01,574 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:01] "POST /api/login HTTP/1.1" 200 -
+2026-04-30 21:45:01,597 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:01] "[32mGET /student/dashboard HTTP/1.1[0m" 302 -
+2026-04-30 21:45:01,605 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:01] "GET / HTTP/1.1" 200 -
+2026-04-30 21:45:01,640 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:01] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-04-30 21:45:01,693 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:01] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-04-30 21:45:01,703 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:01] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-04-30 21:45:10,421 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:10] "POST /api/login HTTP/1.1" 200 -
+2026-04-30 21:45:10,445 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:10] "[32mGET /student/dashboard HTTP/1.1[0m" 302 -
+2026-04-30 21:45:10,456 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:10] "GET / HTTP/1.1" 200 -
+2026-04-30 21:45:10,493 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-04-30 21:45:10,544 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:10] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-04-30 21:45:10,557 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:10] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-04-30 21:45:22,200 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:22] "POST /api/login HTTP/1.1" 200 -
+2026-04-30 21:45:22,210 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:22] "[32mGET /student/dashboard HTTP/1.1[0m" 302 -
+2026-04-30 21:45:22,215 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:22] "GET / HTTP/1.1" 200 -
+2026-04-30 21:45:22,236 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:22] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-04-30 21:45:22,280 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:22] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-04-30 21:45:22,293 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:22] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-04-30 21:45:56,311 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:56] "POST /api/login HTTP/1.1" 200 -
+2026-04-30 21:45:56,331 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:56] "[32mGET /student/dashboard HTTP/1.1[0m" 302 -
+2026-04-30 21:45:56,341 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:56] "GET / HTTP/1.1" 200 -
+2026-04-30 21:45:56,379 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:56] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-04-30 21:45:56,428 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:56] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-04-30 21:45:56,438 [INFO] 127.0.0.1 - - [30/Apr/2026 21:45:56] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-04-30 21:46:09,144 [WARNING] Failed login attempt for student004@school.edu.ph from 127.0.0.1
+2026-04-30 21:46:09,145 [INFO] 127.0.0.1 - - [30/Apr/2026 21:46:09] "[31m[1mPOST /api/login HTTP/1.1[0m" 401 -
+2026-04-30 21:46:14,475 [INFO] 127.0.0.1 - - [30/Apr/2026 21:46:14] "POST /api/login HTTP/1.1" 200 -
+2026-04-30 21:46:14,487 [INFO] 127.0.0.1 - - [30/Apr/2026 21:46:14] "[32mGET /student/dashboard HTTP/1.1[0m" 302 -
+2026-04-30 21:46:14,493 [INFO] 127.0.0.1 - - [30/Apr/2026 21:46:14] "GET / HTTP/1.1" 200 -
+2026-04-30 21:46:14,509 [INFO] 127.0.0.1 - - [30/Apr/2026 21:46:14] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-04-30 21:46:14,555 [INFO] 127.0.0.1 - - [30/Apr/2026 21:46:14] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-04-30 21:46:14,565 [INFO] 127.0.0.1 - - [30/Apr/2026 21:46:14] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-01 21:26:23,409 [INFO] Database initialized ✓
+2026-05-01 21:26:23,410 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-01 21:26:23,712 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.3:5000
+2026-05-01 21:26:23,712 [INFO] [33mPress CTRL+C to quit[0m
+2026-05-01 21:26:23,713 [INFO]  * Restarting with stat
+2026-05-01 21:26:24,357 [INFO] Database initialized ✓
+2026-05-01 21:26:24,357 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-01 21:26:24,394 [WARNING]  * Debugger is active!
+2026-05-01 21:26:24,413 [INFO]  * Debugger PIN: 130-332-172
+2026-05-01 21:26:31,313 [INFO] 127.0.0.1 - - [01/May/2026 21:26:31] "GET / HTTP/1.1" 200 -
+2026-05-01 21:26:31,371 [INFO] 127.0.0.1 - - [01/May/2026 21:26:31] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:26:31,666 [INFO] 127.0.0.1 - - [01/May/2026 21:26:31] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-05-01 21:26:31,681 [INFO] 127.0.0.1 - - [01/May/2026 21:26:31] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-01 21:26:31,695 [INFO] 127.0.0.1 - - [01/May/2026 21:26:31] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-01 21:26:46,491 [INFO] 127.0.0.1 - - [01/May/2026 21:26:46] "POST /api/login HTTP/1.1" 200 -
+2026-05-01 21:26:46,607 [INFO] 127.0.0.1 - - [01/May/2026 21:26:46] "[32mGET /student/dashboard HTTP/1.1[0m" 302 -
+2026-05-01 21:26:46,617 [INFO] 127.0.0.1 - - [01/May/2026 21:26:46] "GET / HTTP/1.1" 200 -
+2026-05-01 21:26:46,679 [INFO] 127.0.0.1 - - [01/May/2026 21:26:46] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:26:46,738 [INFO] 127.0.0.1 - - [01/May/2026 21:26:46] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-01 21:26:46,748 [INFO] 127.0.0.1 - - [01/May/2026 21:26:46] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-01 21:30:15,415 [INFO] 127.0.0.1 - - [01/May/2026 21:30:15] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-01 21:51:35,969 [INFO] Database initialized ✓
+2026-05-01 21:51:35,970 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-01 21:51:36,194 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.3:5000
+2026-05-01 21:51:36,194 [INFO] [33mPress CTRL+C to quit[0m
+2026-05-01 21:51:36,194 [INFO]  * Restarting with stat
+2026-05-01 21:51:36,704 [INFO] Database initialized ✓
+2026-05-01 21:51:36,704 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-01 21:51:36,729 [WARNING]  * Debugger is active!
+2026-05-01 21:51:36,737 [INFO]  * Debugger PIN: 130-332-172
+2026-05-01 21:51:44,831 [INFO] 127.0.0.1 - - [01/May/2026 21:51:44] "GET / HTTP/1.1" 200 -
+2026-05-01 21:51:44,853 [INFO] 127.0.0.1 - - [01/May/2026 21:51:44] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:51:45,135 [INFO] 127.0.0.1 - - [01/May/2026 21:51:45] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-01 21:51:45,435 [INFO] 127.0.0.1 - - [01/May/2026 21:51:45] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-01 21:52:19,172 [INFO] 127.0.0.1 - - [01/May/2026 21:52:19] "POST /api/login HTTP/1.1" 200 -
+2026-05-01 21:52:19,204 [INFO] 127.0.0.1 - - [01/May/2026 21:52:19] "GET /student/dashboard HTTP/1.1" 200 -
+2026-05-01 21:52:19,270 [INFO] 127.0.0.1 - - [01/May/2026 21:52:19] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-01 21:52:19,271 [INFO] 127.0.0.1 - - [01/May/2026 21:52:19] "GET /api/student/exams HTTP/1.1" 200 -
+2026-05-01 21:52:39,854 [INFO] 127.0.0.1 - - [01/May/2026 21:52:39] "GET / HTTP/1.1" 200 -
+2026-05-01 21:52:39,886 [INFO] 127.0.0.1 - - [01/May/2026 21:52:39] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:52:39,924 [INFO] 127.0.0.1 - - [01/May/2026 21:52:39] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-01 21:52:39,934 [INFO] 127.0.0.1 - - [01/May/2026 21:52:39] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-01 21:53:13,395 [INFO] 127.0.0.1 - - [01/May/2026 21:53:13] "POST /api/login HTTP/1.1" 200 -
+2026-05-01 21:53:13,438 [INFO] 127.0.0.1 - - [01/May/2026 21:53:13] "GET /teacher/dashboard HTTP/1.1" 200 -
+2026-05-01 21:53:13,510 [INFO] 127.0.0.1 - - [01/May/2026 21:53:13] "GET /socket.io/?EIO=4&transport=polling&t=PtZq9yL HTTP/1.1" 200 -
+2026-05-01 21:53:13,517 [INFO] 127.0.0.1 - - [01/May/2026 21:53:13] "GET /api/exams HTTP/1.1" 200 -
+2026-05-01 21:53:13,519 [INFO] 127.0.0.1 - - [01/May/2026 21:53:13] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-01 21:53:13,523 [INFO] 127.0.0.1 - - [01/May/2026 21:53:13] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:53:13,576 [INFO] 127.0.0.1 - - [01/May/2026 21:53:13] "POST /socket.io/?EIO=4&transport=polling&t=PtZq9zU&sid=eV-KgZTRnRfYESjzAAAA HTTP/1.1" 200 -
+2026-05-01 21:53:13,580 [INFO] 127.0.0.1 - - [01/May/2026 21:53:13] "GET /socket.io/?EIO=4&transport=polling&t=PtZq9zX&sid=eV-KgZTRnRfYESjzAAAA HTTP/1.1" 200 -
+2026-05-01 21:53:13,611 [INFO] 127.0.0.1 - - [01/May/2026 21:53:13] "GET /socket.io/?EIO=4&transport=polling&t=PtZq9z_&sid=eV-KgZTRnRfYESjzAAAA HTTP/1.1" 200 -
+2026-05-01 21:53:13,617 [INFO] 127.0.0.1 - - [01/May/2026 21:53:13] "POST /socket.io/?EIO=4&transport=polling&t=PtZq9-0&sid=eV-KgZTRnRfYESjzAAAA HTTP/1.1" 200 -
+2026-05-01 21:53:20,784 [INFO] 127.0.0.1 - - [01/May/2026 21:53:20] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-01 21:53:23,061 [INFO] 127.0.0.1 - - [01/May/2026 21:53:23] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-01 21:53:23,511 [INFO] 127.0.0.1 - - [01/May/2026 21:53:23] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-01 21:53:23,513 [INFO] 127.0.0.1 - - [01/May/2026 21:53:23] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:53:30,202 [INFO] 127.0.0.1 - - [01/May/2026 21:53:30] "GET /api/students HTTP/1.1" 200 -
+2026-05-01 21:53:33,515 [INFO] 127.0.0.1 - - [01/May/2026 21:53:33] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-01 21:53:33,517 [INFO] 127.0.0.1 - - [01/May/2026 21:53:33] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:53:43,515 [INFO] 127.0.0.1 - - [01/May/2026 21:53:43] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-01 21:53:43,516 [INFO] 127.0.0.1 - - [01/May/2026 21:53:43] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:53:53,514 [INFO] 127.0.0.1 - - [01/May/2026 21:53:53] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-01 21:53:53,515 [INFO] 127.0.0.1 - - [01/May/2026 21:53:53] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:54:03,513 [INFO] 127.0.0.1 - - [01/May/2026 21:54:03] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:54:03,515 [INFO] 127.0.0.1 - - [01/May/2026 21:54:03] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-01 21:54:13,507 [INFO] 127.0.0.1 - - [01/May/2026 21:54:13] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:54:13,510 [INFO] 127.0.0.1 - - [01/May/2026 21:54:13] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-01 21:54:23,507 [INFO] 127.0.0.1 - - [01/May/2026 21:54:23] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:54:23,510 [INFO] 127.0.0.1 - - [01/May/2026 21:54:23] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-01 21:54:33,511 [INFO] 127.0.0.1 - - [01/May/2026 21:54:33] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:54:33,514 [INFO] 127.0.0.1 - - [01/May/2026 21:54:33] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-01 21:54:43,518 [INFO] 127.0.0.1 - - [01/May/2026 21:54:43] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-01 21:54:43,520 [INFO] 127.0.0.1 - - [01/May/2026 21:54:43] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:54:53,510 [INFO] 127.0.0.1 - - [01/May/2026 21:54:53] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:54:53,514 [INFO] 127.0.0.1 - - [01/May/2026 21:54:53] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-01 21:54:57,576 [INFO] 127.0.0.1 - - [01/May/2026 21:54:57] "POST /api/exams HTTP/1.1" 200 -
+2026-05-01 21:54:57,594 [INFO] 127.0.0.1 - - [01/May/2026 21:54:57] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:54:57,597 [INFO] 127.0.0.1 - - [01/May/2026 21:54:57] "GET /api/exams HTTP/1.1" 200 -
+2026-05-01 21:55:03,505 [INFO] 127.0.0.1 - - [01/May/2026 21:55:03] "GET /api/analytics/daily_sessions HTTP/1.1" 200 -
+2026-05-01 21:55:03,523 [INFO] 127.0.0.1 - - [01/May/2026 21:55:03] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-01 21:55:03,524 [INFO] 127.0.0.1 - - [01/May/2026 21:55:03] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:55:03,526 [INFO] 127.0.0.1 - - [01/May/2026 21:55:03] "GET /api/analytics/risk_distribution HTTP/1.1" 200 -
+2026-05-01 21:55:03,536 [INFO] 127.0.0.1 - - [01/May/2026 21:55:03] "GET /api/analytics/violations_by_type HTTP/1.1" 200 -
+2026-05-01 21:55:10,326 [INFO] 127.0.0.1 - - [01/May/2026 21:55:10] "POST /api/logout HTTP/1.1" 200 -
+2026-05-01 21:55:10,342 [INFO] 127.0.0.1 - - [01/May/2026 21:55:10] "GET / HTTP/1.1" 200 -
+2026-05-01 21:55:10,352 [INFO] 127.0.0.1 - - [01/May/2026 21:55:10] "GET / HTTP/1.1" 200 -
+2026-05-01 21:55:10,384 [INFO] 127.0.0.1 - - [01/May/2026 21:55:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:55:10,408 [INFO] 127.0.0.1 - - [01/May/2026 21:55:10] "GET /socket.io/?EIO=4&transport=websocket&sid=eV-KgZTRnRfYESjzAAAA HTTP/1.1" 200 -
+2026-05-01 21:55:10,444 [INFO] 127.0.0.1 - - [01/May/2026 21:55:10] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-01 21:55:10,454 [INFO] 127.0.0.1 - - [01/May/2026 21:55:10] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-01 21:55:25,571 [INFO] 127.0.0.1 - - [01/May/2026 21:55:25] "POST /api/login HTTP/1.1" 200 -
+2026-05-01 21:55:25,601 [INFO] 127.0.0.1 - - [01/May/2026 21:55:25] "GET /student/dashboard HTTP/1.1" 200 -
+2026-05-01 21:55:25,665 [INFO] 127.0.0.1 - - [01/May/2026 21:55:25] "GET /api/student/exams HTTP/1.1" 200 -
+2026-05-01 21:55:25,668 [INFO] 127.0.0.1 - - [01/May/2026 21:55:25] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-01 21:55:38,376 [INFO] 127.0.0.1 - - [01/May/2026 21:55:38] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-05-01 21:55:44,776 [INFO] 127.0.0.1 - - [01/May/2026 21:55:44] "GET /exam?name=Sam%20Andrei&duration=60&exam_id=4&token=2303eb51f20e6305f59b6eb001be5badfc5326b697aa1e0b9bf56b0d8ea12580 HTTP/1.1" 200 -
+2026-05-01 21:55:44,819 [INFO] 127.0.0.1 - - [01/May/2026 21:55:44] "GET /api/exams/4 HTTP/1.1" 200 -
+2026-05-01 21:55:46,691 [INFO] Session started: EG-1777643746 for Sam Andrei (student_id=8)
+2026-05-01 21:55:46,693 [INFO] 127.0.0.1 - - [01/May/2026 21:55:46] "POST /api/start_session HTTP/1.1" 200 -
+2026-05-01 21:55:47,001 [INFO] 127.0.0.1 - - [01/May/2026 21:55:47] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-05-01 21:55:47,762 [WARNING] [EG-1777643746] VIOLATION: AUDIO_ANOMALY — Suspicious audio: 95 dB
+2026-05-01 21:55:47,763 [INFO] 127.0.0.1 - - [01/May/2026 21:55:47] "POST /api/audio_alert HTTP/1.1" 200 -
+2026-05-01 21:55:48,417 [INFO] 127.0.0.1 - - [01/May/2026 21:55:48] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:55:49,747 [INFO] 127.0.0.1 - - [01/May/2026 21:55:49] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:55:51,246 [INFO] 127.0.0.1 - - [01/May/2026 21:55:51] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:55:52,747 [INFO] 127.0.0.1 - - [01/May/2026 21:55:52] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:55:54,236 [WARNING] [EG-1777643746] VIOLATION: NO_FACE — No face detected for 6s
+2026-05-01 21:55:54,238 [INFO] 127.0.0.1 - - [01/May/2026 21:55:54] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:55:55,741 [INFO] 127.0.0.1 - - [01/May/2026 21:55:55] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:55:57,249 [INFO] 127.0.0.1 - - [01/May/2026 21:55:57] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:55:58,735 [INFO] 127.0.0.1 - - [01/May/2026 21:55:58] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:00,244 [INFO] 127.0.0.1 - - [01/May/2026 21:56:00] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:01,748 [INFO] 127.0.0.1 - - [01/May/2026 21:56:01] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:03,244 [INFO] 127.0.0.1 - - [01/May/2026 21:56:03] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:04,778 [INFO] 127.0.0.1 - - [01/May/2026 21:56:04] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:06,268 [INFO] 127.0.0.1 - - [01/May/2026 21:56:06] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:07,776 [INFO] 127.0.0.1 - - [01/May/2026 21:56:07] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:09,270 [INFO] 127.0.0.1 - - [01/May/2026 21:56:09] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:10,776 [INFO] 127.0.0.1 - - [01/May/2026 21:56:10] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:12,274 [INFO] 127.0.0.1 - - [01/May/2026 21:56:12] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:13,746 [INFO] 127.0.0.1 - - [01/May/2026 21:56:13] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:15,247 [INFO] 127.0.0.1 - - [01/May/2026 21:56:15] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:16,688 [WARNING] [EG-1777643746] VIOLATION: TAB_SWITCH — Student switched browser tab or window
+2026-05-01 21:56:16,690 [INFO] 127.0.0.1 - - [01/May/2026 21:56:16] "POST /api/tab_switch HTTP/1.1" 200 -
+2026-05-01 21:56:16,749 [INFO] 127.0.0.1 - - [01/May/2026 21:56:16] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:18,350 [INFO] 127.0.0.1 - - [01/May/2026 21:56:18] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:19,757 [INFO] 127.0.0.1 - - [01/May/2026 21:56:19] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:21,250 [INFO] 127.0.0.1 - - [01/May/2026 21:56:21] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:22,767 [INFO] 127.0.0.1 - - [01/May/2026 21:56:22] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:24,243 [INFO] 127.0.0.1 - - [01/May/2026 21:56:24] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:25,739 [WARNING] [EG-1777643746] VIOLATION: NO_FACE — No face detected for 6s
+2026-05-01 21:56:25,740 [INFO] 127.0.0.1 - - [01/May/2026 21:56:25] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:27,272 [INFO] 127.0.0.1 - - [01/May/2026 21:56:27] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:28,746 [INFO] 127.0.0.1 - - [01/May/2026 21:56:28] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:30,281 [INFO] 127.0.0.1 - - [01/May/2026 21:56:30] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:31,743 [INFO] 127.0.0.1 - - [01/May/2026 21:56:31] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:33,281 [INFO] 127.0.0.1 - - [01/May/2026 21:56:33] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:34,745 [INFO] 127.0.0.1 - - [01/May/2026 21:56:34] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:36,244 [INFO] 127.0.0.1 - - [01/May/2026 21:56:36] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:37,744 [INFO] 127.0.0.1 - - [01/May/2026 21:56:37] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:39,251 [INFO] 127.0.0.1 - - [01/May/2026 21:56:39] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:40,746 [INFO] 127.0.0.1 - - [01/May/2026 21:56:40] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:42,242 [INFO] 127.0.0.1 - - [01/May/2026 21:56:42] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:43,756 [INFO] 127.0.0.1 - - [01/May/2026 21:56:43] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:45,232 [INFO] 127.0.0.1 - - [01/May/2026 21:56:45] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:46,738 [INFO] 127.0.0.1 - - [01/May/2026 21:56:46] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:48,244 [INFO] 127.0.0.1 - - [01/May/2026 21:56:48] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:49,766 [INFO] 127.0.0.1 - - [01/May/2026 21:56:49] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-01 21:56:52,333 [INFO] Submission graded: EG-1777643746 — 100.0%
+2026-05-01 21:56:52,335 [INFO] 127.0.0.1 - - [01/May/2026 21:56:52] "POST /api/submit_exam HTTP/1.1" 200 -
+2026-05-01 21:56:52,349 [INFO] Session ended: EG-1777643746, flags: 4
+2026-05-01 21:56:52,351 [INFO] 127.0.0.1 - - [01/May/2026 21:56:52] "POST /api/end_session HTTP/1.1" 200 -
+2026-05-01 21:56:52,406 [INFO] 127.0.0.1 - - [01/May/2026 21:56:52] "GET /report/EG-1777643746 HTTP/1.1" 200 -
+2026-05-01 21:56:52,443 [INFO] 127.0.0.1 - - [01/May/2026 21:56:52] "POST /api/tab_switch HTTP/1.1" 200 -
+2026-05-01 21:57:06,489 [INFO] 127.0.0.1 - - [01/May/2026 21:57:06] "GET / HTTP/1.1" 200 -
+2026-05-01 21:57:06,512 [INFO] 127.0.0.1 - - [01/May/2026 21:57:06] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:57:06,551 [INFO] 127.0.0.1 - - [01/May/2026 21:57:06] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-01 21:57:06,564 [INFO] 127.0.0.1 - - [01/May/2026 21:57:06] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-01 21:57:30,677 [INFO] 127.0.0.1 - - [01/May/2026 21:57:30] "POST /api/login HTTP/1.1" 200 -
+2026-05-01 21:57:30,705 [INFO] 127.0.0.1 - - [01/May/2026 21:57:30] "GET /teacher/dashboard HTTP/1.1" 200 -
+2026-05-01 21:57:30,752 [INFO] 127.0.0.1 - - [01/May/2026 21:57:30] "GET /socket.io/?EIO=4&transport=polling&t=PtZr8ls HTTP/1.1" 200 -
+2026-05-01 21:57:30,785 [INFO] 127.0.0.1 - - [01/May/2026 21:57:30] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-01 21:57:30,787 [INFO] 127.0.0.1 - - [01/May/2026 21:57:30] "GET /api/exams HTTP/1.1" 200 -
+2026-05-01 21:57:30,795 [INFO] 127.0.0.1 - - [01/May/2026 21:57:30] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:57:30,852 [INFO] 127.0.0.1 - - [01/May/2026 21:57:30] "POST /socket.io/?EIO=4&transport=polling&t=PtZr8nS&sid=Qif8vW8iHM_TgqF2AAAC HTTP/1.1" 200 -
+2026-05-01 21:57:30,857 [INFO] 127.0.0.1 - - [01/May/2026 21:57:30] "GET /socket.io/?EIO=4&transport=polling&t=PtZr8nV&sid=Qif8vW8iHM_TgqF2AAAC HTTP/1.1" 200 -
+2026-05-01 21:57:30,880 [INFO] 127.0.0.1 - - [01/May/2026 21:57:30] "GET /socket.io/?EIO=4&transport=polling&t=PtZr8nt&sid=Qif8vW8iHM_TgqF2AAAC HTTP/1.1" 200 -
+2026-05-01 21:57:38,182 [INFO] 127.0.0.1 - - [01/May/2026 21:57:38] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-01 21:57:40,756 [INFO] 127.0.0.1 - - [01/May/2026 21:57:40] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:57:40,758 [INFO] 127.0.0.1 - - [01/May/2026 21:57:40] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-01 21:57:40,793 [INFO] 127.0.0.1 - - [01/May/2026 21:57:40] "GET /report/EG-1777643746 HTTP/1.1" 200 -
+2026-05-01 21:57:40,892 [INFO] 127.0.0.1 - - [01/May/2026 21:57:40] "GET /socket.io/?EIO=4&transport=websocket&sid=Qif8vW8iHM_TgqF2AAAC HTTP/1.1" 200 -
+2026-05-01 21:57:50,917 [INFO] 127.0.0.1 - - [01/May/2026 21:57:50] "GET / HTTP/1.1" 200 -
+2026-05-01 21:57:50,941 [INFO] 127.0.0.1 - - [01/May/2026 21:57:50] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-01 21:57:50,992 [INFO] 127.0.0.1 - - [01/May/2026 21:57:50] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-01 21:57:51,000 [INFO] 127.0.0.1 - - [01/May/2026 21:57:51] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -

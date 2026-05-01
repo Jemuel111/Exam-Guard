@@ -1,0 +1,5 @@
+timestamp,elapsed_seconds,type,details,severity
+21:55:47,1.1,AUDIO_ANOMALY,Suspicious audio: 95 dB,medium
+21:55:54,7.5,NO_FACE,No face detected for 6s,high
+21:56:16,30.0,TAB_SWITCH,Student switched browser tab or window,high
+21:56:25,39.1,NO_FACE,No face detected for 6s,high

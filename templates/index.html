@@ -395,12 +395,17 @@
             student_id: document.getElementById('loginSid').value })
         }).then(r=>r.json());
         if (data.success) {
-          // Store JWT token
-          if (data.token) localStorage.setItem('eg_token', data.token);
-          localStorage.setItem('eg_role', currentRole);
-          localStorage.setItem('eg_name', data.name || email);
-          window.location.href = currentRole === 'teacher' ? '/teacher/dashboard' : '/student/dashboard';
-        } else {
+  // Store JWT token in both localStorage and cookie
+  if (data.token) {
+    localStorage.setItem('eg_token', data.token);
+    // Set cookie so server can read it on page navigation
+    // max-age=28800 = 8 hours (matches your JWT expiry)
+    document.cookie = `eg_token=${data.token}; path=/; max-age=28800; SameSite=Lax`;
+  }
+  localStorage.setItem('eg_role', currentRole);
+  localStorage.setItem('eg_name', data.name || email);
+  window.location.href = currentRole === 'teacher' ? '/teacher/dashboard' : '/student/dashboard';
+} else {
           showError(data.error || 'Invalid credentials.');
           btn.textContent = isRegister ? 'Create Account' : 'Sign In'; btn.disabled = false;
         }
@@ -431,6 +436,12 @@
     eyeOpen.style.display = 'block';
     eyeClosed.style.display = 'none';
   }
+  function logout() {
+  localStorage.clear();
+  // Clear the cookie
+  document.cookie = 'eg_token=; path=/; max-age=0';
+  window.location.href = '/';
+}
 }
   </script>
 </body>
