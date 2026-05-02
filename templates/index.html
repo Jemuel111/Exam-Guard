@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="#080c14"/>
+  <meta name="theme-color" content="#f0f4fa"/>
   <link rel="manifest" href="/manifest.json"/>
   <title>ExamGuard — Secure Online Examination</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -11,27 +11,34 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
+      --bg:#f0f4fa; --bg1:#ffffff; --bg2:#e8edf5;
+      --acc:#2563eb; --ok:#16a34a; --warn:#d97706; --danger:#dc2626;
+      --hi:#0f172a; --mid:#475569; --low:#94a3b8;
+      --bd:rgba(15,23,42,0.1);
+      --sans:'Space Grotesk',sans-serif; --mono:'Space Mono',monospace;
+    }
+    [data-theme="dark"] {
       --bg:#080c14; --bg1:#0d1424; --bg2:#111c30;
       --acc:#3b82f6; --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
       --hi:#f0f6ff; --mid:#6b84a8; --low:#2d4060;
       --bd:rgba(255,255,255,0.06);
-      --sans:'Space Grotesk',sans-serif; --mono:'Space Mono',monospace;
     }
     html { scroll-behavior:smooth; }
     body { font-family:var(--sans); background:var(--bg); color:var(--hi); min-height:100vh; overflow-x:hidden; -webkit-font-smoothing:antialiased; }
     body::before { content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
-      background-image: linear-gradient(rgba(59,130,246,0.04) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(59,130,246,0.04) 1px,transparent 1px);
+      background-image: linear-gradient(rgba(37,99,235,0.04) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(37,99,235,0.04) 1px,transparent 1px);
       background-size:52px 52px; }
     body::after { content:''; position:fixed; top:-200px; left:50%; transform:translateX(-50%);
       width:800px; height:600px;
-      background:radial-gradient(ellipse,rgba(59,130,246,0.12) 0%,transparent 70%);
+      background:radial-gradient(ellipse,rgba(37,99,235,0.07) 0%,transparent 70%);
       z-index:0; pointer-events:none; }
 
     nav { position:fixed; top:0; left:0; right:0; z-index:100; height:56px;
       display:flex; align-items:center; justify-content:space-between; padding:0 48px;
-      background:rgba(8,12,20,0.85); backdrop-filter:blur(20px);
+      background:rgba(240,244,250,0.92); backdrop-filter:blur(20px);
       border-bottom:1px solid var(--bd); }
+    [data-theme="dark"] nav { background:rgba(8,12,20,0.85); }
     .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
     .logo-mark { width:28px; height:28px; background:var(--acc); display:flex; align-items:center; justify-content:center;
       clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); }
@@ -42,19 +49,25 @@
     .nav-link { font-family:var(--mono); font-size:0.65rem; letter-spacing:0.06em;
       color:var(--mid); padding:6px 14px; text-decoration:none; border:1px solid transparent; transition:all 0.15s; }
     .nav-link:hover { color:var(--hi); border-color:var(--bd); }
-    .nav-right { display:flex; gap:8px; }
+    .nav-right { display:flex; gap:8px; align-items:center; }
     .btn { font-family:var(--mono); font-size:0.68rem; letter-spacing:0.04em; font-weight:700;
       padding:8px 20px; border:1px solid; cursor:pointer; text-decoration:none;
       display:inline-flex; align-items:center; gap:8px; transition:all 0.15s; background:none; }
     .btn-ghost { color:var(--mid); border-color:var(--bd); }
-    .btn-ghost:hover { color:var(--hi); border-color:rgba(255,255,255,0.15); background:rgba(255,255,255,0.03); }
+    .btn-ghost:hover { color:var(--hi); border-color:var(--acc); background:rgba(37,99,235,0.05); }
     .btn-solid { color:#fff; background:var(--acc); border-color:var(--acc); }
-    .btn-solid:hover { background:#2563eb; border-color:#2563eb; }
+    .btn-solid:hover { background:#1d4ed8; border-color:#1d4ed8; }
+
+    /* Dark mode toggle */
+    .theme-toggle { background:none; border:1px solid var(--bd); color:var(--mid); cursor:pointer;
+      padding:6px 10px; display:flex; align-items:center; gap:5px; font-family:var(--mono); font-size:0.6rem;
+      transition:all 0.15s; }
+    .theme-toggle:hover { color:var(--hi); border-color:var(--acc); }
 
     .hero { position:relative; z-index:5; min-height:100vh; display:flex; align-items:center; justify-content:center;
       padding:120px 48px 80px; text-align:center; }
     .hero-inner { max-width:780px; }
-    .status-pill { display:inline-flex; align-items:center; gap:8px; border:1px solid rgba(34,197,94,0.3);
+    .status-pill { display:inline-flex; align-items:center; gap:8px; border:1px solid rgba(22,163,74,0.3);
       padding:5px 14px; font-family:var(--mono); font-size:0.6rem; letter-spacing:0.12em;
       color:var(--ok); margin-bottom:36px; animation:fade-up 0.6s ease both; }
     .pulse-dot { width:6px; height:6px; background:var(--ok); border-radius:50%; animation:pulse 2s infinite; }
@@ -68,7 +81,8 @@
       margin-bottom:80px; animation:fade-up 0.6s 0.24s ease both; }
     .btn-lg { font-size:0.75rem; padding:12px 28px; }
     .metrics-strip { display:flex; align-items:center; justify-content:center;
-      border:1px solid var(--bd); max-width:540px; margin:0 auto; animation:fade-up 0.6s 0.32s ease both; }
+      border:1px solid var(--bd); max-width:540px; margin:0 auto; animation:fade-up 0.6s 0.32s ease both;
+      background:var(--bg1); }
     .metric { flex:1; padding:16px 20px; text-align:center; border-right:1px solid var(--bd); }
     .metric:last-child { border-right:none; }
     .metric-num { font-family:var(--mono); font-size:1.4rem; font-weight:700; color:var(--hi); display:block; transition:color 0.3s; }
@@ -82,23 +96,23 @@
     .role-card { background:var(--bg1); border:1px solid var(--bd); padding:36px; cursor:pointer;
       text-decoration:none; color:inherit; display:block; position:relative; overflow:hidden; transition:border-color 0.2s, background 0.2s; }
     .role-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:transparent; transition:background 0.2s; }
-    .role-card:hover { border-color:rgba(59,130,246,0.3); background:var(--bg2); }
+    .role-card:hover { border-color:rgba(37,99,235,0.3); background:var(--bg2); }
     .role-card:hover::before { background:var(--acc); }
     .role-card-num { font-family:var(--mono); font-size:0.58rem; letter-spacing:0.12em; color:var(--low); margin-bottom:24px; display:block; }
-    .role-icon { width:40px; height:40px; border:1px solid var(--bd); display:flex; align-items:center; justify-content:center; margin-bottom:20px; background:rgba(59,130,246,0.06); }
+    .role-icon { width:40px; height:40px; border:1px solid var(--bd); display:flex; align-items:center; justify-content:center; margin-bottom:20px; background:rgba(37,99,235,0.06); }
     .role-icon svg { width:18px; height:18px; stroke:var(--acc); fill:none; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; }
     .role-name { font-size:1.1rem; font-weight:600; margin-bottom:10px; letter-spacing:-0.01em; }
     .role-desc { font-size:0.82rem; color:var(--mid); line-height:1.65; margin-bottom:28px; }
     .role-features { list-style:none; margin-bottom:32px; }
     .role-features li { font-family:var(--mono); font-size:0.65rem; color:var(--low);
-      padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.03); display:flex; align-items:center; gap:10px; }
+      padding:8px 0; border-bottom:1px solid var(--bd); display:flex; align-items:center; gap:10px; }
     .role-features li:last-child { border:none; }
     .role-features li::before { content:'→'; color:var(--acc); font-size:0.62rem; flex-shrink:0; }
     .role-cta { font-family:var(--mono); font-size:0.65rem; font-weight:700; color:var(--acc); letter-spacing:0.04em; }
 
     .features-section { position:relative; z-index:5; max-width:960px; margin:0 auto; padding:0 48px 100px; }
     .feat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--bd); border:1px solid var(--bd); }
-    .feat-cell { background:var(--bg); padding:28px 24px; }
+    .feat-cell { background:var(--bg1); padding:28px 24px; }
     .feat-tag { font-family:var(--mono); font-size:0.55rem; font-weight:700; letter-spacing:0.12em;
       text-transform:uppercase; color:var(--acc); margin-bottom:12px; display:flex; align-items:center; gap:6px; }
     .feat-tag::before { content:''; display:block; width:16px; height:1px; background:var(--acc); }
@@ -106,20 +120,23 @@
     .feat-desc { font-size:0.75rem; color:var(--mid); line-height:1.65; }
 
     footer { position:relative; z-index:5; border-top:1px solid var(--bd); padding:24px 48px;
-      display:flex; align-items:center; justify-content:space-between; }
+      display:flex; align-items:center; justify-content:space-between; background:var(--bg1); }
     .footer-text { font-family:var(--mono); font-size:0.58rem; color:var(--low); letter-spacing:0.06em; }
     .pill { display:inline-block; font-family:var(--mono); font-size:0.55rem; font-weight:700; letter-spacing:0.1em; padding:2px 7px; border:1px solid; }
-    .pill-live { color:var(--ok); border-color:rgba(34,197,94,0.35); }
-    .pill-draft { color:var(--acc); border-color:rgba(59,130,246,0.35); }
+    .pill-live { color:var(--ok); border-color:rgba(22,163,74,0.35); }
+    .pill-draft { color:var(--acc); border-color:rgba(37,99,235,0.35); }
 
     /* Modal */
-    .modal-overlay { position:fixed; inset:0; z-index:500; background:rgba(4,6,12,0.9); backdrop-filter:blur(16px);
+    .modal-overlay { position:fixed; inset:0; z-index:500; background:rgba(15,23,42,0.6); backdrop-filter:blur(16px);
       display:flex; align-items:center; justify-content:center; padding:24px;
       opacity:0; pointer-events:none; transition:opacity 0.2s; }
+    [data-theme="dark"] .modal-overlay { background:rgba(4,6,12,0.9); }
     .modal-overlay.open { opacity:1; pointer-events:all; }
-    .modal { background:var(--bg1); border:1px solid rgba(59,130,246,0.3); padding:40px;
+    .modal { background:var(--bg1); border:1px solid var(--bd); padding:40px;
       width:100%; max-width:400px; max-height:90vh; overflow-y:auto;
-      transform:translateY(16px); transition:transform 0.2s; position:relative; }
+      transform:translateY(16px); transition:transform 0.2s; position:relative;
+      box-shadow: 0 20px 60px rgba(15,23,42,0.15); }
+    [data-theme="dark"] .modal { box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
     .modal-overlay.open .modal { transform:translateY(0); }
     .modal-accent { position:absolute; top:0; left:0; right:0; height:2px; background:var(--acc); }
     .modal-close { position:absolute; top:16px; right:16px; background:none; border:1px solid var(--bd);
@@ -133,11 +150,11 @@
     .form-group { margin-bottom:16px; }
     .form-label { display:block; font-family:var(--mono); font-size:0.58rem; letter-spacing:0.1em;
       text-transform:uppercase; color:var(--low); margin-bottom:6px; }
-    .field { width:100%; padding:10px 14px; background:var(--bg); border:1px solid var(--bd);
+    .field { width:100%; padding:10px 14px; background:var(--bg2); border:1px solid var(--bd);
       color:var(--hi); font-family:var(--sans); font-size:0.875rem; outline:none; transition:border-color 0.15s; }
     .field:focus { border-color:var(--acc); }
     .field::placeholder { color:var(--low); }
-    .error-msg { background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.25);
+    .error-msg { background:rgba(220,38,38,0.06); border:1px solid rgba(220,38,38,0.25);
       padding:10px 14px; font-family:var(--mono); font-size:0.68rem; color:var(--danger);
       margin-bottom:16px; display:none; }
     .error-msg.show { display:block; }
@@ -147,44 +164,15 @@
 
     .dev-banner { position:fixed; top:56px; left:0; right:0; z-index:90; height:26px;
       display:flex; align-items:center; justify-content:center; gap:16px;
-      background:rgba(34,197,94,0.06); border-bottom:1px solid rgba(34,197,94,0.15);
+      background:rgba(22,163,74,0.06); border-bottom:1px solid rgba(22,163,74,0.15);
       font-family:var(--mono); font-size:0.58rem; color:var(--ok); letter-spacing:0.08em; }
     .progress-track { width:100px; height:2px; background:var(--bd); }
     .progress-fill { height:100%; background:var(--ok); width:60%; }
-    .password-wrapper {
-  position: relative;
-}
-
-.password-wrapper {
-  position: relative;
-}
-
-.password-wrapper input {
-  padding-right: 42px;
-}
-
-.toggle-eye {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-.toggle-eye svg {
-  width: 16px;
-  height: 16px;
-  stroke: var(--low);
-  fill: none;
-  stroke-width: 1.8;
-  transition: 0.15s;
-}
-
-.toggle-eye:hover svg {
-  stroke: var(--hi);
-}
+    .password-wrapper { position: relative; }
+    .password-wrapper input { padding-right: 42px; }
+    .toggle-eye { position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; display:flex; align-items:center; }
+    .toggle-eye svg { width:16px; height:16px; stroke:var(--low); fill:none; stroke-width:1.8; transition:0.15s; }
+    .toggle-eye:hover svg { stroke:var(--hi); }
   </style>
 </head>
 <body>
@@ -204,6 +192,10 @@
       <a href="#roles" class="nav-link">ACCESS</a>
     </div>
     <div class="nav-right">
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" title="Toggle dark mode">
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.5 3.5l1.4 1.4M11.1 11.1l1.4 1.4M3.5 12.5l1.4-1.4M11.1 4.9l1.4-1.4"/><circle cx="8" cy="8" r="3"/></svg>
+        <span id="themeLabel">Dark</span>
+      </button>
       <button class="btn btn-ghost" onclick="openModal('student')">Student</button>
       <button class="btn btn-solid" onclick="openModal('teacher')">Teacher Portal</button>
     </div>
@@ -307,23 +299,13 @@
           <label class="form-label">Password</label>
           <div class="password-wrapper">
             <input type="password" class="field" id="loginPassword" placeholder="••••••••"/>
-            
             <span class="toggle-eye" onclick="togglePassword()">
-              <!-- Eye icon -->
-              <svg id="eyeOpen" viewBox="0 0 24 24">
-                <path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6z"/>
-                <circle cx="12" cy="12" r="3"/>
-              </svg>
-        
-              <!-- Eye off icon -->
-              <svg id="eyeClosed" viewBox="0 0 24 24" style="display:none;">
-                <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-6 0-10-7-10-7a21.77 21.77 0 0 1 5.06-5.94"/>
-                <path d="M1 1l22 22"/>
-                <path d="M9.9 4.24A10.94 10.94 0 0 1 12 5c6 0 10 7 10 7a21.77 21.77 0 0 1-4.24 5.27"/>
-              </svg>
+              <svg id="eyeOpen" viewBox="0 0 24 24"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg id="eyeClosed" viewBox="0 0 24 24" style="display:none;"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-6 0-10-7-10-7a21.77 21.77 0 0 1 5.06-5.94"/><path d="M1 1l22 22"/><path d="M9.9 4.24A10.94 10.94 0 0 1 12 5c6 0 10 7 10 7a21.77 21.77 0 0 1-4.24 5.27"/></svg>
             </span>
           </div>
         </div>
+      </div>
       <div class="form-group" id="nameGroup" style="display:none"><label class="form-label">Full Name</label><input type="text" class="field" id="loginName" placeholder="Your full name"/></div>
       <div class="form-group" id="sidGroup" style="display:none"><label class="form-label">Student ID</label><input type="text" class="field" id="loginSid" placeholder="STU-001"/></div>
       <button class="btn btn-solid" style="width:100%;justify-content:center;font-size:0.75rem;padding:12px" id="loginBtn" onclick="handleLogin()">Sign In</button>
@@ -332,6 +314,23 @@
   </div>
 
   <script>
+    // Theme toggle
+    function toggleTheme() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      document.getElementById('themeLabel').textContent = isDark ? 'Dark' : 'Light';
+      localStorage.setItem('eg_theme', isDark ? 'light' : 'dark');
+    }
+    // Restore saved theme
+    const savedTheme = localStorage.getItem('eg_theme') || 'light';
+    if (savedTheme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.addEventListener('DOMContentLoaded', () => {
+        const lbl = document.getElementById('themeLabel');
+        if (lbl) lbl.textContent = 'Light';
+      });
+    }
+
     fetch('/api/dashboard_stats').then(r=>r.json()).then(d=>{
       const animate = (el, val) => {
         let start = 0, end = val, dur = 800;
@@ -367,7 +366,7 @@
       document.getElementById('switchLink').textContent  = 'Create account';
       document.getElementById('loginBtn').textContent    = 'Sign In';
       document.getElementById('loginModal').classList.add('open');
-      document.getElementById('demoHint').style.display = 'none'; // always hidden
+      document.getElementById('demoHint').style.display = 'none';
     }
     function closeModal() { document.getElementById('loginModal').classList.remove('open'); }
     function toggleRegister() {
@@ -395,25 +394,22 @@
             student_id: document.getElementById('loginSid').value })
         }).then(r=>r.json());
         if (data.success) {
-  // Store JWT token in both localStorage and cookie
-  if (data.token) {
-    localStorage.setItem('eg_token', data.token);
-    // Set cookie so server can read it on page navigation
-    // max-age=28800 = 8 hours (matches your JWT expiry)
-    document.cookie = `eg_token=${data.token}; path=/; max-age=28800; SameSite=Lax`;
-  }
-  localStorage.setItem('eg_role', currentRole);
-  localStorage.setItem('eg_name', data.name || email);
-  window.location.href = currentRole === 'teacher' ? '/teacher/dashboard' : '/student/dashboard';
-} else {
+          if (data.token) {
+            localStorage.setItem('eg_token', data.token);
+            document.cookie = `eg_token=${data.token}; path=/; max-age=28800; SameSite=Lax`;
+          }
+          localStorage.setItem('eg_role', currentRole);
+          localStorage.setItem('eg_name', data.name || email);
+          window.location.href = currentRole === 'teacher' ? '/teacher/dashboard' : '/student/dashboard';
+        } else {
           showError(data.error || 'Invalid credentials.');
           btn.textContent = isRegister ? 'Create Account' : 'Sign In'; btn.disabled = false;
         }
       } catch(e) {
-  showError('Connection error. Please try again.');
-  btn.textContent = isRegister ? 'Create Account' : 'Sign In';
-  btn.disabled = false;
-}
+        showError('Connection error. Please try again.');
+        btn.textContent = isRegister ? 'Create Account' : 'Sign In';
+        btn.disabled = false;
+      }
     }
     function showError(msg) { const el=document.getElementById('errorMsg'); el.textContent=msg; el.classList.add('show'); }
     document.getElementById('loginModal').addEventListener('click', e => { if(e.target===document.getElementById('loginModal')) closeModal(); });
@@ -423,26 +419,24 @@
     });
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('/static/sw.js').catch(()=>{});
     function togglePassword() {
-  const input = document.getElementById('loginPassword');
-  const eyeOpen = document.getElementById('eyeOpen');
-  const eyeClosed = document.getElementById('eyeClosed');
-
-  if (input.type === 'password') {
-    input.type = 'text';
-    eyeOpen.style.display = 'none';
-    eyeClosed.style.display = 'block';
-  } else {
-    input.type = 'password';
-    eyeOpen.style.display = 'block';
-    eyeClosed.style.display = 'none';
-  }
-  function logout() {
-  localStorage.clear();
-  // Clear the cookie
-  document.cookie = 'eg_token=; path=/; max-age=0';
-  window.location.href = '/';
-}
-}
+      const input = document.getElementById('loginPassword');
+      const eyeOpen = document.getElementById('eyeOpen');
+      const eyeClosed = document.getElementById('eyeClosed');
+      if (input.type === 'password') {
+        input.type = 'text';
+        eyeOpen.style.display = 'none';
+        eyeClosed.style.display = 'block';
+      } else {
+        input.type = 'password';
+        eyeOpen.style.display = 'block';
+        eyeClosed.style.display = 'none';
+      }
+    }
+    function logout() {
+      localStorage.clear();
+      document.cookie = 'eg_token=; path=/; max-age=0';
+      window.location.href = '/';
+    }
   </script>
 </body>
 </html>

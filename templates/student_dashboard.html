@@ -3,24 +3,31 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="#080c14"/>
+  <meta name="theme-color" content="#f0f4fa"/>
   <title>ExamGuard — Student Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
+      --bg:#f0f4fa; --bg1:#ffffff; --bg2:#e8edf5;
+      --acc:#2563eb; --ok:#16a34a; --warn:#d97706; --danger:#dc2626;
+      --hi:#0f172a; --mid:#475569; --low:#94a3b8;
+      --bd:rgba(15,23,42,0.1);
+      --sans:'Space Grotesk',sans-serif; --mono:'Space Mono',monospace;
+    }
+    [data-theme="dark"] {
       --bg:#080c14; --bg1:#0d1424; --bg2:#111c30;
       --acc:#3b82f6; --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
       --hi:#f0f6ff; --mid:#6b84a8; --low:#2d4060;
       --bd:rgba(255,255,255,0.06);
-      --sans:'Space Grotesk',sans-serif; --mono:'Space Mono',monospace;
     }
     html,body { min-height:100%; }
     body { font-family:var(--sans); background:var(--bg); color:var(--hi); -webkit-font-smoothing:antialiased; }
     .topnav { position:sticky; top:0; z-index:100; height:56px; display:flex; align-items:center;
-      justify-content:space-between; padding:0 40px; background:rgba(8,12,20,0.92);
+      justify-content:space-between; padding:0 40px; background:rgba(240,244,250,0.92);
       backdrop-filter:blur(16px); border-bottom:1px solid var(--bd); }
+    [data-theme="dark"] .topnav { background:rgba(8,12,20,0.92); }
     .logo-group { display:flex; align-items:center; gap:10px; }
     .logo-hex { width:24px; height:24px; background:var(--acc); display:flex; align-items:center;
       justify-content:center; clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); }
@@ -30,18 +37,26 @@
     .nav-right { display:flex; align-items:center; gap:12px; }
     .student-chip { display:flex; align-items:center; gap:8px; border:1px solid var(--bd); padding:5px 12px;
       font-family:var(--mono); font-size:0.62rem; color:var(--mid); }
-    .chip-av { width:20px; height:20px; background:rgba(59,130,246,0.12); border:1px solid rgba(59,130,246,0.25);
+    .chip-av { width:20px; height:20px; background:rgba(37,99,235,0.1); border:1px solid rgba(37,99,235,0.25);
       display:flex; align-items:center; justify-content:center; font-size:0.55rem; font-weight:700; color:var(--acc); }
     .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px; font-family:var(--mono);
       font-size:0.65rem; font-weight:700; letter-spacing:0.04em; padding:7px 16px; border:1px solid;
       cursor:pointer; text-decoration:none; background:none; transition:all 0.12s; }
     .btn-ghost { color:var(--mid); border-color:var(--bd); }
-    .btn-ghost:hover { background:rgba(255,255,255,0.03); color:var(--hi); border-color:rgba(255,255,255,0.1); }
+    .btn-ghost:hover { background:rgba(15,23,42,0.04); color:var(--hi); border-color:var(--acc); }
+    [data-theme="dark"] .btn-ghost:hover { background:rgba(255,255,255,0.03); }
     .btn-solid { background:var(--acc); color:#fff; border-color:var(--acc); }
-    .btn-solid:hover { background:#2563eb; border-color:#2563eb; }
+    .btn-solid:hover { background:#1d4ed8; border-color:#1d4ed8; }
     .btn-off { color:var(--low); border-color:var(--bd); cursor:not-allowed; opacity:0.5; }
-    .btn-ok { color:var(--ok); border-color:rgba(34,197,94,0.3); }
-    .btn-ok:hover { background:rgba(34,197,94,0.06); }
+    .btn-ok { color:var(--ok); border-color:rgba(22,163,74,0.3); }
+    .btn-ok:hover { background:rgba(22,163,74,0.06); }
+
+    /* Theme toggle */
+    .theme-toggle { background:none; border:1px solid var(--bd); color:var(--mid); cursor:pointer;
+      padding:5px 10px; display:flex; align-items:center; gap:5px; font-family:var(--mono); font-size:0.58rem;
+      transition:all 0.12s; }
+    .theme-toggle:hover { color:var(--hi); border-color:var(--acc); }
+
     .main { max-width:820px; margin:0 auto; padding:48px 24px; animation:fade-in 0.25s ease; }
     @keyframes fade-in { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
 
@@ -55,7 +70,6 @@
     .sp-num { font-family:var(--mono); font-size:1.2rem; font-weight:700; line-height:1; display:block; }
     .sp-lbl { font-family:var(--mono); font-size:0.5rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--low); display:block; margin-top:4px; }
 
-    /* Score summary bar */
     .score-bar-wrap { background:var(--bg1); border:1px solid var(--bd); padding:20px 24px; margin-bottom:32px; display:flex; align-items:center; gap:24px; flex-wrap:wrap; }
     .score-bar-label { font-family:var(--mono); font-size:0.58rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--low); margin-bottom:6px; }
     .score-bar-track { flex:1; min-width:140px; height:8px; background:var(--bg2); }
@@ -87,55 +101,55 @@
     .tag { font-family:var(--mono); font-size:0.55rem; font-weight:700; letter-spacing:0.08em;
       text-transform:uppercase; padding:2px 7px; border:1px solid var(--bd); color:var(--low); }
     .tag.t-dur  { color:var(--mid); }
-    .tag.t-q    { color:var(--acc); border-color:rgba(59,130,246,0.25); }
-    .tag.t-ok   { color:var(--ok);  border-color:rgba(34,197,94,0.25); }
-    .tag.t-pass { color:var(--ok);  border-color:rgba(34,197,94,0.15); background:rgba(34,197,94,0.04); }
-    .tag.t-fail { color:var(--danger); border-color:rgba(239,68,68,0.15); background:rgba(239,68,68,0.04); }
-    .tag.t-warn { color:var(--warn); border-color:rgba(245,158,11,0.25); }
+    .tag.t-q    { color:var(--acc); border-color:rgba(37,99,235,0.25); }
+    .tag.t-ok   { color:var(--ok);  border-color:rgba(22,163,74,0.25); }
+    .tag.t-pass { color:var(--ok);  border-color:rgba(22,163,74,0.15); background:rgba(22,163,74,0.04); }
+    .tag.t-fail { color:var(--danger); border-color:rgba(220,38,38,0.15); background:rgba(220,38,38,0.04); }
+    .tag.t-warn { color:var(--warn); border-color:rgba(217,119,6,0.25); }
     .ec-action { flex-shrink:0; }
 
-    /* Countdown timer for scheduled */
     .countdown { font-family:var(--mono); font-size:0.62rem; color:var(--warn); margin-top:4px; }
 
-    /* Result drawer */
     .result-drawer { background:var(--bg2); border:1px solid var(--bd); border-left:3px solid var(--ok);
       padding:16px 24px; margin-top:-8px; margin-bottom:10px; display:none; }
     .result-drawer.open { display:block; animation:fade-in 0.15s ease; }
     .result-title { font-family:var(--mono); font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; color:var(--low); margin-bottom:12px; }
-    .result-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.03); font-size:0.8rem; }
+    .result-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--bd); font-size:0.8rem; }
     .result-row:last-child { border:none; }
     .result-label { color:var(--mid); }
     .result-val { font-family:var(--mono); font-weight:700; color:var(--hi); }
 
-    /* Modal */
-    .modal-overlay { position:fixed; inset:0; z-index:500; background:rgba(4,6,12,0.92);
+    .modal-overlay { position:fixed; inset:0; z-index:500; background:rgba(15,23,42,0.5);
       backdrop-filter:blur(16px); display:flex; align-items:center; justify-content:center;
       padding:24px; opacity:0; pointer-events:none; transition:opacity 0.18s; }
+    [data-theme="dark"] .modal-overlay { background:rgba(4,6,12,0.92); }
     .modal-overlay.open { opacity:1; pointer-events:all; }
-    .modal { background:var(--bg2); border:1px solid rgba(59,130,246,0.25); padding:36px;
+    .modal { background:var(--bg1); border:1px solid var(--bd); padding:36px;
       width:100%; max-width:460px; max-height:90vh; overflow-y:auto;
-      transform:translateY(14px); transition:transform 0.18s; position:relative; }
+      transform:translateY(14px); transition:transform 0.18s; position:relative;
+      box-shadow:0 20px 60px rgba(15,23,42,0.12); }
+    [data-theme="dark"] .modal { box-shadow:0 20px 60px rgba(0,0,0,0.5); }
     .modal-overlay.open .modal { transform:translateY(0); }
     .modal-accent { position:absolute; top:0; left:0; right:0; height:2px; background:var(--acc); }
     .modal-step { font-family:var(--mono); font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--acc); margin-bottom:6px; }
     .modal-title { font-size:1.1rem; font-weight:600; letter-spacing:-0.01em; margin-bottom:4px; }
     .modal-sub { font-size:0.78rem; color:var(--mid); line-height:1.6; margin-bottom:24px; }
     .monitor-list { margin-bottom:20px; }
-    .mi { display:flex; gap:12px; align-items:flex-start; padding:9px 0; border-bottom:1px solid rgba(255,255,255,0.03); font-family:var(--mono); font-size:0.68rem; }
+    .mi { display:flex; gap:12px; align-items:flex-start; padding:9px 0; border-bottom:1px solid var(--bd); font-family:var(--mono); font-size:0.68rem; }
     .mi:last-child { border:none; }
     .mi-key { font-weight:700; color:var(--hi); min-width:130px; flex-shrink:0; }
     .mi-val { color:var(--low); }
     .mi.no-store .mi-key { color:var(--ok); }
     .mi.no-store .mi-val { color:var(--ok); opacity:0.7; }
-    .consent-row { display:flex; align-items:flex-start; gap:10px; background:var(--bg1); border:1px solid var(--bd); padding:14px; margin-bottom:20px; cursor:pointer; }
+    .consent-row { display:flex; align-items:flex-start; gap:10px; background:var(--bg2); border:1px solid var(--bd); padding:14px; margin-bottom:20px; cursor:pointer; }
     .consent-row label { font-size:0.78rem; color:var(--mid); line-height:1.55; cursor:pointer; }
     .consent-row input { margin-top:2px; accent-color:var(--acc); cursor:pointer; flex-shrink:0; }
-    .cam-preview { width:100%; aspect-ratio:4/3; background:#04070d; border:1px solid var(--bd);
+    .cam-preview { width:100%; aspect-ratio:4/3; background:#0a0a0a; border:1px solid var(--bd);
       display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; margin-bottom:14px; }
     #camVideo { width:100%; height:100%; object-fit:cover; display:none; transform:scaleX(-1); }
     .cam-ph { text-align:center; font-family:var(--mono); font-size:0.65rem; color:var(--low); }
     .check-list { margin-bottom:20px; }
-    .check-item { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.03); font-family:var(--mono); font-size:0.68rem; color:var(--low); }
+    .check-item { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid var(--bd); font-family:var(--mono); font-size:0.68rem; color:var(--low); }
     .check-item:last-child { border:none; }
     .check-dot { width:6px; height:6px; flex-shrink:0; border-radius:50%; }
     .check-dot.pending { background:var(--low); }
@@ -159,6 +173,10 @@
         <div class="chip-av" id="chipAv">JD</div>
         <span id="chipName">Juan dela Cruz · STU-001</span>
       </div>
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" title="Toggle dark mode">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.5 3.5l1.4 1.4M11.1 11.1l1.4 1.4M3.5 12.5l1.4-1.4M11.1 4.9l1.4-1.4"/><circle cx="8" cy="8" r="3"/></svg>
+        <span id="themeLabel">Dark</span>
+      </button>
       <a href="/" class="btn btn-ghost" onclick="doLogout()">Logout</a>
     </div>
   </nav>
@@ -177,7 +195,6 @@
       </div>
     </div>
 
-    <!-- Score summary -->
     <div class="score-bar-wrap" id="scoreSummary" style="display:none">
       <div>
         <div class="score-bar-label">Overall Average</div>
@@ -193,7 +210,6 @@
       </div>
     </div>
 
-    <!-- Available -->
     <div class="section-block">
       <div class="section-hd">
         <div class="section-heading"><div class="sh-line available"></div><span class="sh-title">Available Now</span></div>
@@ -202,7 +218,6 @@
       <div id="availableExams"><div style="color:var(--low);font-size:0.8rem;padding:20px 0">Loading...</div></div>
     </div>
 
-    <!-- Upcoming -->
     <div class="section-block">
       <div class="section-hd">
         <div class="section-heading"><div class="sh-line upcoming"></div><span class="sh-title">Upcoming</span></div>
@@ -211,7 +226,6 @@
       <div id="upcomingExams"><div style="color:var(--low);font-size:0.8rem;padding:20px 0">Loading...</div></div>
     </div>
 
-    <!-- Completed -->
     <div class="section-block">
       <div class="section-hd">
         <div class="section-heading"><div class="sh-line done"></div><span class="sh-title">Completed</span></div>
@@ -272,11 +286,26 @@
   </div>
 
   <script>
+    // Theme toggle
+    function toggleTheme() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      document.getElementById('themeLabel').textContent = isDark ? 'Dark' : 'Light';
+      localStorage.setItem('eg_theme', isDark ? 'light' : 'dark');
+    }
+    const savedTheme = localStorage.getItem('eg_theme') || 'light';
+    if (savedTheme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      document.addEventListener('DOMContentLoaded', () => {
+        const lbl = document.getElementById('themeLabel');
+        if (lbl) lbl.textContent = 'Light';
+      });
+    }
+
     const token = localStorage.getItem('eg_token') || '';
     const studentName = localStorage.getItem('eg_name') || 'Juan dela Cruz';
     const authH = {'Content-Type':'application/json','X-Demo-Mode':'1','Authorization':`Bearer ${token}`};
 
-    // Set student info in nav
     document.getElementById('greetName').textContent = studentName;
     document.getElementById('chipName').textContent  = studentName + ' · STU';
     document.getElementById('chipAv').textContent    = studentName.split(' ').map(p=>p[0]).join('').slice(0,2).toUpperCase();
@@ -286,7 +315,6 @@
 
     const today = new Date().toLocaleDateString('en-PH', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
 
-    // ── Load exams ──────────────────────────────────────────────────────────
     async function loadDashboard() {
       const [exams, sessions] = await Promise.all([
         fetch('/api/student/exams', {headers:authH}).then(r=>r.json()).catch(()=>[]),
@@ -353,7 +381,6 @@
           <div class="ec-action"><span class="btn btn-off">Not Available</span></div>
         </div>`;
       }).join('');
-      // Countdowns
       exams.forEach(e => {
         if (!e.scheduled_start) return;
         const el2 = document.getElementById(`cd-${e.id}`);
@@ -420,7 +447,6 @@
       d.classList.toggle('open');
     }
 
-    // ── Consent & Cam ─────────────────────────────────────────────────────────
     function openConsent(examId, examTitle, duration) {
       currentExam = {id: examId, title: examTitle, duration};
       document.getElementById('startExamName').textContent = examTitle;
@@ -433,7 +459,7 @@
 
     function goStep2() {
       if (!document.getElementById('consentCheck').checked) {
-        document.querySelector('.consent-row').style.borderColor='rgba(239,68,68,0.4)';
+        document.querySelector('.consent-row').style.borderColor='rgba(220,38,38,0.4)';
         setTimeout(()=>document.querySelector('.consent-row').style.borderColor='',1500);
         return;
       }
