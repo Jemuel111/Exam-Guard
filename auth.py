@@ -1,14 +1,4 @@
-"""
-ExamGuard — Auth utilities
-Secure password hashing with bcrypt, signed token management, decorators.
 
-FIXES:
-- _active_tokens pruning now called on verify (not just generate) to prevent unbounded growth
-- verify_token is now safe to call with None/empty string without KeyError
-- login_required demo-mode fallback now assigns a consistent user_id (-1) so
-  downstream code can distinguish "demo" from "real student" without crashing
-- get_token_from_request checks both Authorization header AND cookie as fallback
-"""
 import secrets
 import logging
 from datetime import datetime, timedelta, timezone
