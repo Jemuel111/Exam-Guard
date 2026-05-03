@@ -1,0 +1,4 @@
+timestamp,elapsed_seconds,type,details,severity
+11:37:43,1.6,AUDIO_ANOMALY,Suspicious audio: 92 dB,medium
+11:37:49,7.5,NO_FACE,No face detected for 6s,high
+11:37:56,14.5,AUDIO_ANOMALY,Suspicious audio: 90 dB,medium
