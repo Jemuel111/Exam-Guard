@@ -12,6 +12,8 @@ FIXES:
   correctly falls through to the anonymous query without a TypeError.
 - hashlib token generation in enroll_students used datetime.now() without
   str() conversion, causing a TypeError in Python 3.11+.
+- /api/student/exams now includes `already_submitted` count per exam so the
+  dashboard can hide the Start button for exams already completed.
 """
 import hashlib
 import json
@@ -34,16 +36,15 @@ bp_exams = Blueprint('exams', __name__)
 @bp_exams.get('/api/student/exams')
 def student_exams():
     """
-    FIX: was raising 500 when token was absent/invalid because info was None
-    and the code tried info['user_id'] unconditionally.
-    Now safely extracts uid with a default of None.
+    Returns exams the student can see, including `already_submitted` count
+    so the dashboard can disable the Start button for completed exams.
     """
     try:
         db    = get_db()
         token = get_token_from_request()
         info  = verify_token(token)
 
-        # FIX: safe uid extraction — None if no token, -1 if demo mode
+        # Safe uid extraction — None if no token, -1 if demo mode
         uid = None
         if info and isinstance(info.get('user_id'), int) and info['user_id'] > 0:
             uid = info['user_id']
@@ -51,7 +52,9 @@ def student_exams():
         if uid:
             rows = db.execute('''
                 SELECT DISTINCT e.*,
-                    (SELECT COUNT(*) FROM questions WHERE exam_id=e.id) AS question_count
+                    (SELECT COUNT(*) FROM questions WHERE exam_id=e.id) AS question_count,
+                    (SELECT COUNT(*) FROM exam_submissions
+                     WHERE exam_id=e.id AND student_id=?) AS already_submitted
                 FROM exams e
                 LEFT JOIN exam_enrollments ee ON ee.exam_id=e.id
                 WHERE e.status IN ('active','scheduled')
@@ -59,12 +62,13 @@ def student_exams():
                         SELECT 1 FROM exam_enrollments WHERE exam_id=e.id))
                 ORDER BY CASE e.status WHEN 'active' THEN 0 ELSE 1 END,
                          COALESCE(e.scheduled_start,'9999')
-            ''', (uid,)).fetchall()
+            ''', (uid, uid)).fetchall()
         else:
             # Anonymous / demo / no-token: serve open-enrollment exams only
             rows = db.execute('''
                 SELECT e.*,
-                    (SELECT COUNT(*) FROM questions WHERE exam_id=e.id) AS question_count
+                    (SELECT COUNT(*) FROM questions WHERE exam_id=e.id) AS question_count,
+                    0 AS already_submitted
                 FROM exams e
                 WHERE e.status IN ('active','scheduled')
                 ORDER BY CASE e.status WHEN 'active' THEN 0 ELSE 1 END,
@@ -141,7 +145,6 @@ def create_exam():
         ))
     for sid in data.get('enroll_students', []):
         try:
-            # FIX: datetime.now() must be cast to str before encoding
             token = hashlib.sha256(
                 f'{exam_id}{sid}{str(datetime.now())}'.encode()
             ).hexdigest()
@@ -188,7 +191,6 @@ def enroll_students(exam_id):
     enrolled = []
     for sid in data.get('student_ids', []):
         try:
-            # FIX: same str(datetime.now()) cast as create_exam
             token = hashlib.sha256(
                 f'{exam_id}{sid}{str(datetime.now())}'.encode()
             ).hexdigest()
@@ -218,7 +220,6 @@ def submit_exam():
     # Resolve student from token
     token      = get_token_from_request()
     info       = verify_token(token)
-    # FIX: safe extraction consistent with student_exams()
     student_id = None
     if info and isinstance(info.get('user_id'), int) and info['user_id'] > 0:
         student_id = info['user_id']

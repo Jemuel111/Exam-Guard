@@ -51,7 +51,6 @@
     .btn-ok { color:var(--ok); border-color:rgba(22,163,74,0.3); }
     .btn-ok:hover { background:rgba(22,163,74,0.06); }
 
-    /* Theme toggle */
     .theme-toggle { background:none; border:1px solid var(--bd); color:var(--mid); cursor:pointer;
       padding:5px 10px; display:flex; align-items:center; gap:5px; font-family:var(--mono); font-size:0.58rem;
       transition:all 0.12s; }
@@ -94,6 +93,7 @@
     .exam-card.available { border-left-color:var(--acc); }
     .exam-card.upcoming  { border-left-color:var(--warn); }
     .exam-card.done      { border-left-color:var(--ok); }
+    .exam-card.submitted { border-left-color:var(--ok); opacity:0.75; }
     .ec-info { flex:1; min-width:0; }
     .ec-name { font-size:0.92rem; font-weight:600; color:var(--hi); margin-bottom:4px; }
     .ec-meta { font-family:var(--mono); font-size:0.6rem; color:var(--low); margin-bottom:8px; }
@@ -106,6 +106,7 @@
     .tag.t-pass { color:var(--ok);  border-color:rgba(22,163,74,0.15); background:rgba(22,163,74,0.04); }
     .tag.t-fail { color:var(--danger); border-color:rgba(220,38,38,0.15); background:rgba(220,38,38,0.04); }
     .tag.t-warn { color:var(--warn); border-color:rgba(217,119,6,0.25); }
+    .tag.t-submitted { color:var(--ok); border-color:rgba(22,163,74,0.25); background:rgba(22,163,74,0.06); }
     .ec-action { flex-shrink:0; }
 
     .countdown { font-family:var(--mono); font-size:0.62rem; color:var(--warn); margin-top:4px; }
@@ -286,7 +287,7 @@
   </div>
 
   <script>
-    // Theme toggle
+    // ── Theme ─────────────────────────────────────────────────────────────────
     function toggleTheme() {
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
@@ -315,6 +316,15 @@
 
     const today = new Date().toLocaleDateString('en-PH', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
 
+    // ── Check if a student already submitted an exam ───────────────────────────
+    // Checks both the server-returned flag AND the localStorage lock set in exam.html
+    function isAlreadySubmitted(exam) {
+      if (exam.already_submitted > 0) return true;
+      if (localStorage.getItem('eg_submitted_' + exam.id)) return true;
+      return false;
+    }
+
+    // ── Dashboard load ────────────────────────────────────────────────────────
     async function loadDashboard() {
       const [exams, sessions] = await Promise.all([
         fetch('/api/student/exams', {headers:authH}).then(r=>r.json()).catch(()=>[]),
@@ -324,13 +334,18 @@
       const available = exams.filter(e => e.status === 'active');
       const upcoming  = exams.filter(e => e.status === 'scheduled');
 
-      document.getElementById('spReady').textContent   = available.length;
-      document.getElementById('spUpcoming').textContent= upcoming.length;
-      document.getElementById('spDone').textContent    = sessions.length;
-      document.getElementById('availCount').textContent= `${available.length} exam${available.length!==1?'s':''} ready`;
-      document.getElementById('upcomingCount').textContent= `${upcoming.length} scheduled`;
-      document.getElementById('doneCount').textContent = `${sessions.length} finished`;
-      document.getElementById('greetSub').textContent  = `${available.length} exam${available.length!==1?'s':''} ready to take · ${today}`;
+      // Count how many active exams are actually still takeable
+      const readyCount = available.filter(e => !isAlreadySubmitted(e)).length;
+
+      document.getElementById('spReady').textContent    = readyCount;
+      document.getElementById('spUpcoming').textContent = upcoming.length;
+      document.getElementById('spDone').textContent     = sessions.length;
+      document.getElementById('availCount').textContent = `${available.length} exam${available.length!==1?'s':''} ready`;
+      document.getElementById('upcomingCount').textContent = `${upcoming.length} scheduled`;
+      document.getElementById('doneCount').textContent  = `${sessions.length} finished`;
+      document.getElementById('greetSub').textContent   = readyCount > 0
+        ? `${readyCount} exam${readyCount!==1?'s':''} ready to take · ${today}`
+        : `No exams to take right now · ${today}`;
 
       renderAvailable(available);
       renderUpcoming(upcoming);
@@ -338,14 +353,42 @@
       renderScoreSummary(sessions);
     }
 
+    // ── Render available exams ────────────────────────────────────────────────
     function renderAvailable(exams) {
       const el = document.getElementById('availableExams');
-      if (!exams.length) { el.innerHTML='<div style="color:var(--low);font-size:0.8rem;padding:12px 0;font-family:var(--mono)">No exams available right now.</div>'; return; }
-      el.innerHTML = exams.map(e => `
+      if (!exams.length) {
+        el.innerHTML = '<div style="color:var(--low);font-size:0.8rem;padding:12px 0;font-family:var(--mono)">No exams available right now.</div>';
+        return;
+      }
+
+      el.innerHTML = exams.map(e => {
+        const submitted = isAlreadySubmitted(e);
+
+        // ── Already submitted: show greyed-out card, no start button ──────────
+        if (submitted) {
+          return `
+          <div class="exam-card submitted">
+            <div class="ec-info">
+              <div class="ec-name">${e.title}</div>
+              <div class="ec-meta">${e.subject||'General'} · Submission recorded</div>
+              <div class="ec-tags">
+                <span class="tag t-dur">${e.duration_minutes} min</span>
+                <span class="tag t-q">${e.question_count||0} questions</span>
+                <span class="tag t-submitted">✓ Submitted</span>
+              </div>
+            </div>
+            <div class="ec-action">
+              <span class="btn btn-off">Already Submitted</span>
+            </div>
+          </div>`;
+        }
+
+        // ── Not yet submitted: normal start button ────────────────────────────
+        return `
         <div class="exam-card available">
           <div class="ec-info">
             <div class="ec-name">${e.title}</div>
-            <div class="ec-meta">${e.subject||'General'} · ${e.instructions?e.instructions.slice(0,50)+'…':''}</div>
+            <div class="ec-meta">${e.subject||'General'} · ${e.instructions ? e.instructions.slice(0,50)+'…' : ''}</div>
             <div class="ec-tags">
               <span class="tag t-dur">${e.duration_minutes} min</span>
               <span class="tag t-q">${e.question_count||0} questions</span>
@@ -353,17 +396,22 @@
             </div>
           </div>
           <div class="ec-action">
-            <button class="btn btn-solid" onclick="openConsent(${e.id},'${e.title}',${e.duration_minutes})">
+            <button class="btn btn-solid" onclick="openConsent(${e.id},'${e.title.replace(/'/g,"\\'")}',${e.duration_minutes})">
               Start Exam
               <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 5h6M5 2l3 3-3 3"/></svg>
             </button>
           </div>
-        </div>`).join('');
+        </div>`;
+      }).join('');
     }
 
+    // ── Render upcoming exams ─────────────────────────────────────────────────
     function renderUpcoming(exams) {
       const el = document.getElementById('upcomingExams');
-      if (!exams.length) { el.innerHTML='<div style="color:var(--low);font-size:0.8rem;padding:12px 0;font-family:var(--mono)">No upcoming exams scheduled.</div>'; return; }
+      if (!exams.length) {
+        el.innerHTML = '<div style="color:var(--low);font-size:0.8rem;padding:12px 0;font-family:var(--mono)">No upcoming exams scheduled.</div>';
+        return;
+      }
       el.innerHTML = exams.map(e => {
         const start = e.scheduled_start ? new Date(e.scheduled_start) : null;
         const timeStr = start ? start.toLocaleString('en-PH',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : 'TBA';
@@ -376,30 +424,35 @@
               <span class="tag t-dur">${e.duration_minutes} min</span>
               <span class="tag t-q">${e.question_count||0} questions</span>
             </div>
-            ${start?`<div class="countdown" id="cd-${e.id}">Computing countdown...</div>`:''}
+            ${start ? `<div class="countdown" id="cd-${e.id}">Computing countdown...</div>` : ''}
           </div>
           <div class="ec-action"><span class="btn btn-off">Not Available</span></div>
         </div>`;
       }).join('');
+
       exams.forEach(e => {
         if (!e.scheduled_start) return;
         const el2 = document.getElementById(`cd-${e.id}`);
         if (!el2) return;
         const tick = () => {
           const diff = new Date(e.scheduled_start) - Date.now();
-          if (diff <= 0) { el2.textContent='Opening now...'; return; }
-          const h=Math.floor(diff/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
-          el2.textContent=`Opens in ${h>0?h+'h ':''}${m}m ${s}s`;
+          if (diff <= 0) { el2.textContent = 'Opening now...'; return; }
+          const h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+          el2.textContent = `Opens in ${h>0?h+'h ':''}${m}m ${s}s`;
         };
         tick(); setInterval(tick, 1000);
       });
     }
 
+    // ── Render completed sessions ─────────────────────────────────────────────
     function renderCompleted(sessions) {
       const el = document.getElementById('completedExams');
-      if (!sessions.length) { el.innerHTML='<div style="color:var(--low);font-size:0.8rem;padding:12px 0;font-family:var(--mono)">No completed exams yet.</div>'; return; }
+      if (!sessions.length) {
+        el.innerHTML = '<div style="color:var(--low);font-size:0.8rem;padding:12px 0;font-family:var(--mono)">No completed exams yet.</div>';
+        return;
+      }
       el.innerHTML = sessions.map(s => {
-        const pct = s.percentage ? parseFloat(s.percentage).toFixed(1) : null;
+        const pct    = s.percentage != null ? parseFloat(s.percentage).toFixed(1) : null;
         const passed = s.passed;
         return `
         <div class="exam-card done" style="flex-direction:column;align-items:stretch">
@@ -408,13 +461,13 @@
               <div class="ec-name">${s.student_name}'s Exam</div>
               <div class="ec-meta">${s.session_id} · ${(s.created_at||'').split(' ')[0]} · ${parseFloat(s.duration_minutes||0).toFixed(0)} min</div>
               <div class="ec-tags">
-                ${pct!=null?`<span class="tag t-ok">${pct}%</span>`:''}
-                ${passed!=null?`<span class="tag ${passed?'t-pass':'t-fail'}">${passed?'Passed':'Failed'}</span>`:''}
+                ${pct != null ? `<span class="tag t-ok">${pct}%</span>` : ''}
+                ${passed != null ? `<span class="tag ${passed?'t-pass':'t-fail'}">${passed?'Passed':'Failed'}</span>` : ''}
                 <span class="tag" style="color:${s.risk_level==='High'?'var(--danger)':s.risk_level==='Medium'?'var(--warn)':'var(--ok)'}">${s.risk_level||'Low'} Risk</span>
               </div>
             </div>
             <div class="ec-action" style="display:flex;gap:8px">
-              ${pct!=null?`<button class="btn btn-ghost" onclick="toggleResult('${s.session_id}')">Results</button>`:''}
+              ${pct != null ? `<button class="btn btn-ghost" onclick="toggleResult('${s.session_id}')">Results</button>` : ''}
               <a href="/report/${s.session_id}" class="btn btn-ok">Report</a>
             </div>
           </div>
@@ -443,11 +496,17 @@
     }
 
     function toggleResult(sid) {
-      const d = document.getElementById('drawer-'+sid);
-      d.classList.toggle('open');
+      document.getElementById('drawer-'+sid).classList.toggle('open');
     }
 
+    // ── Consent modal ─────────────────────────────────────────────────────────
     function openConsent(examId, examTitle, duration) {
+      // Double-check before opening modal — in case state changed since load
+      if (localStorage.getItem('eg_submitted_' + examId)) {
+        alert('You have already submitted this exam.');
+        loadDashboard(); // refresh to show updated state
+        return;
+      }
       currentExam = {id: examId, title: examTitle, duration};
       document.getElementById('startExamName').textContent = examTitle;
       document.getElementById('consentCheck').checked = false;
@@ -455,69 +514,98 @@
       document.getElementById('step2').style.display = 'none';
       document.getElementById('consentModal').classList.add('open');
     }
-    function closeConsent() { document.getElementById('consentModal').classList.remove('open'); stopCam(); }
+
+    function closeConsent() {
+      document.getElementById('consentModal').classList.remove('open');
+      stopCam();
+    }
 
     function goStep2() {
       if (!document.getElementById('consentCheck').checked) {
-        document.querySelector('.consent-row').style.borderColor='rgba(220,38,38,0.4)';
-        setTimeout(()=>document.querySelector('.consent-row').style.borderColor='',1500);
+        document.querySelector('.consent-row').style.borderColor = 'rgba(220,38,38,0.4)';
+        setTimeout(()=>document.querySelector('.consent-row').style.borderColor='', 1500);
         return;
       }
-      document.getElementById('step1').style.display='none';
-      document.getElementById('step2').style.display='block';
+      document.getElementById('step1').style.display = 'none';
+      document.getElementById('step2').style.display = 'block';
       startCam();
     }
-    function goStep1() { document.getElementById('step2').style.display='none'; document.getElementById('step1').style.display='block'; stopCam(); }
+
+    function goStep1() {
+      document.getElementById('step2').style.display = 'none';
+      document.getElementById('step1').style.display = 'block';
+      stopCam();
+    }
 
     function startCam() {
       navigator.mediaDevices.getUserMedia({video:{width:640,height:480,facingMode:'user'},audio:true})
         .then(stream => {
           camStream = stream;
           const v = document.getElementById('camVideo');
-          v.srcObject = stream; v.style.display='block';
-          document.getElementById('camPh').style.display='none';
-          runCheck('cam',500,'Camera access — granted');
-          runCheck('face',1300,'Face detected — OK');
-          runCheck('light',2100,'Lighting adequate — OK');
-          runCheck('audio',2600,'Audio monitor — active');
+          v.srcObject = stream; v.style.display = 'block';
+          document.getElementById('camPh').style.display = 'none';
+          runCheck('cam',   500,  'Camera access — granted');
+          runCheck('face',  1300, 'Face detected — OK');
+          runCheck('light', 2100, 'Lighting adequate — OK');
+          runCheck('audio', 2600, 'Audio monitor — active');
         })
         .catch(() => {
-          failCheck('cam','Camera access — denied');
-          document.getElementById('camPh').innerHTML='<span style="color:var(--danger)">Camera denied. Please allow access.</span>';
+          failCheck('cam', 'Camera access — denied');
+          document.getElementById('camPh').innerHTML = '<span style="color:var(--danger)">Camera denied. Please allow access.</span>';
         });
     }
-    function stopCam() { if(camStream){camStream.getTracks().forEach(t=>t.stop()); camStream=null;} }
-    function runCheck(id,delay,label) {
-      setTimeout(()=>{
-        document.getElementById('cd-'+id).className='check-dot pass';
-        document.getElementById('ci-'+id).className='check-item pass';
-        document.getElementById('cl-'+id).textContent=label;
+
+    function stopCam() {
+      if (camStream) { camStream.getTracks().forEach(t=>t.stop()); camStream = null; }
+    }
+
+    function runCheck(id, delay, label) {
+      setTimeout(() => {
+        document.getElementById('cd-'+id).className = 'check-dot pass';
+        document.getElementById('ci-'+id).className = 'check-item pass';
+        document.getElementById('cl-'+id).textContent = label;
         checkAllPass();
-      },delay);
+      }, delay);
     }
-    function failCheck(id,label) {
-      document.getElementById('cd-'+id).className='check-dot fail';
-      document.getElementById('cl-'+id).textContent=label;
+
+    function failCheck(id, label) {
+      document.getElementById('cd-'+id).className = 'check-dot fail';
+      document.getElementById('cl-'+id).textContent = label;
     }
+
     function checkAllPass() {
-      const all=['cd-cam','cd-face','cd-light','cd-audio'].every(id=>document.getElementById(id).classList.contains('pass'));
+      const all = ['cd-cam','cd-face','cd-light','cd-audio'].every(id =>
+        document.getElementById(id).classList.contains('pass')
+      );
       if (all) {
-        const btn=document.getElementById('startBtn');
-        btn.style.opacity='1'; btn.style.cursor='pointer'; btn.disabled=false;
+        const btn = document.getElementById('startBtn');
+        btn.style.opacity = '1';
+        btn.style.cursor  = 'pointer';
+        btn.disabled = false;
       }
     }
+
     function startExam() {
+      const e = currentExam || {id:null, title:'Exam', duration:60};
+      // Final guard: don't navigate if already submitted
+      if (e.id && localStorage.getItem('eg_submitted_' + e.id)) {
+        alert('You have already submitted this exam.');
+        closeConsent();
+        loadDashboard();
+        return;
+      }
       stopCam();
-      const e = currentExam || {id:null,title:'Exam',duration:60};
-      window.location.href=`/exam?name=${encodeURIComponent(studentName)}&duration=${e.duration}&exam_id=${e.id||''}&token=${token}`;
+      window.location.href = `/exam?name=${encodeURIComponent(studentName)}&duration=${e.duration}&exam_id=${e.id||''}&token=${token}`;
     }
 
     document.getElementById('consentModal').addEventListener('click', e => {
-      if(e.target===document.getElementById('consentModal')) closeConsent();
+      if (e.target === document.getElementById('consentModal')) closeConsent();
     });
 
     function doLogout() {
-      localStorage.removeItem('eg_token'); localStorage.removeItem('eg_role'); localStorage.removeItem('eg_name');
+      localStorage.removeItem('eg_token');
+      localStorage.removeItem('eg_role');
+      localStorage.removeItem('eg_name');
     }
 
     loadDashboard();
