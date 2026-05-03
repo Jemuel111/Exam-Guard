@@ -62,6 +62,16 @@ def exam():
     info  = verify_token(token)
     if not info:
         return redirect('/')
+    # Block if student already submitted this exam
+    exam_id = request.args.get('exam_id')
+    if exam_id and info.get('user_id') and info['user_id'] > 0:
+        db = get_db()
+        existing = db.execute(
+            'SELECT id FROM exam_submissions WHERE exam_id=? AND student_id=?',
+            (exam_id, info['user_id'])
+        ).fetchone()
+        if existing:
+            return redirect('/submitted?session=already&name=' + (info.get('name') or 'Student'))
     return render_template('exam.html')
 
 
@@ -184,6 +194,13 @@ def download_csv(session_id):
     return send_file(path, as_attachment=True,
                      download_name=f'{session_id}_violations.csv')
 
+@app.get('/submitted')
+def submitted():
+    token = get_token_from_request()
+    info  = verify_token(token)
+    if not info:
+        return redirect('/')
+    return render_template('submitted.html')
 
 # Email helper
 

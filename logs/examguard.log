@@ -1961,3 +1961,91 @@
 2026-05-03 11:45:03,430 [INFO] 127.0.0.1 - - [03/May/2026 11:45:03] "GET /api/dashboard_stats HTTP/1.1" 200 -
 2026-05-03 11:45:03,480 [INFO] 127.0.0.1 - - [03/May/2026 11:45:03] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
 2026-05-03 11:45:03,488 [INFO] 127.0.0.1 - - [03/May/2026 11:45:03] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-03 11:51:18,866 [INFO]  * Detected change in '/Users/macbook/Downloads/examguard/app.py', reloading
+2026-05-03 11:51:19,011 [INFO]  * Restarting with stat
+2026-05-03 11:51:20,176 [INFO] Database initialized ✓
+2026-05-03 11:51:20,177 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-03 11:51:20,207 [WARNING]  * Debugger is active!
+2026-05-03 11:51:20,215 [INFO]  * Debugger PIN: 130-332-172
+2026-05-03 11:51:57,872 [INFO] 127.0.0.1 - - [03/May/2026 11:51:57] "GET / HTTP/1.1" 200 -
+2026-05-03 11:51:57,918 [INFO] 127.0.0.1 - - [03/May/2026 11:51:57] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-03 11:51:58,017 [INFO] 127.0.0.1 - - [03/May/2026 11:51:58] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-03 11:51:58,026 [INFO] 127.0.0.1 - - [03/May/2026 11:51:58] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-03 11:52:06,502 [INFO] 127.0.0.1 - - [03/May/2026 11:52:06] "POST /api/login HTTP/1.1" 200 -
+2026-05-03 11:52:06,537 [INFO] 127.0.0.1 - - [03/May/2026 11:52:06] "GET /student/dashboard HTTP/1.1" 200 -
+2026-05-03 11:52:06,586 [INFO] 127.0.0.1 - - [03/May/2026 11:52:06] "GET /api/student/exams HTTP/1.1" 200 -
+2026-05-03 11:52:06,592 [INFO] 127.0.0.1 - - [03/May/2026 11:52:06] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-03 11:52:14,690 [INFO] 127.0.0.1 - - [03/May/2026 11:52:14] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-05-03 11:52:16,892 [INFO] 127.0.0.1 - - [03/May/2026 11:52:16] "GET /exam?name=Sam%20Andrei&duration=60&exam_id=7&token=4028928b33291f8cc407e5b6b2ba04353ae78a09397d19256f03b8851afdc368 HTTP/1.1" 200 -
+2026-05-03 11:52:16,945 [INFO] 127.0.0.1 - - [03/May/2026 11:52:16] "GET /api/exams/7 HTTP/1.1" 200 -
+2026-05-03 11:52:18,508 [INFO] Session started: EG-1777780338 for Sam Andrei (student_id=8)
+2026-05-03 11:52:18,510 [INFO] 127.0.0.1 - - [03/May/2026 11:52:18] "POST /api/start_session HTTP/1.1" 200 -
+2026-05-03 11:52:19,063 [WARNING] [EG-1777780338] VIOLATION: AUDIO_ANOMALY — Suspicious audio: 93 dB
+2026-05-03 11:52:19,063 [INFO] 127.0.0.1 - - [03/May/2026 11:52:19] "POST /api/audio_alert HTTP/1.1" 200 -
+2026-05-03 11:52:19,813 [INFO] 127.0.0.1 - - [03/May/2026 11:52:19] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-05-03 11:52:20,170 [INFO] 127.0.0.1 - - [03/May/2026 11:52:20] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-03 11:52:21,546 [INFO] 127.0.0.1 - - [03/May/2026 11:52:21] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-03 11:52:23,049 [INFO] 127.0.0.1 - - [03/May/2026 11:52:23] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-03 11:52:24,559 [INFO] 127.0.0.1 - - [03/May/2026 11:52:24] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-03 11:52:26,049 [WARNING] [EG-1777780338] VIOLATION: NO_FACE — No face detected for 6s
+2026-05-03 11:52:26,051 [INFO] 127.0.0.1 - - [03/May/2026 11:52:26] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-03 11:52:27,548 [INFO] 127.0.0.1 - - [03/May/2026 11:52:27] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-03 11:52:29,829 [INFO] Submission graded: EG-1777780338 — 50.0%
+2026-05-03 11:52:29,833 [INFO] 127.0.0.1 - - [03/May/2026 11:52:29] "POST /api/submit_exam HTTP/1.1" 200 -
+2026-05-03 11:52:29,849 [INFO] Session ended: EG-1777780338, flags: 2
+2026-05-03 11:52:29,851 [INFO] 127.0.0.1 - - [03/May/2026 11:52:29] "POST /api/end_session HTTP/1.1" 200 -
+2026-05-03 11:52:29,907 [INFO] 127.0.0.1 - - [03/May/2026 11:52:29] "GET /report/EG-1777780338 HTTP/1.1" 200 -
+2026-05-03 11:52:29,910 [INFO] 127.0.0.1 - - [03/May/2026 11:52:29] "GET /submitted?session=EG-1777780338&name=Sam%20Andrei HTTP/1.1" 200 -
+2026-05-03 11:52:29,923 [INFO] 127.0.0.1 - - [03/May/2026 11:52:29] "POST /api/tab_switch HTTP/1.1" 200 -
+2026-05-03 11:52:35,238 [INFO] 127.0.0.1 - - [03/May/2026 11:52:35] "GET /student/dashboard HTTP/1.1" 200 -
+2026-05-03 11:52:35,269 [INFO] 127.0.0.1 - - [03/May/2026 11:52:35] "GET /api/student/exams HTTP/1.1" 200 -
+2026-05-03 11:52:35,272 [INFO] 127.0.0.1 - - [03/May/2026 11:52:35] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-03 11:58:58,158 [INFO] 127.0.0.1 - - [03/May/2026 11:58:58] "GET /student/dashboard HTTP/1.1" 200 -
+2026-05-03 11:58:58,183 [INFO] 127.0.0.1 - - [03/May/2026 11:58:58] "GET /api/student/exams HTTP/1.1" 200 -
+2026-05-03 11:58:58,199 [INFO] 127.0.0.1 - - [03/May/2026 11:58:58] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-03 11:59:05,039 [INFO] 127.0.0.1 - - [03/May/2026 11:59:05] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-05-03 11:59:07,133 [INFO] 127.0.0.1 - - [03/May/2026 11:59:07] "GET /exam?name=Sam%20Andrei&duration=60&exam_id=7&token=4028928b33291f8cc407e5b6b2ba04353ae78a09397d19256f03b8851afdc368 HTTP/1.1" 200 -
+2026-05-03 11:59:07,210 [INFO] 127.0.0.1 - - [03/May/2026 11:59:07] "GET /api/exams/7 HTTP/1.1" 200 -
+2026-05-03 11:59:08,561 [INFO] Session started: EG-1777780748 for Sam Andrei (student_id=8)
+2026-05-03 11:59:08,563 [INFO] 127.0.0.1 - - [03/May/2026 11:59:08] "POST /api/start_session HTTP/1.1" 200 -
+2026-05-03 11:59:09,851 [INFO] 127.0.0.1 - - [03/May/2026 11:59:09] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-05-03 11:59:10,098 [INFO] 127.0.0.1 - - [03/May/2026 11:59:10] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-03 11:59:10,247 [WARNING] [EG-1777780748] VIOLATION: AUDIO_ANOMALY — Suspicious audio: 90 dB
+2026-05-03 11:59:10,249 [INFO] 127.0.0.1 - - [03/May/2026 11:59:10] "POST /api/audio_alert HTTP/1.1" 200 -
+2026-05-03 11:59:11,600 [INFO] 127.0.0.1 - - [03/May/2026 11:59:11] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-03 11:59:13,101 [INFO] 127.0.0.1 - - [03/May/2026 11:59:13] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-03 11:59:14,602 [INFO] 127.0.0.1 - - [03/May/2026 11:59:14] "POST /api/analyze_frame HTTP/1.1" 200 -
+2026-05-03 11:59:17,054 [INFO] Submission graded: EG-1777780748 — 50.0%
+2026-05-03 11:59:17,055 [INFO] 127.0.0.1 - - [03/May/2026 11:59:17] "POST /api/submit_exam HTTP/1.1" 200 -
+2026-05-03 11:59:17,064 [INFO] Session ended: EG-1777780748, flags: 1
+2026-05-03 11:59:17,066 [INFO] 127.0.0.1 - - [03/May/2026 11:59:17] "POST /api/end_session HTTP/1.1" 200 -
+2026-05-03 11:59:17,079 [INFO] 127.0.0.1 - - [03/May/2026 11:59:17] "GET /report/EG-1777780748 HTTP/1.1" 200 -
+2026-05-03 11:59:17,086 [INFO] 127.0.0.1 - - [03/May/2026 11:59:17] "GET /submitted?session=EG-1777780748&name=Sam%20Andrei HTTP/1.1" 200 -
+2026-05-03 11:59:17,100 [INFO] 127.0.0.1 - - [03/May/2026 11:59:17] "POST /api/tab_switch HTTP/1.1" 200 -
+2026-05-03 11:59:19,130 [INFO] 127.0.0.1 - - [03/May/2026 11:59:19] "GET /student/dashboard HTTP/1.1" 200 -
+2026-05-03 11:59:19,159 [INFO] 127.0.0.1 - - [03/May/2026 11:59:19] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-03 11:59:19,160 [INFO] 127.0.0.1 - - [03/May/2026 11:59:19] "GET /api/student/exams HTTP/1.1" 200 -
+2026-05-03 12:03:17,923 [INFO]  * Detected change in '/Users/macbook/Downloads/examguard/app.py', reloading
+2026-05-03 12:03:18,027 [INFO]  * Restarting with stat
+2026-05-03 12:03:19,284 [INFO] Database initialized ✓
+2026-05-03 12:03:19,284 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-03 12:03:19,325 [WARNING]  * Debugger is active!
+2026-05-03 12:03:19,350 [INFO]  * Debugger PIN: 130-332-172
+2026-05-03 12:05:11,956 [INFO] 127.0.0.1 - - [03/May/2026 12:05:11] "[32mGET /student/dashboard HTTP/1.1[0m" 302 -
+2026-05-03 12:05:11,977 [INFO] 127.0.0.1 - - [03/May/2026 12:05:11] "GET / HTTP/1.1" 200 -
+2026-05-03 12:05:12,040 [INFO] 127.0.0.1 - - [03/May/2026 12:05:12] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-03 12:05:12,088 [INFO] 127.0.0.1 - - [03/May/2026 12:05:12] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-03 12:05:12,098 [INFO] 127.0.0.1 - - [03/May/2026 12:05:12] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-03 12:05:20,971 [INFO] 127.0.0.1 - - [03/May/2026 12:05:20] "POST /api/login HTTP/1.1" 200 -
+2026-05-03 12:05:21,006 [INFO] 127.0.0.1 - - [03/May/2026 12:05:21] "GET /student/dashboard HTTP/1.1" 200 -
+2026-05-03 12:05:21,049 [INFO] 127.0.0.1 - - [03/May/2026 12:05:21] "GET /api/student/exams HTTP/1.1" 200 -
+2026-05-03 12:05:21,074 [INFO] 127.0.0.1 - - [03/May/2026 12:05:21] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-03 12:05:26,877 [INFO] 127.0.0.1 - - [03/May/2026 12:05:26] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-05-03 12:05:29,256 [INFO] 127.0.0.1 - - [03/May/2026 12:05:29] "[32mGET /exam?name=Sam%20Andrei&duration=60&exam_id=7&token=9406ccfe8abf237b6bb7f4c69db7b3adae829f904d2c6d1dc65177b6f6a02441 HTTP/1.1[0m" 302 -
+2026-05-03 12:05:29,268 [INFO] 127.0.0.1 - - [03/May/2026 12:05:29] "GET /submitted?session=already&name=Sam%20Andrei HTTP/1.1" 200 -
+2026-05-03 12:05:33,869 [INFO] 127.0.0.1 - - [03/May/2026 12:05:33] "GET /student/dashboard HTTP/1.1" 200 -
+2026-05-03 12:05:33,895 [INFO] 127.0.0.1 - - [03/May/2026 12:05:33] "GET /api/student/exams HTTP/1.1" 200 -
+2026-05-03 12:05:33,901 [INFO] 127.0.0.1 - - [03/May/2026 12:05:33] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-03 12:05:35,867 [INFO] 127.0.0.1 - - [03/May/2026 12:05:35] "GET /student/dashboard HTTP/1.1" 200 -
+2026-05-03 12:05:35,889 [INFO] 127.0.0.1 - - [03/May/2026 12:05:35] "GET /api/student/exams HTTP/1.1" 200 -
+2026-05-03 12:05:35,891 [INFO] 127.0.0.1 - - [03/May/2026 12:05:35] "GET /api/sessions HTTP/1.1" 200 -

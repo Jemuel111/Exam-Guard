@@ -1,0 +1,2 @@
+timestamp,elapsed_seconds,type,details,severity
+11:59:10,1.7,AUDIO_ANOMALY,Suspicious audio: 90 dB,medium

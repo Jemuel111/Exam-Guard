@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ExamGuard — Submitted</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#f0f4fa; --bg1:#ffffff; --bg2:#e8edf5;
+      --acc:#2563eb; --ok:#16a34a; --warn:#d97706;
+      --hi:#0f172a; --mid:#475569; --low:#94a3b8;
+      --bd:rgba(15,23,42,0.1);
+      --sans:'Space Grotesk',sans-serif; --mono:'Space Mono',monospace;
+    }
+    body { font-family:var(--sans); background:var(--bg); color:var(--hi); min-height:100vh;
+      display:flex; align-items:center; justify-content:center; padding:24px; }
+    body::before { content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+      background-image:linear-gradient(rgba(37,99,235,0.04) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(37,99,235,0.04) 1px,transparent 1px);
+      background-size:52px 52px; }
+
+    .card { background:var(--bg1); border:1px solid var(--bd); padding:56px 48px;
+      max-width:520px; width:100%; text-align:center; position:relative; z-index:5;
+      animation:rise 0.5s cubic-bezier(0.16,1,0.3,1) both; }
+    @keyframes rise { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+    .card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--ok); }
+
+    .check-icon { width:64px; height:64px; background:rgba(22,163,74,0.1); border:1px solid rgba(22,163,74,0.25);
+      border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 28px; }
+    .check-icon svg { width:28px; height:28px; stroke:var(--ok); fill:none; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+
+    .eyebrow { font-family:var(--mono); font-size:0.58rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--ok); margin-bottom:10px; }
+    h1 { font-size:1.75rem; font-weight:700; letter-spacing:-0.02em; color:var(--hi); margin-bottom:12px; }
+    .subtitle { font-size:0.9rem; color:var(--mid); line-height:1.7; margin-bottom:36px; }
+
+    .info-box { background:var(--bg2); border:1px solid var(--bd); padding:20px 24px; text-align:left; margin-bottom:32px; }
+    .info-row { display:flex; justify-content:space-between; align-items:center; padding:6px 0;
+      border-bottom:1px solid var(--bd); font-size:0.82rem; }
+    .info-row:last-child { border-bottom:none; }
+    .info-label { color:var(--mid); }
+    .info-value { font-family:var(--mono); font-size:0.75rem; color:var(--hi); font-weight:700; }
+
+    .note { background:rgba(37,99,235,0.05); border:1px solid rgba(37,99,235,0.15);
+      padding:14px 18px; font-size:0.78rem; color:var(--mid); line-height:1.65; margin-bottom:28px; text-align:left; }
+    .note strong { color:var(--acc); }
+
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      font-family:var(--mono); font-size:0.65rem; font-weight:700; letter-spacing:0.04em;
+      padding:11px 28px; border:1px solid; cursor:pointer; text-decoration:none;
+      transition:all 0.15s; background:none; width:100%; }
+    .btn-primary { background:var(--acc); color:#fff; border-color:var(--acc); }
+    .btn-primary:hover { background:#1d4ed8; border-color:#1d4ed8; }
+
+    .footer { margin-top:28px; font-family:var(--mono); font-size:0.55rem; color:var(--low); letter-spacing:0.08em; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="check-icon">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <div class="eyebrow">Exam Submitted</div>
+    <h1>You're all done!</h1>
+    <p class="subtitle">Your answers and monitoring session have been recorded. Your instructor will review your submission and get back to you with results.</p>
+
+    <div class="info-box">
+      <div class="info-row">
+        <span class="info-label">Student</span>
+        <span class="info-value" id="infoName">—</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Session ID</span>
+        <span class="info-value" id="infoSession">—</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Submitted At</span>
+        <span class="info-value" id="infoTime">—</span>
+      </div>
+    </div>
+
+    <div class="note">
+      <strong>📌 Note:</strong> Your exam results and any monitoring flags will be reviewed by your instructor before any academic decisions are made. No automated judgments have been applied.
+    </div>
+
+    <a href="/student/dashboard" class="btn btn-primary">← Back to Dashboard</a>
+
+    <div class="footer">EXAMGUARD v2.1 · SECURE EXAM SUBMISSION</div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const name = params.get('name') || localStorage.getItem('eg_name') || '—';
+    const session = params.get('session') || '—';
+    document.getElementById('infoName').textContent = name;
+    document.getElementById('infoSession').textContent = session;
+    document.getElementById('infoTime').textContent = new Date().toLocaleTimeString('en-PH', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  </script>
+</body>
+</html>
