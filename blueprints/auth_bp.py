@@ -2,17 +2,16 @@
 ExamGuard — Auth blueprint
 POST /api/login, POST /api/logout, GET /api/me
 POST /api/forgot_password, POST /api/reset_password
-
-ADDITIONS:
-- /api/forgot_password: generates a reset token (in demo: returns it directly)
-- /api/reset_password: validates token and sets new password
-- /api/validate_reset_token: checks if a token is still valid
+POST /api/validate_reset_token
 """
 import logging
 import secrets
+import smtplib
 from datetime import datetime, timedelta
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
-from flask import Blueprint, request, jsonify, g
+from flask import Blueprint, request, jsonify, current_app
 
 from auth import (hash_password, verify_password, generate_token,
                   revoke_token, get_token_from_request, verify_token)
@@ -21,6 +20,88 @@ from database import get_db
 logger  = logging.getLogger(__name__)
 bp_auth = Blueprint('auth', __name__)
 
+
+# ── Email helper ──────────────────────────────────────────────────────────────
+
+def _send_reset_email(to_email: str, user_name: str, token: str, app) -> bool:
+    """
+    Send a password-reset email.
+    Returns True on success, False if mail is not configured or sending fails.
+    """
+    mail_user = app.config.get('MAIL_USER', '').strip()
+    mail_pass = app.config.get('MAIL_PASS', '').strip()
+    mail_server = app.config.get('MAIL_SERVER', 'smtp.gmail.com')
+    mail_port   = int(app.config.get('MAIL_PORT', 587))
+
+    if not mail_user or not mail_pass:
+        logger.warning('MAIL_USER / MAIL_PASS not configured — cannot send reset email')
+        return False
+
+    reset_link = f"http://localhost:5000/?token={token}"
+
+    html_body = f"""
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"/>
+  <style>
+    body {{ font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4fa; margin: 0; padding: 0; }}
+    .wrapper {{ max-width: 520px; margin: 40px auto; background: #ffffff; border: 1px solid rgba(15,23,42,0.1); }}
+    .header {{ background: #2563eb; padding: 28px 36px; }}
+    .header h1 {{ color: #fff; font-size: 1.1rem; font-weight: 700; letter-spacing: 0.05em;
+                   font-family: monospace; margin: 0; }}
+    .body {{ padding: 36px; }}
+    .body p {{ color: #475569; font-size: 0.9rem; line-height: 1.7; margin: 0 0 16px; }}
+    .btn {{ display: inline-block; background: #2563eb; color: #ffffff !important;
+             text-decoration: none; padding: 12px 28px; font-weight: 700;
+             font-size: 0.85rem; letter-spacing: 0.04em; margin: 8px 0 20px; }}
+    .token-box {{ background: #f0f4fa; border: 1px solid rgba(15,23,42,0.1);
+                   padding: 14px 18px; font-family: monospace; font-size: 0.78rem;
+                   color: #0f172a; word-break: break-all; margin: 12px 0 20px; }}
+    .note {{ font-size: 0.78rem; color: #94a3b8; border-top: 1px solid rgba(15,23,42,0.08);
+              padding-top: 16px; margin-top: 8px; }}
+    .footer {{ padding: 16px 36px; background: #f0f4fa; font-family: monospace;
+                font-size: 0.65rem; color: #94a3b8; letter-spacing: 0.08em; }}
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="header"><h1>EXAMGUARD · PASSWORD RESET</h1></div>
+    <div class="body">
+      <p>Hi <strong>{user_name}</strong>,</p>
+      <p>We received a request to reset your ExamGuard password. Click the button below to set a new password. This link expires in <strong>1 hour</strong>.</p>
+      <a class="btn" href="{reset_link}">Reset My Password</a>
+      <p style="color:#94a3b8;font-size:0.8rem;">If the button doesn't work, copy and paste this link into your browser:</p>
+      <div class="token-box">{reset_link}</div>
+      <p class="note">If you did not request a password reset, you can safely ignore this email. Your password will not be changed.</p>
+    </div>
+    <div class="footer">EXAMGUARD · SECURE EXAM PLATFORM · DO NOT REPLY TO THIS EMAIL</div>
+  </div>
+</body>
+</html>
+"""
+
+    try:
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = 'ExamGuard — Password Reset Request'
+        msg['From']    = f'ExamGuard <{mail_user}>'
+        msg['To']      = to_email
+        msg.attach(MIMEText(html_body, 'html'))
+
+        with smtplib.SMTP(mail_server, mail_port, timeout=10) as smtp:
+            smtp.ehlo()
+            smtp.starttls()
+            smtp.login(mail_user, mail_pass)
+            smtp.send_message(msg)
+
+        logger.info('Password reset email sent to %s', to_email)
+        return True
+    except Exception as e:
+        logger.error('Failed to send reset email to %s: %s', to_email, e)
+        return False
+
+
+# ── Login ─────────────────────────────────────────────────────────────────────
 
 @bp_auth.post('/api/login')
 def login():
@@ -116,9 +197,8 @@ def me():
 @bp_auth.post('/api/forgot_password')
 def forgot_password():
     """
-    Generates a password reset token.
-    In production: send via email. In demo mode: return token in response
-    so it can be used directly (since there's no mail server configured).
+    Generate a password-reset token and email it to the user.
+    Always returns the same success message to prevent email enumeration.
     """
     data  = request.get_json(silent=True) or {}
     email = (data.get('email') or '').lower().strip()
@@ -134,12 +214,13 @@ def forgot_password():
     ).fetchone()
 
     # Always return success to prevent email enumeration
+    generic_ok = jsonify({
+        'success': True,
+        'message': 'If that email is registered, a reset link has been sent.',
+    })
+
     if not user:
-        return jsonify({
-            'success': True,
-            'message': 'If that email exists, a reset link has been sent.',
-            'demo_mode': True,
-        })
+        return generic_ok
 
     # Invalidate old tokens for this user
     db.execute('DELETE FROM password_reset_tokens WHERE user_id=?', (user['id'],))
@@ -153,17 +234,28 @@ def forgot_password():
     )
     db.commit()
 
-    logger.info('Password reset token generated for user %s', user['id'])
+    logger.info('Password reset token generated for user %s (%s)', user['id'], email)
 
-    # In production: send email with reset link
-    # For demo: return the token directly so teacher/student can test the flow
-    mail_configured = bool(db.execute("SELECT 1").fetchone())  # placeholder check
+    # Try to send the real email
+    mail_sent = _send_reset_email(email, user['name'], token, current_app)
+
+    if mail_sent:
+        return generic_ok
+
+    # Mail not configured — inform admin/dev without leaking the token to the
+    # browser. Log the reset link server-side so it can be used during local dev.
+    reset_link = f"http://localhost:5000/?token={token}"
+    logger.info(
+        'EMAIL NOT CONFIGURED — reset link for %s: %s',
+        email, reset_link
+    )
+
+    # Return a mail-not-configured flag so the frontend can show a helpful
+    # fallback message. Never send the raw token in the JSON response.
     return jsonify({
-        'success':    True,
-        'message':    'If that email exists, a reset link has been sent.',
-        'demo_token': token,   # Remove this in production
-        'demo_email': email,
-        'demo_mode':  True,
+        'success': True,
+        'message': 'If that email is registered, a reset link has been sent.',
+        'mail_not_configured': True,   # frontend uses this only to show a UI hint
     })
 
 
@@ -195,8 +287,8 @@ def validate_reset_token():
 
 @bp_auth.post('/api/reset_password')
 def reset_password():
-    data        = request.get_json(silent=True) or {}
-    token       = data.get('token', '').strip()
+    data         = request.get_json(silent=True) or {}
+    token        = data.get('token', '').strip()
     new_password = data.get('password', '').strip()
 
     if not token or not new_password:

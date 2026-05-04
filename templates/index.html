@@ -338,7 +338,7 @@
       <div id="stepForgot" style="display:none">
         <div class="modal-eyebrow">ACCOUNT RECOVERY</div>
         <div class="modal-title">Forgot Password</div>
-        <div class="modal-sub">Enter your email and we'll send a reset link. In demo mode, the token is shown directly.</div>
+        <div class="modal-sub">Enter your email and we'll send a reset link.</div>
         <div class="step-dots">
           <div class="step-dot active" id="dot1"></div>
           <div class="step-dot" id="dot2"></div>
@@ -511,12 +511,15 @@
       showStep('login');
     }
 
-    async function handleForgot() {
+    // REPLACE the handleForgot() function in index.html with this:
+// (also remove the useToken() function and handleReset() demo_token references)
+
+async function handleForgot() {
       const email = document.getElementById('forgotEmail').value.trim();
-      if (!email) { showError('forgotError', 'Please enter your email.'); return; }
+      if (!email) { showError('forgotError', 'Please enter your email address.'); return; }
 
       const btn = document.getElementById('forgotBtn');
-      btn.textContent = 'Sending...'; btn.disabled = true;
+      btn.textContent = 'Sending…'; btn.disabled = true;
       document.getElementById('forgotError').classList.remove('show');
       document.getElementById('forgotSuccess').classList.remove('show');
 
@@ -529,25 +532,29 @@
         btn.textContent = 'Send Reset Link'; btn.disabled = false;
 
         if (data.success) {
-          if (data.demo_mode && data.demo_token) {
-            // Demo mode: show the token inline so user can use it
-            const successEl = document.getElementById('forgotSuccess');
+          const successEl = document.getElementById('forgotSuccess');
+
+          if (data.mail_not_configured) {
             successEl.innerHTML = `
-              Reset link sent (demo mode — token shown below).<br><br>
-              <div class="demo-token-box">
-                <span class="demo-token-label">Demo Reset Token</span>
-                <div class="demo-token-value">${data.demo_token}</div>
-                <button class="demo-use-btn" onclick="useToken('${data.demo_token}')">Use This Token →</button>
-              </div>
-              In production, this would be emailed to <strong>${data.demo_email}</strong>.
-            `;
-            successEl.classList.add('show');
+              <strong>Email delivery not configured.</strong><br><br>
+              A reset link was generated but could not be emailed because the server
+              has no mail credentials set up.<br><br>
+              <strong>To fix this:</strong> add <code>MAIL_USER</code> and
+              <code>MAIL_PASS</code> to your <code>.env</code> file, then restart.<br><br>
+              <span style="color:var(--low);font-size:0.75em">
+                The reset link has been printed to <code>logs/examguard.log</code>.
+              </span>`;
           } else {
-            document.getElementById('forgotSuccess').textContent = data.message || 'Reset link sent. Check your email.';
-            document.getElementById('forgotSuccess').classList.add('show');
+            successEl.innerHTML = `
+              <strong>Reset link sent!</strong><br><br>
+              Check your inbox at <strong>${email}</strong>. The link expires in 1 hour.<br><br>
+              <span style="color:var(--low);font-size:0.75em">
+                Didn't receive it? Check your spam folder, or try again.
+              </span>`;
           }
+          successEl.classList.add('show');
         } else {
-          showError('forgotError', data.error || 'Something went wrong.');
+          showError('forgotError', data.error || 'Something went wrong. Please try again.');
         }
       } catch(e) {
         btn.textContent = 'Send Reset Link'; btn.disabled = false;

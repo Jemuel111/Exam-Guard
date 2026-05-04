@@ -2396,3 +2396,257 @@
 2026-05-04 14:06:09,208 [INFO] 127.0.0.1 - - [04/May/2026 14:06:09] "GET /api/dashboard_stats HTTP/1.1" 200 -
 2026-05-04 14:06:09,208 [INFO] 127.0.0.1 - - [04/May/2026 14:06:09] "GET /api/archive/count HTTP/1.1" 200 -
 2026-05-04 14:06:09,220 [INFO] 127.0.0.1 - - [04/May/2026 14:06:09] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:07:10,197 [INFO] 127.0.0.1 - - [04/May/2026 14:07:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:07:10,201 [INFO] 127.0.0.1 - - [04/May/2026 14:07:10] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:07:10,204 [INFO] 127.0.0.1 - - [04/May/2026 14:07:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:07:10,205 [INFO] 127.0.0.1 - - [04/May/2026 14:07:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:08:10,197 [INFO] 127.0.0.1 - - [04/May/2026 14:08:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:08:10,198 [INFO] 127.0.0.1 - - [04/May/2026 14:08:10] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:08:10,200 [INFO] 127.0.0.1 - - [04/May/2026 14:08:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:08:10,205 [INFO] 127.0.0.1 - - [04/May/2026 14:08:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:09:10,206 [INFO] 127.0.0.1 - - [04/May/2026 14:09:10] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:09:10,208 [INFO] 127.0.0.1 - - [04/May/2026 14:09:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:09:10,210 [INFO] 127.0.0.1 - - [04/May/2026 14:09:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:09:10,214 [INFO] 127.0.0.1 - - [04/May/2026 14:09:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:10:10,195 [INFO] 127.0.0.1 - - [04/May/2026 14:10:10] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:10:10,196 [INFO] 127.0.0.1 - - [04/May/2026 14:10:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:10:10,198 [INFO] 127.0.0.1 - - [04/May/2026 14:10:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:10:10,203 [INFO] 127.0.0.1 - - [04/May/2026 14:10:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:11:10,199 [INFO] 127.0.0.1 - - [04/May/2026 14:11:10] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:11:10,201 [INFO] 127.0.0.1 - - [04/May/2026 14:11:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:11:10,202 [INFO] 127.0.0.1 - - [04/May/2026 14:11:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:11:10,208 [INFO] 127.0.0.1 - - [04/May/2026 14:11:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:11:19,901 [INFO] 127.0.0.1 - - [04/May/2026 14:11:19] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:11:19,905 [INFO] 127.0.0.1 - - [04/May/2026 14:11:19] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:11:19,905 [INFO] 127.0.0.1 - - [04/May/2026 14:11:19] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:11:19,910 [INFO] 127.0.0.1 - - [04/May/2026 14:11:19] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:11:23,191 [INFO] 127.0.0.1 - - [04/May/2026 14:11:23] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:11:24,191 [INFO] 127.0.0.1 - - [04/May/2026 14:11:24] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:11:24,193 [INFO] 127.0.0.1 - - [04/May/2026 14:11:24] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:11:28,191 [INFO] 127.0.0.1 - - [04/May/2026 14:11:28] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:11:33,191 [INFO] 127.0.0.1 - - [04/May/2026 14:11:33] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:11:34,193 [INFO] 127.0.0.1 - - [04/May/2026 14:11:34] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:11:34,194 [INFO] 127.0.0.1 - - [04/May/2026 14:11:34] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:11:38,191 [INFO] 127.0.0.1 - - [04/May/2026 14:11:38] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:11:43,193 [INFO] 127.0.0.1 - - [04/May/2026 14:11:43] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:11:44,190 [INFO] 127.0.0.1 - - [04/May/2026 14:11:44] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:11:44,192 [INFO] 127.0.0.1 - - [04/May/2026 14:11:44] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:11:45,189 [INFO] 127.0.0.1 - - [04/May/2026 14:11:45] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:11:48,191 [INFO] 127.0.0.1 - - [04/May/2026 14:11:48] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:11:53,191 [INFO] 127.0.0.1 - - [04/May/2026 14:11:53] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:11:54,190 [INFO] 127.0.0.1 - - [04/May/2026 14:11:54] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:11:54,193 [INFO] 127.0.0.1 - - [04/May/2026 14:11:54] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:11:58,191 [INFO] 127.0.0.1 - - [04/May/2026 14:11:58] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:12:03,190 [INFO] 127.0.0.1 - - [04/May/2026 14:12:03] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:12:04,191 [INFO] 127.0.0.1 - - [04/May/2026 14:12:04] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:12:04,191 [INFO] 127.0.0.1 - - [04/May/2026 14:12:04] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:12:08,189 [INFO] 127.0.0.1 - - [04/May/2026 14:12:08] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:12:13,191 [INFO] 127.0.0.1 - - [04/May/2026 14:12:13] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:12:14,190 [INFO] 127.0.0.1 - - [04/May/2026 14:12:14] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:12:14,192 [INFO] 127.0.0.1 - - [04/May/2026 14:12:14] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:12:15,189 [INFO] 127.0.0.1 - - [04/May/2026 14:12:15] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:12:18,190 [INFO] 127.0.0.1 - - [04/May/2026 14:12:18] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:13:10,193 [INFO] 127.0.0.1 - - [04/May/2026 14:13:10] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:13:10,194 [INFO] 127.0.0.1 - - [04/May/2026 14:13:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:13:10,197 [INFO] 127.0.0.1 - - [04/May/2026 14:13:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:13:10,201 [INFO] 127.0.0.1 - - [04/May/2026 14:13:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:14:10,194 [INFO] 127.0.0.1 - - [04/May/2026 14:14:10] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:14:10,194 [INFO] 127.0.0.1 - - [04/May/2026 14:14:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:14:10,198 [INFO] 127.0.0.1 - - [04/May/2026 14:14:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:14:10,203 [INFO] 127.0.0.1 - - [04/May/2026 14:14:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:15:10,190 [INFO] 127.0.0.1 - - [04/May/2026 14:15:10] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:15:10,190 [INFO] 127.0.0.1 - - [04/May/2026 14:15:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:15:10,194 [INFO] 127.0.0.1 - - [04/May/2026 14:15:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:15:10,198 [INFO] 127.0.0.1 - - [04/May/2026 14:15:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:16:10,190 [INFO] 127.0.0.1 - - [04/May/2026 14:16:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:16:10,194 [INFO] 127.0.0.1 - - [04/May/2026 14:16:10] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:16:10,195 [INFO] 127.0.0.1 - - [04/May/2026 14:16:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:16:10,201 [INFO] 127.0.0.1 - - [04/May/2026 14:16:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:17:10,190 [INFO] 127.0.0.1 - - [04/May/2026 14:17:10] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:17:10,191 [INFO] 127.0.0.1 - - [04/May/2026 14:17:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:17:10,192 [INFO] 127.0.0.1 - - [04/May/2026 14:17:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:17:10,198 [INFO] 127.0.0.1 - - [04/May/2026 14:17:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:18:10,192 [INFO] 127.0.0.1 - - [04/May/2026 14:18:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:18:10,192 [INFO] 127.0.0.1 - - [04/May/2026 14:18:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:18:10,193 [INFO] 127.0.0.1 - - [04/May/2026 14:18:10] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:18:10,199 [INFO] 127.0.0.1 - - [04/May/2026 14:18:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:19:10,190 [INFO] 127.0.0.1 - - [04/May/2026 14:19:10] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:19:10,194 [INFO] 127.0.0.1 - - [04/May/2026 14:19:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:19:10,195 [INFO] 127.0.0.1 - - [04/May/2026 14:19:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:19:10,200 [INFO] 127.0.0.1 - - [04/May/2026 14:19:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:19:21,155 [INFO]  * Detected change in '/Users/macbook/Downloads/examguard/blueprints/auth_bp.py', reloading
+2026-05-04 14:19:21,267 [INFO]  * Restarting with stat
+2026-05-04 14:19:22,403 [INFO] Database initialized ✓
+2026-05-04 14:19:22,404 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-04 14:19:22,428 [WARNING]  * Debugger is active!
+2026-05-04 14:19:22,437 [INFO]  * Debugger PIN: 130-332-172
+2026-05-04 14:19:22,472 [INFO] 127.0.0.1 - - [04/May/2026 14:19:22] "GET /socket.io/?EIO=4&transport=polling&t=Ptnf2x5 HTTP/1.1" 200 -
+2026-05-04 14:19:22,479 [INFO] 127.0.0.1 - - [04/May/2026 14:19:22] "POST /socket.io/?EIO=4&transport=polling&t=Ptnf2_h&sid=hfFEQTqFcj4iTg_8AAAA HTTP/1.1" 200 -
+2026-05-04 14:19:22,481 [INFO] 127.0.0.1 - - [04/May/2026 14:19:22] "GET /socket.io/?EIO=4&transport=polling&t=Ptnf2_i&sid=hfFEQTqFcj4iTg_8AAAA HTTP/1.1" 200 -
+2026-05-04 14:20:10,193 [INFO] 127.0.0.1 - - [04/May/2026 14:20:10] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:20:10,194 [INFO] 127.0.0.1 - - [04/May/2026 14:20:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:20:10,196 [INFO] 127.0.0.1 - - [04/May/2026 14:20:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:20:10,201 [INFO] 127.0.0.1 - - [04/May/2026 14:20:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:21:10,192 [INFO] 127.0.0.1 - - [04/May/2026 14:21:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:21:10,198 [INFO] 127.0.0.1 - - [04/May/2026 14:21:10] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:21:10,204 [INFO] 127.0.0.1 - - [04/May/2026 14:21:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:21:10,207 [INFO] 127.0.0.1 - - [04/May/2026 14:21:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:22:10,188 [INFO] 127.0.0.1 - - [04/May/2026 14:22:10] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:22:10,190 [INFO] 127.0.0.1 - - [04/May/2026 14:22:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:22:10,191 [INFO] 127.0.0.1 - - [04/May/2026 14:22:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:22:10,196 [INFO] 127.0.0.1 - - [04/May/2026 14:22:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:23:10,184 [INFO] 127.0.0.1 - - [04/May/2026 14:23:10] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:23:10,186 [INFO] 127.0.0.1 - - [04/May/2026 14:23:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:23:10,187 [INFO] 127.0.0.1 - - [04/May/2026 14:23:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:23:10,192 [INFO] 127.0.0.1 - - [04/May/2026 14:23:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:24:10,181 [INFO] 127.0.0.1 - - [04/May/2026 14:24:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:24:10,184 [INFO] 127.0.0.1 - - [04/May/2026 14:24:10] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:24:10,184 [INFO] 127.0.0.1 - - [04/May/2026 14:24:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:24:10,189 [INFO] 127.0.0.1 - - [04/May/2026 14:24:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:24:46,625 [INFO] 127.0.0.1 - - [04/May/2026 14:24:46] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:24:46,628 [INFO] 127.0.0.1 - - [04/May/2026 14:24:46] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:24:46,632 [INFO] 127.0.0.1 - - [04/May/2026 14:24:46] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:24:46,636 [INFO] 127.0.0.1 - - [04/May/2026 14:24:46] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:24:47,548 [INFO] 127.0.0.1 - - [04/May/2026 14:24:47] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:24:53,177 [INFO] 127.0.0.1 - - [04/May/2026 14:24:53] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:24:54,179 [INFO] 127.0.0.1 - - [04/May/2026 14:24:54] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:24:54,181 [INFO] 127.0.0.1 - - [04/May/2026 14:24:54] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:24:58,178 [INFO] 127.0.0.1 - - [04/May/2026 14:24:58] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:25:03,176 [INFO] 127.0.0.1 - - [04/May/2026 14:25:03] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:25:04,179 [INFO] 127.0.0.1 - - [04/May/2026 14:25:04] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:25:04,182 [INFO] 127.0.0.1 - - [04/May/2026 14:25:04] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:25:08,177 [INFO] 127.0.0.1 - - [04/May/2026 14:25:08] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:25:13,178 [INFO] 127.0.0.1 - - [04/May/2026 14:25:13] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:25:14,178 [INFO] 127.0.0.1 - - [04/May/2026 14:25:14] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:25:14,180 [INFO] 127.0.0.1 - - [04/May/2026 14:25:14] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:25:15,177 [INFO] 127.0.0.1 - - [04/May/2026 14:25:15] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:25:18,180 [INFO] 127.0.0.1 - - [04/May/2026 14:25:18] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:25:23,176 [INFO] 127.0.0.1 - - [04/May/2026 14:25:23] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:25:24,180 [INFO] 127.0.0.1 - - [04/May/2026 14:25:24] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:25:24,181 [INFO] 127.0.0.1 - - [04/May/2026 14:25:24] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:25:28,176 [INFO] 127.0.0.1 - - [04/May/2026 14:25:28] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:25:33,177 [INFO] 127.0.0.1 - - [04/May/2026 14:25:33] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:25:34,180 [INFO] 127.0.0.1 - - [04/May/2026 14:25:34] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:25:34,180 [INFO] 127.0.0.1 - - [04/May/2026 14:25:34] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:25:38,177 [INFO] 127.0.0.1 - - [04/May/2026 14:25:38] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:25:43,177 [INFO] 127.0.0.1 - - [04/May/2026 14:25:43] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:25:44,177 [INFO] 127.0.0.1 - - [04/May/2026 14:25:44] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:25:44,179 [INFO] 127.0.0.1 - - [04/May/2026 14:25:44] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:25:45,176 [INFO] 127.0.0.1 - - [04/May/2026 14:25:45] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-04 14:26:10,175 [INFO] 127.0.0.1 - - [04/May/2026 14:26:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:26:10,177 [INFO] 127.0.0.1 - - [04/May/2026 14:26:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:26:10,181 [INFO] 127.0.0.1 - - [04/May/2026 14:26:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:27:17,126 [INFO] Database initialized ✓
+2026-05-04 14:27:17,126 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-04 14:27:17,354 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.3:5000
+2026-05-04 14:27:17,354 [INFO] [33mPress CTRL+C to quit[0m
+2026-05-04 14:27:17,354 [INFO]  * Restarting with stat
+2026-05-04 14:27:17,886 [INFO] Database initialized ✓
+2026-05-04 14:27:17,887 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-04 14:27:17,915 [WARNING]  * Debugger is active!
+2026-05-04 14:27:17,925 [INFO]  * Debugger PIN: 130-332-172
+2026-05-04 14:27:20,173 [INFO] 127.0.0.1 - - [04/May/2026 14:27:20] "GET /socket.io/?EIO=4&transport=polling&t=Ptngtdf HTTP/1.1" 200 -
+2026-05-04 14:27:20,180 [INFO] 127.0.0.1 - - [04/May/2026 14:27:20] "POST /socket.io/?EIO=4&transport=polling&t=Ptngtdm&sid=Q8P8dma1O9QzyOZVAAAA HTTP/1.1" 200 -
+2026-05-04 14:27:20,183 [INFO] 127.0.0.1 - - [04/May/2026 14:27:20] "GET /socket.io/?EIO=4&transport=polling&t=Ptngtdm.0&sid=Q8P8dma1O9QzyOZVAAAA HTTP/1.1" 200 -
+2026-05-04 14:27:29,151 [INFO] 127.0.0.1 - - [04/May/2026 14:27:29] "GET / HTTP/1.1" 200 -
+2026-05-04 14:27:29,179 [INFO] 127.0.0.1 - - [04/May/2026 14:27:29] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:27:29,600 [INFO] 127.0.0.1 - - [04/May/2026 14:27:29] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-04 14:27:29,708 [INFO] 127.0.0.1 - - [04/May/2026 14:27:29] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-04 14:27:32,188 [INFO] 127.0.0.1 - - [04/May/2026 14:27:32] "GET /socket.io/?EIO=4&transport=websocket&sid=Q8P8dma1O9QzyOZVAAAA HTTP/1.1" 200 -
+2026-05-04 14:27:47,433 [INFO] Password reset token generated for user 11 (jemuelballebar1@gmail.com)
+2026-05-04 14:27:49,990 [ERROR] Failed to send reset email to jemuelballebar1@gmail.com: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-83515833ee3sm10593538b3a.11 - gsmtp')
+2026-05-04 14:27:49,990 [INFO] EMAIL NOT CONFIGURED — reset link for jemuelballebar1@gmail.com: http://localhost:5000/?token=_XGRvG6fDJrE9NhAg962_ghE_KyPuqCFQvI9uXY8oCU
+2026-05-04 14:27:49,995 [INFO] 127.0.0.1 - - [04/May/2026 14:27:49] "POST /api/forgot_password HTTP/1.1" 200 -
+2026-05-04 14:29:10,105 [INFO] Database initialized ✓
+2026-05-04 14:29:10,105 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-04 14:29:10,175 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.3:5000
+2026-05-04 14:29:10,175 [INFO] [33mPress CTRL+C to quit[0m
+2026-05-04 14:29:10,175 [INFO]  * Restarting with stat
+2026-05-04 14:29:10,724 [INFO] Database initialized ✓
+2026-05-04 14:29:10,724 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-04 14:29:10,755 [WARNING]  * Debugger is active!
+2026-05-04 14:29:10,766 [INFO]  * Debugger PIN: 130-332-172
+2026-05-04 14:29:17,872 [INFO] 127.0.0.1 - - [04/May/2026 14:29:17] "GET / HTTP/1.1" 200 -
+2026-05-04 14:29:17,908 [INFO] 127.0.0.1 - - [04/May/2026 14:29:17] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:29:18,268 [INFO] 127.0.0.1 - - [04/May/2026 14:29:18] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-04 14:29:18,392 [INFO] 127.0.0.1 - - [04/May/2026 14:29:18] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-04 14:29:30,587 [INFO] Password reset token generated for user 11 (jemuelballebar1@gmail.com)
+2026-05-04 14:29:33,049 [ERROR] Failed to send reset email to jemuelballebar1@gmail.com: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2b9caa7e80bsm93540405ad.8 - gsmtp')
+2026-05-04 14:29:33,049 [INFO] EMAIL NOT CONFIGURED — reset link for jemuelballebar1@gmail.com: http://localhost:5000/?token=gOuy33LPkwHc8ZcXrLMQCnkTgMuYBHUekb8BMF5v4Zs
+2026-05-04 14:29:33,054 [INFO] 127.0.0.1 - - [04/May/2026 14:29:33] "POST /api/forgot_password HTTP/1.1" 200 -
+2026-05-04 14:40:18,244 [INFO] 127.0.0.1 - - [04/May/2026 14:40:18] "GET / HTTP/1.1" 200 -
+2026-05-04 14:40:18,342 [INFO] 127.0.0.1 - - [04/May/2026 14:40:18] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:40:18,516 [INFO] 127.0.0.1 - - [04/May/2026 14:40:18] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-05-04 14:40:18,529 [INFO] 127.0.0.1 - - [04/May/2026 14:40:18] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-04 14:40:18,540 [INFO] 127.0.0.1 - - [04/May/2026 14:40:18] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-04 14:40:25,793 [INFO] Password reset token generated for user 11 (jemuelballebar1@gmail.com)
+2026-05-04 14:40:28,888 [ERROR] Failed to send reset email to jemuelballebar1@gmail.com: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2b9caa7ee38sm89183765ad.16 - gsmtp')
+2026-05-04 14:40:28,888 [INFO] EMAIL NOT CONFIGURED — reset link for jemuelballebar1@gmail.com: http://localhost:5000/?token=V3W1vYkRdMjwt3vsnJvCP-QrfDUYasJwM5utSo1kYgc
+2026-05-04 14:40:28,893 [INFO] 127.0.0.1 - - [04/May/2026 14:40:28] "POST /api/forgot_password HTTP/1.1" 200 -
+2026-05-04 14:41:06,775 [INFO] Database initialized ✓
+2026-05-04 14:41:06,775 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-04 14:41:06,837 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.3:5000
+2026-05-04 14:41:06,837 [INFO] [33mPress CTRL+C to quit[0m
+2026-05-04 14:41:06,837 [INFO]  * Restarting with stat
+2026-05-04 14:41:07,377 [INFO] Database initialized ✓
+2026-05-04 14:41:07,377 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-04 14:41:07,409 [WARNING]  * Debugger is active!
+2026-05-04 14:41:07,417 [INFO]  * Debugger PIN: 130-332-172
+2026-05-04 14:41:16,994 [INFO] 127.0.0.1 - - [04/May/2026 14:41:16] "GET / HTTP/1.1" 200 -
+2026-05-04 14:41:17,019 [INFO] 127.0.0.1 - - [04/May/2026 14:41:17] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:41:17,351 [INFO] 127.0.0.1 - - [04/May/2026 14:41:17] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-04 14:41:17,474 [INFO] 127.0.0.1 - - [04/May/2026 14:41:17] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-04 14:41:32,125 [INFO] Password reset token generated for user 11 (jemuelballebar1@gmail.com)
+2026-05-04 14:41:34,093 [ERROR] Failed to send reset email to jemuelballebar1@gmail.com: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials d2e1a72fcca58-83515ad8770sm11576141b3a.32 - gsmtp')
+2026-05-04 14:41:34,094 [INFO] EMAIL NOT CONFIGURED — reset link for jemuelballebar1@gmail.com: http://localhost:5000/?token=sNl3EfhurZalrhjy71CO5pUfV0H9-x1I8HKqInvOOj8
+2026-05-04 14:41:34,098 [INFO] 127.0.0.1 - - [04/May/2026 14:41:34] "POST /api/forgot_password HTTP/1.1" 200 -
+2026-05-04 14:42:45,793 [INFO] 127.0.0.1 - - [04/May/2026 14:42:45] "GET / HTTP/1.1" 200 -
+2026-05-04 14:42:45,832 [INFO] 127.0.0.1 - - [04/May/2026 14:42:45] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:42:45,883 [INFO] 127.0.0.1 - - [04/May/2026 14:42:45] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-04 14:42:45,896 [INFO] 127.0.0.1 - - [04/May/2026 14:42:45] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-04 14:43:26,479 [INFO] 127.0.0.1 - - [04/May/2026 14:43:26] "POST /api/login HTTP/1.1" 200 -
+2026-05-04 14:43:26,515 [INFO] 127.0.0.1 - - [04/May/2026 14:43:26] "GET /student/dashboard HTTP/1.1" 200 -
+2026-05-04 14:43:26,575 [INFO] 127.0.0.1 - - [04/May/2026 14:43:26] "GET /api/student/exams HTTP/1.1" 200 -
+2026-05-04 14:43:26,598 [INFO] 127.0.0.1 - - [04/May/2026 14:43:26] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 14:43:29,078 [INFO] 127.0.0.1 - - [04/May/2026 14:43:29] "GET / HTTP/1.1" 200 -
+2026-05-04 14:43:29,104 [INFO] 127.0.0.1 - - [04/May/2026 14:43:29] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:43:29,130 [INFO] 127.0.0.1 - - [04/May/2026 14:43:29] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-04 14:43:29,147 [INFO] 127.0.0.1 - - [04/May/2026 14:43:29] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-04 14:43:38,640 [INFO] Password reset token generated for user 12 (0323-3603@lspu.edu.ph)
+2026-05-04 14:43:41,382 [ERROR] Failed to send reset email to 0323-3603@lspu.edu.ph: (535, b'5.7.8 Username and Password not accepted. For more information, go to\n5.7.8  https://support.google.com/mail/?p=BadCredentials d9443c01a7336-2b9ca953894sm97345675ad.0 - gsmtp')
+2026-05-04 14:43:41,383 [INFO] EMAIL NOT CONFIGURED — reset link for 0323-3603@lspu.edu.ph: http://localhost:5000/?token=XTi2hUB7_W0U2jfeEWxPBwaqekff2vibaOAo-ZUdbt8
+2026-05-04 14:43:41,387 [INFO] 127.0.0.1 - - [04/May/2026 14:43:41] "POST /api/forgot_password HTTP/1.1" 200 -
+2026-05-04 14:54:56,216 [INFO] Database initialized ✓
+2026-05-04 14:54:56,216 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-04 14:54:56,287 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.3:5000
+2026-05-04 14:54:56,288 [INFO] [33mPress CTRL+C to quit[0m
+2026-05-04 14:54:56,288 [INFO]  * Restarting with stat
+2026-05-04 14:54:56,859 [INFO] Database initialized ✓
+2026-05-04 14:54:56,859 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-04 14:54:56,887 [WARNING]  * Debugger is active!
+2026-05-04 14:54:56,895 [INFO]  * Debugger PIN: 130-332-172
+2026-05-04 14:55:03,962 [INFO] 127.0.0.1 - - [04/May/2026 14:55:03] "GET / HTTP/1.1" 200 -
+2026-05-04 14:55:03,987 [INFO] 127.0.0.1 - - [04/May/2026 14:55:03] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 14:55:04,343 [INFO] 127.0.0.1 - - [04/May/2026 14:55:04] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-04 14:55:04,612 [INFO] 127.0.0.1 - - [04/May/2026 14:55:04] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-04 14:57:08,498 [INFO] Password reset token generated for user 11 (jemuelballebar1@gmail.com)
+2026-05-04 14:57:10,733 [INFO] Password reset email sent to jemuelballebar1@gmail.com
+2026-05-04 14:57:10,738 [INFO] 127.0.0.1 - - [04/May/2026 14:57:10] "POST /api/forgot_password HTTP/1.1" 200 -
+2026-05-04 14:58:19,345 [INFO] Password reset token generated for user 11 (jemuelballebar1@gmail.com)
+2026-05-04 14:58:21,334 [INFO] Password reset email sent to jemuelballebar1@gmail.com
+2026-05-04 14:58:21,339 [INFO] 127.0.0.1 - - [04/May/2026 14:58:21] "POST /api/forgot_password HTTP/1.1" 200 -
+2026-05-04 14:59:24,986 [INFO] Password reset token generated for user 11 (jemuelballebar1@gmail.com)
+2026-05-04 14:59:27,107 [INFO] Password reset email sent to jemuelballebar1@gmail.com
+2026-05-04 14:59:27,111 [INFO] 127.0.0.1 - - [04/May/2026 14:59:27] "POST /api/forgot_password HTTP/1.1" 200 -
