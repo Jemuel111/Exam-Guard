@@ -2650,3 +2650,56 @@
 2026-05-04 14:59:24,986 [INFO] Password reset token generated for user 11 (jemuelballebar1@gmail.com)
 2026-05-04 14:59:27,107 [INFO] Password reset email sent to jemuelballebar1@gmail.com
 2026-05-04 14:59:27,111 [INFO] 127.0.0.1 - - [04/May/2026 14:59:27] "POST /api/forgot_password HTTP/1.1" 200 -
+2026-05-04 15:05:50,487 [INFO] 127.0.0.1 - - [04/May/2026 15:05:50] "GET / HTTP/1.1" 200 -
+2026-05-04 15:05:50,591 [INFO] 127.0.0.1 - - [04/May/2026 15:05:50] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 15:05:50,663 [INFO] 127.0.0.1 - - [04/May/2026 15:05:50] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-04 15:05:50,673 [INFO] 127.0.0.1 - - [04/May/2026 15:05:50] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-04 15:05:52,177 [INFO] 127.0.0.1 - - [04/May/2026 15:05:52] "GET / HTTP/1.1" 200 -
+2026-05-04 15:05:52,261 [INFO] 127.0.0.1 - - [04/May/2026 15:05:52] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 15:05:52,363 [INFO] 127.0.0.1 - - [04/May/2026 15:05:52] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-05-04 15:05:52,368 [INFO] 127.0.0.1 - - [04/May/2026 15:05:52] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-04 15:05:52,387 [INFO] 127.0.0.1 - - [04/May/2026 15:05:52] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-04 15:06:00,392 [INFO] Password reset token generated for user 11 (jemuelballebar1@gmail.com)
+2026-05-04 15:06:02,459 [ERROR] Failed to send reset email to jemuelballebar1@gmail.com: (535, b'5.7.8 Authentication failed')
+2026-05-04 15:06:02,459 [INFO] EMAIL NOT CONFIGURED — reset link for jemuelballebar1@gmail.com: http://localhost:5000/?token=1gHyMEiHQGgY7LGXOMQLtduS0-NNBBGwI-mdo5bfg8I
+2026-05-04 15:06:02,463 [INFO] 127.0.0.1 - - [04/May/2026 15:06:02] "POST /api/forgot_password HTTP/1.1" 200 -
+2026-05-04 15:19:01,711 [INFO] Database initialized ✓
+2026-05-04 15:19:01,712 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-04 15:19:01,923 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.3:5000
+2026-05-04 15:19:01,923 [INFO] [33mPress CTRL+C to quit[0m
+2026-05-04 15:19:01,923 [INFO]  * Restarting with stat
+2026-05-04 15:19:02,415 [INFO] Database initialized ✓
+2026-05-04 15:19:02,415 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-04 15:19:02,440 [WARNING]  * Debugger is active!
+2026-05-04 15:19:02,450 [INFO]  * Debugger PIN: 130-332-172
+2026-05-04 15:19:12,682 [INFO] 127.0.0.1 - - [04/May/2026 15:19:12] "GET / HTTP/1.1" 200 -
+2026-05-04 15:19:12,884 [INFO] 127.0.0.1 - - [04/May/2026 15:19:12] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 15:19:12,942 [INFO] 127.0.0.1 - - [04/May/2026 15:19:12] "GET /static/sw.js HTTP/1.1" 200 -
+2026-05-04 15:19:13,049 [INFO] 127.0.0.1 - - [04/May/2026 15:19:13] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-05-04 15:19:13,052 [INFO] 127.0.0.1 - - [04/May/2026 15:19:13] "GET /manifest.json HTTP/1.1" 200 -
+2026-05-04 15:19:13,059 [INFO] 127.0.0.1 - - [04/May/2026 15:19:13] "GET /static/icons/icon-192.png HTTP/1.1" 200 -
+2026-05-04 15:19:34,375 [WARNING] Failed login attempt for jemuelballebar1@gmail.com from 127.0.0.1
+2026-05-04 15:19:34,376 [INFO] 127.0.0.1 - - [04/May/2026 15:19:34] "[31m[1mPOST /api/login HTTP/1.1[0m" 401 -
+2026-05-04 15:19:37,952 [INFO] 127.0.0.1 - - [04/May/2026 15:19:37] "POST /api/login HTTP/1.1" 200 -
+2026-05-04 15:19:37,984 [INFO] 127.0.0.1 - - [04/May/2026 15:19:37] "GET /student/dashboard HTTP/1.1" 200 -
+2026-05-04 15:19:38,043 [INFO] 127.0.0.1 - - [04/May/2026 15:19:38] "GET /api/student/exams HTTP/1.1" 200 -
+2026-05-04 15:19:38,045 [INFO] 127.0.0.1 - - [04/May/2026 15:19:38] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-04 15:19:45,273 [INFO] 127.0.0.1 - - [04/May/2026 15:19:45] "GET / HTTP/1.1" 200 -
+2026-05-04 15:19:45,302 [INFO] 127.0.0.1 - - [04/May/2026 15:19:45] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-04 15:19:45,351 [INFO] 127.0.0.1 - - [04/May/2026 15:19:45] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-04 15:19:45,360 [INFO] 127.0.0.1 - - [04/May/2026 15:19:45] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-04 15:19:52,062 [INFO] Password reset token generated for user 11 (jemuelballebar1@gmail.com)
+2026-05-04 15:19:55,335 [INFO] Password reset email sent to jemuelballebar1@gmail.com
+2026-05-04 15:19:55,340 [INFO] 127.0.0.1 - - [04/May/2026 15:19:55] "POST /api/forgot_password HTTP/1.1" 200 -
+2026-05-04 15:25:39,325 [INFO]  * Detected change in '/Users/macbook/Downloads/examguard/blueprints/auth_bp.py', reloading
+2026-05-04 15:25:39,422 [INFO]  * Restarting with stat
+2026-05-04 15:25:40,534 [INFO] Database initialized ✓
+2026-05-04 15:25:40,535 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-04 15:25:40,571 [WARNING]  * Debugger is active!
+2026-05-04 15:25:40,587 [INFO]  * Debugger PIN: 130-332-172
+2026-05-04 15:25:49,595 [INFO] Password reset token generated for user 11 (jemuelballebar1@gmail.com)
+2026-05-04 15:25:53,855 [INFO] Password reset email sent to jemuelballebar1@gmail.com
+2026-05-04 15:25:53,862 [INFO] 127.0.0.1 - - [04/May/2026 15:25:53] "POST /api/forgot_password HTTP/1.1" 200 -
