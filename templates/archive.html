@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ExamGuard — Archive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#f0f4fa; --bg1:#ffffff; --bg2:#e8edf5; --bg3:#dde4ef;
+      --acc:#2563eb; --ok:#16a34a; --warn:#d97706; --danger:#dc2626;
+      --hi:#0f172a; --mid:#475569; --low:#94a3b8;
+      --bd:rgba(15,23,42,0.1);
+      --sans:'Space Grotesk',sans-serif; --mono:'Space Mono',monospace;
+    }
+    [data-theme="dark"] {
+      --bg:#080c14; --bg1:#0d1424; --bg2:#111c30; --bg3:#141f35;
+      --acc:#3b82f6; --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
+      --hi:#f0f6ff; --mid:#6b84a8; --low:#2d4060;
+      --bd:rgba(255,255,255,0.06);
+    }
+    body { font-family:var(--sans); background:var(--bg); color:var(--hi); min-height:100vh; -webkit-font-smoothing:antialiased; }
+
+    .topbar { position:sticky; top:0; z-index:90; height:56px; background:rgba(240,244,250,0.95);
+      backdrop-filter:blur(16px); border-bottom:1px solid var(--bd);
+      display:flex; align-items:center; justify-content:space-between; padding:0 32px; }
+    [data-theme="dark"] .topbar { background:rgba(8,12,20,0.95); }
+    .topbar-left { display:flex; align-items:center; gap:16px; }
+    .back-btn { font-family:var(--mono); font-size:0.65rem; font-weight:700; color:var(--mid);
+      border:1px solid var(--bd); background:none; padding:7px 14px; cursor:pointer;
+      text-decoration:none; display:inline-flex; align-items:center; gap:6px; transition:all 0.12s; }
+    .back-btn:hover { color:var(--hi); border-color:var(--acc); }
+    .page-title { font-family:var(--mono); font-size:0.85rem; font-weight:700; letter-spacing:0.04em; }
+    .archive-badge { font-family:var(--mono); font-size:0.6rem; font-weight:700; letter-spacing:0.1em;
+      background:rgba(217,119,6,0.1); border:1px solid rgba(217,119,6,0.3); color:var(--warn);
+      padding:3px 10px; }
+
+    .content { max-width:1100px; margin:0 auto; padding:32px; }
+
+    .archive-hero { margin-bottom:32px; padding:28px 32px; background:var(--bg1); border:1px solid var(--bd);
+      border-left:4px solid var(--warn); display:flex; align-items:flex-start; gap:20px; }
+    .archive-hero-icon { font-size:2rem; flex-shrink:0; }
+    .archive-hero-title { font-size:1.1rem; font-weight:600; margin-bottom:6px; }
+    .archive-hero-sub { font-size:0.82rem; color:var(--mid); line-height:1.6; }
+
+    .counts-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:28px; }
+    .count-card { background:var(--bg1); border:1px solid var(--bd); padding:20px 24px; }
+    .count-num { font-family:var(--mono); font-size:2rem; font-weight:700; color:var(--warn); }
+    .count-lbl { font-size:0.75rem; color:var(--mid); margin-top:4px; font-family:var(--mono); font-size:0.6rem; letter-spacing:0.1em; text-transform:uppercase; }
+
+    .tabs { display:flex; gap:0; border-bottom:1px solid var(--bd); margin-bottom:24px; }
+    .tab { font-family:var(--mono); font-size:0.65rem; font-weight:700; letter-spacing:0.06em;
+      padding:10px 20px; cursor:pointer; border-bottom:2px solid transparent; color:var(--mid);
+      transition:all 0.12s; background:none; border-top:none; border-left:none; border-right:none; }
+    .tab:hover { color:var(--hi); }
+    .tab.active { color:var(--acc); border-bottom-color:var(--acc); }
+    .tab-badge { display:inline-block; margin-left:6px; font-size:0.55rem; background:var(--bg2);
+      border:1px solid var(--bd); padding:1px 5px; border-radius:10px; }
+    .tab.active .tab-badge { background:rgba(37,99,235,0.1); border-color:rgba(37,99,235,0.3); color:var(--acc); }
+
+    .tab-panel { display:none; }
+    .tab-panel.active { display:block; animation:fade-in 0.15s ease; }
+    @keyframes fade-in { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+
+    .archive-table { width:100%; border-collapse:collapse; }
+    .archive-table th { text-align:left; font-family:var(--mono); font-size:0.52rem; font-weight:700;
+      letter-spacing:0.12em; text-transform:uppercase; color:var(--low); padding:10px 16px;
+      border-bottom:1px solid var(--bd); background:var(--bg2); }
+    .archive-table td { padding:14px 16px; border-bottom:1px solid var(--bd); font-size:0.82rem; color:var(--mid); vertical-align:middle; }
+    .archive-table td strong { color:var(--hi); font-weight:500; }
+    .archive-table tr:last-child td { border-bottom:none; }
+    .archive-table tr:hover td { background:rgba(37,99,235,0.02); }
+    [data-theme="dark"] .archive-table tr:hover td { background:rgba(255,255,255,0.01); }
+
+    .panel { background:var(--bg1); border:1px solid var(--bd); overflow:hidden; }
+
+    .archived-at { font-family:var(--mono); font-size:0.65rem; color:var(--warn); }
+    .risk-badge { font-family:var(--mono); font-size:0.55rem; font-weight:700; letter-spacing:0.08em;
+      text-transform:uppercase; padding:2px 7px; border:1px solid; display:inline-block; }
+    .risk-high   { color:var(--danger); border-color:rgba(220,38,38,0.3); background:rgba(220,38,38,0.06); }
+    .risk-medium { color:var(--warn);   border-color:rgba(217,119,6,0.3);   background:rgba(217,119,6,0.06); }
+    .risk-low    { color:var(--ok);     border-color:rgba(22,163,74,0.3);   background:rgba(22,163,74,0.06); }
+
+    .action-group { display:flex; gap:6px; }
+    .btn { font-family:var(--mono); font-size:0.6rem; font-weight:700; letter-spacing:0.04em;
+      padding:6px 12px; border:1px solid; cursor:pointer; background:none; transition:all 0.12s; white-space:nowrap; }
+    .btn-restore { color:var(--ok); border-color:rgba(22,163,74,0.3); }
+    .btn-restore:hover { background:rgba(22,163,74,0.08); }
+    .btn-delete  { color:var(--danger); border-color:rgba(220,38,38,0.3); }
+    .btn-delete:hover { background:rgba(220,38,38,0.08); }
+
+    .empty-state { text-align:center; padding:64px 24px; color:var(--low); }
+    .empty-icon { font-size:2.5rem; margin-bottom:12px; opacity:0.4; }
+    .empty-title { font-size:0.9rem; font-weight:500; margin-bottom:6px; color:var(--mid); }
+    .empty-sub { font-size:0.78rem; font-family:var(--mono); }
+
+    /* Confirm dialog */
+    .confirm-overlay { position:fixed; inset:0; z-index:600; background:rgba(15,23,42,0.6);
+      backdrop-filter:blur(12px); display:flex; align-items:center; justify-content:center;
+      padding:24px; opacity:0; pointer-events:none; transition:opacity 0.18s; }
+    .confirm-overlay.open { opacity:1; pointer-events:all; }
+    .confirm-box { background:var(--bg1); border:1px solid rgba(220,38,38,0.3); border-top:3px solid var(--danger);
+      padding:32px; max-width:380px; width:100%; }
+    .confirm-title { font-size:1.05rem; font-weight:600; margin-bottom:8px; }
+    .confirm-sub { font-size:0.82rem; color:var(--mid); line-height:1.6; margin-bottom:24px; }
+    .confirm-actions { display:flex; gap:8px; justify-content:flex-end; }
+
+    ::-webkit-scrollbar { width:3px; }
+    ::-webkit-scrollbar-thumb { background:var(--bg3); }
+  </style>
+</head>
+<body>
+
+  <!-- Confirm delete dialog -->
+  <div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-box">
+      <div class="confirm-title">Permanently Delete?</div>
+      <div class="confirm-sub" id="confirmSubText">This action cannot be undone. The item will be removed forever.</div>
+      <div class="confirm-actions">
+        <button class="btn" style="color:var(--mid);border-color:var(--bd)" onclick="closeConfirm()">Cancel</button>
+        <button class="btn btn-delete" id="confirmDeleteBtn" onclick="executeDelete()">Delete Forever</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <a href="/teacher/dashboard" class="back-btn">
+        <svg width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 6H2M6 2L2 6l4 4"/></svg>
+        Dashboard
+      </a>
+      <div class="page-title">ARCHIVE MANAGER</div>
+      <div class="archive-badge">SOFT-DELETE VAULT</div>
+    </div>
+    <button class="btn" style="color:var(--mid);border-color:var(--bd);font-family:var(--mono);font-size:0.6rem"
+      onclick="toggleTheme()" id="themeBtn">
+      <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.5 3.5l1.4 1.4M11.1 11.1l1.4 1.4M3.5 12.5l1.4-1.4M11.1 4.9l1.4-1.4"/><circle cx="8" cy="8" r="3"/></svg>
+      Dark Mode
+    </button>
+  </div>
+
+  <div class="content">
+    <div class="archive-hero">
+      <div class="archive-hero-icon">🗄️</div>
+      <div>
+        <div class="archive-hero-title">Archive — Soft Delete Vault</div>
+        <div class="archive-hero-sub">Items moved here are hidden from all views but not permanently deleted. You can <strong>restore</strong> them at any time, or <strong>permanently delete</strong> them when you're sure. Nothing leaves ExamGuard without your explicit confirmation.</div>
+      </div>
+    </div>
+
+    <div class="counts-row">
+      <div class="count-card">
+        <div class="count-num" id="countExams">—</div>
+        <div class="count-lbl">Archived Exams</div>
+      </div>
+      <div class="count-card">
+        <div class="count-num" id="countStudents">—</div>
+        <div class="count-lbl">Archived Students</div>
+      </div>
+      <div class="count-card">
+        <div class="count-num" id="countSessions">—</div>
+        <div class="count-lbl">Archived Sessions</div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('exams',this)">
+        Exams <span class="tab-badge" id="tabBadgeExams">0</span>
+      </button>
+      <button class="tab" onclick="switchTab('students',this)">
+        Students <span class="tab-badge" id="tabBadgeStudents">0</span>
+      </button>
+      <button class="tab" onclick="switchTab('sessions',this)">
+        Sessions <span class="tab-badge" id="tabBadgeSessions">0</span>
+      </button>
+    </div>
+
+    <!-- Exams -->
+    <div class="tab-panel active" id="panel-exams">
+      <div class="panel">
+        <div style="overflow-x:auto">
+          <table class="archive-table">
+            <thead><tr><th>Title</th><th>Subject</th><th>Status</th><th>Created</th><th>Archived At</th><th>Actions</th></tr></thead>
+            <tbody id="examsBody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--low)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Students -->
+    <div class="tab-panel" id="panel-students">
+      <div class="panel">
+        <div style="overflow-x:auto">
+          <table class="archive-table">
+            <thead><tr><th>Name</th><th>Email</th><th>Student ID</th><th>Created</th><th>Archived At</th><th>Actions</th></tr></thead>
+            <tbody id="studentsBody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--low)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sessions -->
+    <div class="tab-panel" id="panel-sessions">
+      <div class="panel">
+        <div style="overflow-x:auto">
+          <table class="archive-table">
+            <thead><tr><th>Session ID</th><th>Student</th><th>Risk</th><th>Flags</th><th>Archived At</th><th>Actions</th></tr></thead>
+            <tbody id="sessionsBody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--low)">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Theme
+    const savedTheme = localStorage.getItem('eg_theme') || 'light';
+    if (savedTheme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    function toggleTheme() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      localStorage.setItem('eg_theme', isDark ? 'light' : 'dark');
+    }
+
+    const token = localStorage.getItem('eg_token') || '';
+    const authH = {'Content-Type':'application/json','X-Demo-Mode':'1','Authorization':`Bearer ${token}`};
+
+    let archiveData = { exams:[], students:[], sessions:[] };
+    let pendingDelete = null;
+
+    async function loadArchive() {
+      try {
+        const data = await fetch('/api/archive', {headers:authH}).then(r=>r.json());
+        archiveData = data;
+
+        // Update counts
+        document.getElementById('countExams').textContent    = data.exams.length;
+        document.getElementById('countStudents').textContent = data.students.length;
+        document.getElementById('countSessions').textContent = data.sessions.length;
+        document.getElementById('tabBadgeExams').textContent    = data.exams.length;
+        document.getElementById('tabBadgeStudents').textContent = data.students.length;
+        document.getElementById('tabBadgeSessions').textContent = data.sessions.length;
+
+        renderExams(data.exams);
+        renderStudents(data.students);
+        renderSessions(data.sessions);
+      } catch(e) {
+        console.error('Archive load error:', e);
+      }
+    }
+
+    function renderExams(items) {
+      const tbody = document.getElementById('examsBody');
+      if (!items.length) { tbody.innerHTML = emptyRow(6, 'exams'); return; }
+      tbody.innerHTML = items.map(e => `
+        <tr>
+          <td><strong>${e.title}</strong></td>
+          <td>${e.subject||'—'}</td>
+          <td><span style="font-family:var(--mono);font-size:0.62rem;color:var(--low)">${(e.status||'').toUpperCase()}</span></td>
+          <td style="font-family:var(--mono);font-size:0.65rem">${(e.created_at||'').split(' ')[0]}</td>
+          <td><span class="archived-at">${fmt(e.archived_at)}</span></td>
+          <td><div class="action-group">
+            <button class="btn btn-restore" onclick="restoreItem('exam','${e.id}')">↩ Restore</button>
+            <button class="btn btn-delete" onclick="confirmDelete('exam','${e.id}','${esc(e.title)}')">✕ Delete</button>
+          </div></td>
+        </tr>`).join('');
+    }
+
+    function renderStudents(items) {
+      const tbody = document.getElementById('studentsBody');
+      if (!items.length) { tbody.innerHTML = emptyRow(6, 'students'); return; }
+      tbody.innerHTML = items.map(s => `
+        <tr>
+          <td><strong>${s.name}</strong></td>
+          <td style="font-family:var(--mono);font-size:0.68rem">${s.email}</td>
+          <td style="font-family:var(--mono);font-size:0.65rem;color:var(--low)">${s.student_id||'—'}</td>
+          <td style="font-family:var(--mono);font-size:0.65rem">${(s.created_at||'').split(' ')[0]}</td>
+          <td><span class="archived-at">${fmt(s.archived_at)}</span></td>
+          <td><div class="action-group">
+            <button class="btn btn-restore" onclick="restoreItem('student','${s.id}')">↩ Restore</button>
+            <button class="btn btn-delete" onclick="confirmDelete('student','${s.id}','${esc(s.name)}')">✕ Delete</button>
+          </div></td>
+        </tr>`).join('');
+    }
+
+    function renderSessions(items) {
+      const tbody = document.getElementById('sessionsBody');
+      if (!items.length) { tbody.innerHTML = emptyRow(6, 'sessions'); return; }
+      tbody.innerHTML = items.map(s => `
+        <tr>
+          <td><strong style="font-family:var(--mono);font-size:0.72rem">${s.id}</strong></td>
+          <td>${s.name||'—'}</td>
+          <td><span class="risk-badge risk-${(s.risk_level||'low').toLowerCase()}">${s.risk_level||'Low'}</span></td>
+          <td style="font-family:var(--mono);font-size:0.72rem">${s.total_violations||0}</td>
+          <td><span class="archived-at">${fmt(s.archived_at)}</span></td>
+          <td><div class="action-group">
+            <button class="btn btn-restore" onclick="restoreItem('session','${s.id}')">↩ Restore</button>
+            <button class="btn btn-delete" onclick="confirmDelete('session','${s.id}','session ${s.id}')">✕ Delete</button>
+          </div></td>
+        </tr>`).join('');
+    }
+
+    function emptyRow(cols, type) {
+      return `<tr><td colspan="${cols}">
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+          <div class="empty-title">No archived ${type}</div>
+          <div class="empty-sub">When you delete ${type}, they'll appear here for recovery.</div>
+        </div>
+      </td></tr>`;
+    }
+
+    function fmt(dateStr) {
+      if (!dateStr) return '—';
+      return dateStr.replace('T',' ').split('.')[0];
+    }
+
+    function esc(str) { return (str||'').replace(/'/g,"\\'"); }
+
+    async function restoreItem(type, id) {
+      try {
+        const res = await fetch('/api/archive/restore', {
+          method:'POST', headers:authH,
+          body: JSON.stringify({ type, id })
+        }).then(r=>r.json());
+        if (res.success) loadArchive();
+        else alert('Restore failed: ' + (res.error||'Unknown error'));
+      } catch(e) { alert('Connection error'); }
+    }
+
+    function confirmDelete(type, id, name) {
+      pendingDelete = { type, id };
+      document.getElementById('confirmSubText').textContent =
+        `You are about to permanently delete "${name}". This cannot be undone.`;
+      document.getElementById('confirmOverlay').classList.add('open');
+    }
+
+    function closeConfirm() {
+      pendingDelete = null;
+      document.getElementById('confirmOverlay').classList.remove('open');
+    }
+
+    async function executeDelete() {
+      if (!pendingDelete) return;
+      const { type, id } = pendingDelete;
+      closeConfirm();
+      try {
+        const res = await fetch(`/api/archive/${type}/${id}`, {
+          method:'DELETE', headers:authH
+        }).then(r=>r.json());
+        if (res.success) loadArchive();
+        else alert('Delete failed: ' + (res.error||'Unknown error'));
+      } catch(e) { alert('Connection error'); }
+    }
+
+    function switchTab(name, el) {
+      document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('panel-'+name).classList.add('active');
+    }
+
+    document.getElementById('confirmOverlay').addEventListener('click', e => {
+      if (e.target === document.getElementById('confirmOverlay')) closeConfirm();
+    });
+    document.addEventListener('keydown', e => { if (e.key==='Escape') closeConfirm(); });
+
+    loadArchive();
+  </script>
+</body>
+</html>

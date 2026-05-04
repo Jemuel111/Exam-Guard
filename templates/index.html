@@ -57,8 +57,6 @@
     .btn-ghost:hover { color:var(--hi); border-color:var(--acc); background:rgba(37,99,235,0.05); }
     .btn-solid { color:#fff; background:var(--acc); border-color:var(--acc); }
     .btn-solid:hover { background:#1d4ed8; border-color:#1d4ed8; }
-
-    /* Dark mode toggle */
     .theme-toggle { background:none; border:1px solid var(--bd); color:var(--mid); cursor:pointer;
       padding:6px 10px; display:flex; align-items:center; gap:5px; font-family:var(--mono); font-size:0.6rem;
       transition:all 0.15s; }
@@ -85,7 +83,7 @@
       background:var(--bg1); }
     .metric { flex:1; padding:16px 20px; text-align:center; border-right:1px solid var(--bd); }
     .metric:last-child { border-right:none; }
-    .metric-num { font-family:var(--mono); font-size:1.4rem; font-weight:700; color:var(--hi); display:block; transition:color 0.3s; }
+    .metric-num { font-family:var(--mono); font-size:1.4rem; font-weight:700; color:var(--hi); display:block; }
     .metric-lbl { font-family:var(--mono); font-size:0.52rem; letter-spacing:0.12em; color:var(--low); text-transform:uppercase; display:block; margin-top:2px; }
     @keyframes fade-up { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
 
@@ -126,7 +124,7 @@
     .pill-live { color:var(--ok); border-color:rgba(22,163,74,0.35); }
     .pill-draft { color:var(--acc); border-color:rgba(37,99,235,0.35); }
 
-    /* Modal */
+    /* ── MODAL ── */
     .modal-overlay { position:fixed; inset:0; z-index:500; background:rgba(15,23,42,0.6); backdrop-filter:blur(16px);
       display:flex; align-items:center; justify-content:center; padding:24px;
       opacity:0; pointer-events:none; transition:opacity 0.2s; }
@@ -158,9 +156,34 @@
       padding:10px 14px; font-family:var(--mono); font-size:0.68rem; color:var(--danger);
       margin-bottom:16px; display:none; }
     .error-msg.show { display:block; }
+    .success-msg { background:rgba(22,163,74,0.06); border:1px solid rgba(22,163,74,0.25);
+      padding:10px 14px; font-family:var(--mono); font-size:0.68rem; color:var(--ok);
+      margin-bottom:16px; display:none; line-height:1.6; }
+    .success-msg.show { display:block; }
     .modal-footer { margin-top:20px; text-align:center; font-family:var(--mono); font-size:0.62rem; color:var(--low); }
     .modal-footer a { color:var(--acc); cursor:pointer; text-decoration:none; }
     .modal-footer a:hover { text-decoration:underline; }
+
+    /* password toggle eye */
+    .password-wrapper { position: relative; }
+    .password-wrapper input { padding-right: 42px; }
+    .toggle-eye { position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; display:flex; align-items:center; }
+    .toggle-eye svg { width:16px; height:16px; stroke:var(--low); fill:none; stroke-width:1.8; transition:0.15s; }
+    .toggle-eye:hover svg { stroke:var(--hi); }
+
+    /* forgot password demo token box */
+    .demo-token-box { background:var(--bg2); border:1px solid rgba(37,99,235,0.3); padding:14px 16px; margin-bottom:16px; }
+    .demo-token-label { font-family:var(--mono); font-size:0.55rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--acc); margin-bottom:6px; display:block; }
+    .demo-token-value { font-family:var(--mono); font-size:0.72rem; color:var(--hi); word-break:break-all; line-height:1.5; }
+    .demo-use-btn { font-family:var(--mono); font-size:0.6rem; font-weight:700; letter-spacing:0.06em;
+      background:var(--acc); color:#fff; border:none; padding:5px 12px; cursor:pointer; margin-top:8px; transition:background 0.15s; }
+    .demo-use-btn:hover { background:#1d4ed8; }
+
+    /* step indicators */
+    .step-dots { display:flex; gap:6px; margin-bottom:20px; }
+    .step-dot { width:6px; height:6px; border-radius:50%; background:var(--bd); transition:background 0.2s; }
+    .step-dot.active { background:var(--acc); }
+    .step-dot.done { background:var(--ok); }
 
     .dev-banner { position:fixed; top:56px; left:0; right:0; z-index:90; height:26px;
       display:flex; align-items:center; justify-content:center; gap:16px;
@@ -168,16 +191,11 @@
       font-family:var(--mono); font-size:0.58rem; color:var(--ok); letter-spacing:0.08em; }
     .progress-track { width:100px; height:2px; background:var(--bd); }
     .progress-fill { height:100%; background:var(--ok); width:60%; }
-    .password-wrapper { position: relative; }
-    .password-wrapper input { padding-right: 42px; }
-    .toggle-eye { position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; display:flex; align-items:center; }
-    .toggle-eye svg { width:16px; height:16px; stroke:var(--low); fill:none; stroke-width:1.8; transition:0.15s; }
-    .toggle-eye:hover svg { stroke:var(--hi); }
   </style>
 </head>
 <body>
   <div class="dev-banner">
-    <span>BUILD v2.0 · JWT AUTH · GRADING ENGINE · ANALYTICS</span>
+    <span>BUILD v2.1 · JWT AUTH · ARCHIVE SYSTEM · GRADING ENGINE</span>
     <div class="progress-track"><div class="progress-fill"></div></div>
     <span style="color:var(--low)">Flask + OpenCV + SQLite · PWA</span>
   </div>
@@ -192,7 +210,7 @@
       <a href="#roles" class="nav-link">ACCESS</a>
     </div>
     <div class="nav-right">
-      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" title="Toggle dark mode">
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
         <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.5 3.5l1.4 1.4M11.1 11.1l1.4 1.4M3.5 12.5l1.4-1.4M11.1 4.9l1.4-1.4"/><circle cx="8" cy="8" r="3"/></svg>
         <span id="themeLabel">Dark</span>
       </button>
@@ -203,9 +221,9 @@
 
   <section class="hero">
     <div class="hero-inner">
-      <div class="status-pill"><span class="pulse-dot"></span> MONITORING SYSTEM ACTIVE · v2.0</div>
+      <div class="status-pill"><span class="pulse-dot"></span> MONITORING SYSTEM ACTIVE · v2.1</div>
       <h1 class="hero-title">Exam integrity,<br><span class="hl">verified in real time.</span></h1>
-      <p class="hero-sub">Computer vision proctoring with auto-grading, analytics, and audit trails. Behavioral insights for instructors — never automated verdicts.</p>
+      <p class="hero-sub">Computer vision proctoring with auto-grading, analytics, archive management, and audit trails. Behavioral insights for instructors — never automated verdicts.</p>
       <div class="hero-actions">
         <button class="btn btn-solid btn-lg" onclick="openModal('teacher')">
           Teacher Portal
@@ -230,14 +248,13 @@
         <span class="role-card-num">01 / INSTRUCTOR</span>
         <div class="role-icon"><svg viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="10" rx="1"/><path d="M5 14h6M8 12v2"/></svg></div>
         <div class="role-name">Teacher Portal</div>
-        <p class="role-desc">Create exams, manage students, monitor live sessions, and review detailed behavioral reports with analytics.</p>
+        <p class="role-desc">Create exams, manage students, monitor live sessions, review reports, and manage the archive.</p>
         <ul class="role-features">
           <li>Create & manage exam question banks with auto-grading</li>
           <li>Live student grid monitoring via WebSocket</li>
-          <li>Real-time violation alerts & risk scoring</li>
+          <li>Archive system — restore deleted exams, students & sessions</li>
           <li>Full session reports (JSON + CSV export)</li>
           <li>Analytics dashboard — pass rates, risk distribution</li>
-          <li>Email report delivery to instructors</li>
         </ul>
         <div class="role-cta">Enter Teacher Portal →</div>
       </a>
@@ -272,7 +289,7 @@
   </section>
 
   <footer>
-    <span class="footer-text">EXAMGUARD v2.0 · FLASK + OPENCV + SQLITE · EDUCATIONAL USE ONLY · HUMAN REVIEW REQUIRED</span>
+    <span class="footer-text">EXAMGUARD v2.1 · FLASK + OPENCV + SQLITE · EDUCATIONAL USE ONLY · HUMAN REVIEW REQUIRED</span>
     <div style="display:flex;gap:8px">
       <span class="pill">PYTHON</span>
       <span class="pill pill-live">PWA</span>
@@ -280,48 +297,102 @@
     </div>
   </footer>
 
+  <!-- LOGIN / REGISTER MODAL -->
   <div class="modal-overlay" id="loginModal">
     <div class="modal">
       <div class="modal-accent"></div>
       <button class="modal-close" onclick="closeModal()">ESC</button>
-      <div class="modal-eyebrow" id="modalEyebrow">TEACHER ACCESS</div>
-      <div class="modal-title" id="modalTitle">Sign In</div>
-      <div class="modal-sub" id="modalSub">Access the ExamGuard teacher portal</div>
-      <div class="hint-box" id="demoHint">
-        DEMO CREDENTIALS<br>
-        teacher@school.edu / teacher123<br>
-        student@school.edu / student123
-      </div>
-      <div class="error-msg" id="errorMsg"></div>
-      <div class="form-group"><label class="form-label">Email</label><input type="email" class="field" id="loginEmail" placeholder="you@school.edu"/></div>
-      <div class="form-group">
+
+      <!-- Step 1: Login / Register -->
+      <div id="stepLogin">
+        <div class="modal-eyebrow" id="modalEyebrow">TEACHER ACCESS</div>
+        <div class="modal-title" id="modalTitle">Sign In</div>
+        <div class="modal-sub" id="modalSub">Access the ExamGuard teacher portal</div>
+        <div class="hint-box" id="demoHint" style="display:none">
+          DEMO CREDENTIALS<br>
+          teacher@school.edu / teacher123<br>
+          student@school.edu / student123
+        </div>
+        <div class="error-msg" id="errorMsg"></div>
+        <div class="form-group"><label class="form-label">Email</label><input type="email" class="field" id="loginEmail" placeholder="you@school.edu"/></div>
         <div class="form-group">
           <label class="form-label">Password</label>
           <div class="password-wrapper">
             <input type="password" class="field" id="loginPassword" placeholder="••••••••"/>
-            <span class="toggle-eye" onclick="togglePassword()">
+            <span class="toggle-eye" onclick="togglePassword('loginPassword','eyeOpen','eyeClosed')">
               <svg id="eyeOpen" viewBox="0 0 24 24"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="3"/></svg>
               <svg id="eyeClosed" viewBox="0 0 24 24" style="display:none;"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-6 0-10-7-10-7a21.77 21.77 0 0 1 5.06-5.94"/><path d="M1 1l22 22"/><path d="M9.9 4.24A10.94 10.94 0 0 1 12 5c6 0 10 7 10 7a21.77 21.77 0 0 1-4.24 5.27"/></svg>
             </span>
           </div>
         </div>
+        <div class="form-group" id="nameGroup" style="display:none"><label class="form-label">Full Name</label><input type="text" class="field" id="loginName" placeholder="Your full name"/></div>
+        <div class="form-group" id="sidGroup" style="display:none"><label class="form-label">Student ID</label><input type="text" class="field" id="loginSid" placeholder="STU-001"/></div>
+        <button class="btn btn-solid" style="width:100%;justify-content:center;font-size:0.75rem;padding:12px" id="loginBtn" onclick="handleLogin()">Sign In</button>
+        <div class="modal-footer" style="margin-top:14px">
+          <a id="forgotLink" onclick="goToForgot()" style="color:var(--mid);font-size:0.58rem">Forgot password?</a>
+        </div>
+        <div class="modal-footer"><span id="switchText">New here?</span> <a id="switchLink" onclick="toggleRegister()">Create account</a></div>
       </div>
-      <div class="form-group" id="nameGroup" style="display:none"><label class="form-label">Full Name</label><input type="text" class="field" id="loginName" placeholder="Your full name"/></div>
-      <div class="form-group" id="sidGroup" style="display:none"><label class="form-label">Student ID</label><input type="text" class="field" id="loginSid" placeholder="STU-001"/></div>
-      <button class="btn btn-solid" style="width:100%;justify-content:center;font-size:0.75rem;padding:12px" id="loginBtn" onclick="handleLogin()">Sign In</button>
-      <div class="modal-footer"><span id="switchText">New here?</span> <a id="switchLink" onclick="toggleRegister()">Create account</a></div>
+
+      <!-- Step 2: Forgot Password -->
+      <div id="stepForgot" style="display:none">
+        <div class="modal-eyebrow">ACCOUNT RECOVERY</div>
+        <div class="modal-title">Forgot Password</div>
+        <div class="modal-sub">Enter your email and we'll send a reset link. In demo mode, the token is shown directly.</div>
+        <div class="step-dots">
+          <div class="step-dot active" id="dot1"></div>
+          <div class="step-dot" id="dot2"></div>
+        </div>
+        <div class="error-msg" id="forgotError"></div>
+        <div class="success-msg" id="forgotSuccess"></div>
+        <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="field" id="forgotEmail" placeholder="you@school.edu"/></div>
+        <button class="btn btn-solid" style="width:100%;justify-content:center;font-size:0.75rem;padding:12px" id="forgotBtn" onclick="handleForgot()">Send Reset Link</button>
+        <div class="modal-footer" style="margin-top:14px"><a onclick="backToLogin()">← Back to login</a></div>
+      </div>
+
+      <!-- Step 3: Reset Password (after clicking token link) -->
+      <div id="stepReset" style="display:none">
+        <div class="modal-eyebrow">SET NEW PASSWORD</div>
+        <div class="modal-title">Reset Password</div>
+        <div class="modal-sub">Enter a new password for your account.</div>
+        <div class="step-dots">
+          <div class="step-dot done" id="dot1r"></div>
+          <div class="step-dot active" id="dot2r"></div>
+        </div>
+        <div class="error-msg" id="resetError"></div>
+        <div class="success-msg" id="resetSuccess"></div>
+        <div class="form-group" id="resetTokenDisplay" style="display:none">
+          <label class="form-label">Reset Token (auto-filled)</label>
+          <input type="text" class="field" id="resetTokenInput" readonly style="font-family:var(--mono);font-size:0.68rem;color:var(--mid)"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">New Password</label>
+          <div class="password-wrapper">
+            <input type="password" class="field" id="newPassword" placeholder="Min. 6 characters"/>
+            <span class="toggle-eye" onclick="togglePassword('newPassword','eyeOpen2','eyeClosed2')">
+              <svg id="eyeOpen2" viewBox="0 0 24 24"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg id="eyeClosed2" viewBox="0 0 24 24" style="display:none;"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-6 0-10-7-10-7a21.77 21.77 0 0 1 5.06-5.94"/><path d="M1 1l22 22"/><path d="M9.9 4.24A10.94 10.94 0 0 1 12 5c6 0 10 7 10 7a21.77 21.77 0 0 1-4.24 5.27"/></svg>
+            </span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" class="field" id="confirmPassword" placeholder="Repeat new password"/>
+        </div>
+        <button class="btn btn-solid" style="width:100%;justify-content:center;font-size:0.75rem;padding:12px" id="resetBtn" onclick="handleReset()">Update Password</button>
+        <div class="modal-footer" style="margin-top:14px"><a onclick="backToLogin()">← Back to login</a></div>
+      </div>
     </div>
   </div>
 
   <script>
-    // Theme toggle
+    // Theme
     function toggleTheme() {
       const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
       document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
       document.getElementById('themeLabel').textContent = isDark ? 'Dark' : 'Light';
       localStorage.setItem('eg_theme', isDark ? 'light' : 'dark');
     }
-    // Restore saved theme
     const savedTheme = localStorage.getItem('eg_theme') || 'light';
     if (savedTheme === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
@@ -331,16 +402,16 @@
       });
     }
 
+    // Metrics
     fetch('/api/dashboard_stats').then(r=>r.json()).then(d=>{
       const animate = (el, val) => {
-        let start = 0, end = val, dur = 800;
-        let startTime = null;
+        let start = 0; const dur = 800; let startTime = null;
         const step = ts => {
           if (!startTime) startTime = ts;
-          const progress = Math.min((ts - startTime) / dur, 1);
-          el.textContent = Math.floor(progress * end);
-          if (progress < 1) requestAnimationFrame(step);
-          else el.textContent = end;
+          const p = Math.min((ts - startTime) / dur, 1);
+          el.textContent = Math.floor(p * val);
+          if (p < 1) requestAnimationFrame(step);
+          else el.textContent = val;
         };
         requestAnimationFrame(step);
       };
@@ -350,25 +421,38 @@
       animate(document.getElementById('m-flags'),    d.total_violations || 0);
     }).catch(()=>{});
 
-    let currentRole = 'teacher', isRegister = false;
+    let currentRole = 'teacher', isRegister = false, currentResetToken = '';
 
+    // ── Modal open/close ──────────────────────────────────────────────────────
     function openModal(role) {
       currentRole = role; isRegister = false;
+      showStep('login');
       const isT = role === 'teacher';
       document.getElementById('modalEyebrow').textContent = isT ? 'TEACHER ACCESS' : 'STUDENT ACCESS';
       document.getElementById('modalTitle').textContent = 'Sign In';
       document.getElementById('modalSub').textContent   = isT ? 'Access the ExamGuard teacher portal' : 'Sign in to view your assigned exams';
-      document.getElementById('demoHint').style.display  = 'block';
+      document.getElementById('demoHint').style.display  = 'none';
       document.getElementById('nameGroup').style.display = 'none';
       document.getElementById('sidGroup').style.display  = 'none';
       document.getElementById('errorMsg').classList.remove('show');
       document.getElementById('switchText').textContent  = isT ? 'New teacher?' : 'New student?';
       document.getElementById('switchLink').textContent  = 'Create account';
       document.getElementById('loginBtn').textContent    = 'Sign In';
+      document.getElementById('forgotLink').style.display = 'inline';
       document.getElementById('loginModal').classList.add('open');
-      document.getElementById('demoHint').style.display = 'none';
     }
-    function closeModal() { document.getElementById('loginModal').classList.remove('open'); }
+
+    function closeModal() {
+      document.getElementById('loginModal').classList.remove('open');
+      showStep('login');
+    }
+
+    function showStep(step) {
+      document.getElementById('stepLogin').style.display  = step === 'login'  ? 'block' : 'none';
+      document.getElementById('stepForgot').style.display = step === 'forgot' ? 'block' : 'none';
+      document.getElementById('stepReset').style.display  = step === 'reset'  ? 'block' : 'none';
+    }
+
     function toggleRegister() {
       isRegister = !isRegister;
       const isT = currentRole === 'teacher';
@@ -379,11 +463,15 @@
       document.getElementById('demoHint').style.display   = isRegister ? 'none' : 'block';
       document.getElementById('switchLink').textContent   = isRegister ? 'Back to login' : 'Create account';
       document.getElementById('switchText').textContent   = isRegister ? 'Already registered?' : (isT ? 'New teacher?' : 'New student?');
+      document.getElementById('forgotLink').style.display = isRegister ? 'none' : 'inline';
+      document.getElementById('errorMsg').classList.remove('show');
     }
+
+    // ── Login ─────────────────────────────────────────────────────────────────
     async function handleLogin() {
       const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
-      if (!email || !password) { showError('Please fill in all fields.'); return; }
+      if (!email || !password) { showError('errorMsg', 'Please fill in all fields.'); return; }
       const btn = document.getElementById('loginBtn');
       btn.textContent = isRegister ? 'Creating...' : 'Signing in...'; btn.disabled = true;
       try {
@@ -402,26 +490,126 @@
           localStorage.setItem('eg_name', data.name || email);
           window.location.href = currentRole === 'teacher' ? '/teacher/dashboard' : '/student/dashboard';
         } else {
-          showError(data.error || 'Invalid credentials.');
+          showError('errorMsg', data.error || 'Invalid credentials.');
           btn.textContent = isRegister ? 'Create Account' : 'Sign In'; btn.disabled = false;
         }
       } catch(e) {
-        showError('Connection error. Please try again.');
-        btn.textContent = isRegister ? 'Create Account' : 'Sign In';
-        btn.disabled = false;
+        showError('errorMsg', 'Connection error. Please try again.');
+        btn.textContent = isRegister ? 'Create Account' : 'Sign In'; btn.disabled = false;
       }
     }
-    function showError(msg) { const el=document.getElementById('errorMsg'); el.textContent=msg; el.classList.add('show'); }
-    document.getElementById('loginModal').addEventListener('click', e => { if(e.target===document.getElementById('loginModal')) closeModal(); });
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeModal();
-      if (e.key === 'Enter' && document.getElementById('loginModal').classList.contains('open')) handleLogin();
-    });
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/static/sw.js').catch(()=>{});
-    function togglePassword() {
-      const input = document.getElementById('loginPassword');
-      const eyeOpen = document.getElementById('eyeOpen');
-      const eyeClosed = document.getElementById('eyeClosed');
+
+    // ── Forgot password ───────────────────────────────────────────────────────
+    function goToForgot() {
+      showStep('forgot');
+      document.getElementById('forgotEmail').value = document.getElementById('loginEmail').value || '';
+      document.getElementById('forgotError').classList.remove('show');
+      document.getElementById('forgotSuccess').classList.remove('show');
+    }
+
+    function backToLogin() {
+      showStep('login');
+    }
+
+    async function handleForgot() {
+      const email = document.getElementById('forgotEmail').value.trim();
+      if (!email) { showError('forgotError', 'Please enter your email.'); return; }
+
+      const btn = document.getElementById('forgotBtn');
+      btn.textContent = 'Sending...'; btn.disabled = true;
+      document.getElementById('forgotError').classList.remove('show');
+      document.getElementById('forgotSuccess').classList.remove('show');
+
+      try {
+        const data = await fetch('/api/forgot_password', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ email, role: currentRole })
+        }).then(r=>r.json());
+
+        btn.textContent = 'Send Reset Link'; btn.disabled = false;
+
+        if (data.success) {
+          if (data.demo_mode && data.demo_token) {
+            // Demo mode: show the token inline so user can use it
+            const successEl = document.getElementById('forgotSuccess');
+            successEl.innerHTML = `
+              Reset link sent (demo mode — token shown below).<br><br>
+              <div class="demo-token-box">
+                <span class="demo-token-label">Demo Reset Token</span>
+                <div class="demo-token-value">${data.demo_token}</div>
+                <button class="demo-use-btn" onclick="useToken('${data.demo_token}')">Use This Token →</button>
+              </div>
+              In production, this would be emailed to <strong>${data.demo_email}</strong>.
+            `;
+            successEl.classList.add('show');
+          } else {
+            document.getElementById('forgotSuccess').textContent = data.message || 'Reset link sent. Check your email.';
+            document.getElementById('forgotSuccess').classList.add('show');
+          }
+        } else {
+          showError('forgotError', data.error || 'Something went wrong.');
+        }
+      } catch(e) {
+        btn.textContent = 'Send Reset Link'; btn.disabled = false;
+        showError('forgotError', 'Connection error. Please try again.');
+      }
+    }
+
+    function useToken(token) {
+      currentResetToken = token;
+      showStep('reset');
+      document.getElementById('resetTokenInput').value = token;
+      document.getElementById('resetTokenDisplay').style.display = 'block';
+      document.getElementById('resetError').classList.remove('show');
+      document.getElementById('resetSuccess').classList.remove('show');
+    }
+
+    async function handleReset() {
+      const token    = document.getElementById('resetTokenInput').value.trim() || currentResetToken;
+      const password = document.getElementById('newPassword').value;
+      const confirm  = document.getElementById('confirmPassword').value;
+
+      if (!token)    { showError('resetError', 'Reset token is missing.'); return; }
+      if (!password) { showError('resetError', 'Please enter a new password.'); return; }
+      if (password.length < 6) { showError('resetError', 'Password must be at least 6 characters.'); return; }
+      if (password !== confirm) { showError('resetError', 'Passwords do not match.'); return; }
+
+      const btn = document.getElementById('resetBtn');
+      btn.textContent = 'Updating...'; btn.disabled = true;
+      document.getElementById('resetError').classList.remove('show');
+
+      try {
+        const data = await fetch('/api/reset_password', {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ token, password })
+        }).then(r=>r.json());
+
+        btn.textContent = 'Update Password'; btn.disabled = false;
+
+        if (data.success) {
+          document.getElementById('resetSuccess').textContent = data.message + ' Redirecting to login...';
+          document.getElementById('resetSuccess').classList.add('show');
+          setTimeout(() => { showStep('login'); }, 2500);
+        } else {
+          showError('resetError', data.error || 'Reset failed. Token may be expired.');
+        }
+      } catch(e) {
+        btn.textContent = 'Update Password'; btn.disabled = false;
+        showError('resetError', 'Connection error. Please try again.');
+      }
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+    function showError(id, msg) {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.classList.add('show');
+    }
+
+    function togglePassword(inputId, openId, closedId) {
+      const input = document.getElementById(inputId);
+      const eyeOpen = document.getElementById(openId);
+      const eyeClosed = document.getElementById(closedId);
       if (input.type === 'password') {
         input.type = 'text';
         eyeOpen.style.display = 'none';
@@ -432,11 +620,32 @@
         eyeClosed.style.display = 'none';
       }
     }
-    function logout() {
-      localStorage.clear();
-      document.cookie = 'eg_token=; path=/; max-age=0';
-      window.location.href = '/';
-    }
+
+    document.getElementById('loginModal').addEventListener('click', e => {
+      if (e.target === document.getElementById('loginModal')) closeModal();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModal();
+      if (e.key === 'Enter' && document.getElementById('loginModal').classList.contains('open')) {
+        const step = document.getElementById('stepLogin').style.display !== 'none' ? 'login' :
+                     document.getElementById('stepForgot').style.display !== 'none' ? 'forgot' : 'reset';
+        if (step === 'login') handleLogin();
+        else if (step === 'forgot') handleForgot();
+        else handleReset();
+      }
+    });
+
+    // Check for reset token in URL (e.g., /reset-password?token=xxx)
+    window.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const urlToken = params.get('token');
+      if (urlToken) {
+        document.getElementById('loginModal').classList.add('open');
+        useToken(urlToken);
+      }
+    });
+
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/static/sw.js').catch(()=>{});
   </script>
 </body>
 </html>

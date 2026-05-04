@@ -1,6 +1,10 @@
 """
 ExamGuard — Database
 Thread-safe SQLite access with row_factory, WAL mode, and FK enforcement.
+
+ADDITIONS:
+- is_archived + archived_at columns on exams, users, sessions for soft-delete
+- password_reset_tokens table for forgot-password flow
 """
 import sqlite3
 import json
@@ -52,8 +56,19 @@ def init_db(app):
             student_id      TEXT,
             avatar_initials TEXT,
             is_active       INTEGER DEFAULT 1,
+            is_archived     INTEGER DEFAULT 0,
+            archived_at     TEXT,
             created_at      TEXT DEFAULT (datetime('now')),
             last_login      TEXT
+        );
+
+        CREATE TABLE IF NOT EXISTS password_reset_tokens (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id    INTEGER REFERENCES users(id) ON DELETE CASCADE,
+            token      TEXT UNIQUE NOT NULL,
+            expires_at TEXT NOT NULL,
+            used       INTEGER DEFAULT 0,
+            created_at TEXT DEFAULT (datetime('now'))
         );
 
         CREATE TABLE IF NOT EXISTS exams (
@@ -67,6 +82,8 @@ def init_db(app):
             scheduled_start  TEXT,
             scheduled_end    TEXT,
             created_by       INTEGER REFERENCES users(id),
+            is_archived      INTEGER DEFAULT 0,
+            archived_at      TEXT,
             created_at       TEXT DEFAULT (datetime('now')),
             updated_at       TEXT DEFAULT (datetime('now'))
         );
@@ -119,6 +136,8 @@ def init_db(app):
             risk_score       REAL DEFAULT 0,
             stats            TEXT DEFAULT '{}',
             is_active        INTEGER DEFAULT 1,
+            is_archived      INTEGER DEFAULT 0,
+            archived_at      TEXT,
             created_at       TEXT DEFAULT (datetime('now'))
         );
 
@@ -147,6 +166,24 @@ def init_db(app):
         CREATE INDEX IF NOT EXISTS idx_violations_session ON violations(session_id);
         CREATE INDEX IF NOT EXISTS idx_audit_user        ON audit_log(user_id);
     ''')
+
+    # Run migrations for existing databases (add new columns if missing)
+    migrations = [
+        ("users", "is_archived", "ALTER TABLE users ADD COLUMN is_archived INTEGER DEFAULT 0"),
+        ("users", "archived_at", "ALTER TABLE users ADD COLUMN archived_at TEXT"),
+        ("exams", "is_archived", "ALTER TABLE exams ADD COLUMN is_archived INTEGER DEFAULT 0"),
+        ("exams", "archived_at", "ALTER TABLE exams ADD COLUMN archived_at TEXT"),
+        ("sessions", "is_archived", "ALTER TABLE sessions ADD COLUMN is_archived INTEGER DEFAULT 0"),
+        ("sessions", "archived_at", "ALTER TABLE sessions ADD COLUMN archived_at TEXT"),
+    ]
+    for table, col, sql in migrations:
+        try:
+            cols = [r[1] for r in conn.execute(f"PRAGMA table_info({table})").fetchall()]
+            if col not in cols:
+                conn.execute(sql)
+                logger.info('Migration applied: %s.%s', table, col)
+        except Exception as e:
+            logger.warning('Migration skipped %s.%s: %s', table, col, e)
 
     # Seed demo users with proper bcrypt hashes
     demo_users = [

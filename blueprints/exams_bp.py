@@ -2,18 +2,10 @@
 ExamGuard — Exams blueprint
 CRUD for exams, questions, enrollments, submissions, student exam list.
 
-FIXES:
-- /api/student/exams was throwing a 500 because verify_token() returned None
-  when no token was present (unauthenticated or demo-mode request), and the
-  code did `info['user_id']` without checking if info was None first.
-  Now uses a safe uid extraction that defaults to None for anonymous/demo users
-  and serves the open-enrollment query in that case.
-- Demo-mode user_id is now -1 (set in auth.py), so the `uid > 0` guard
-  correctly falls through to the anonymous query without a TypeError.
-- hashlib token generation in enroll_students used datetime.now() without
-  str() conversion, causing a TypeError in Python 3.11+.
-- /api/student/exams now includes `already_submitted` count per exam so the
-  dashboard can hide the Start button for exams already completed.
+CHANGES:
+- DELETE /api/exams/<id> now soft-archives instead of permanent deletion
+- GET /api/exams excludes archived exams
+- /api/student/exams excludes archived exams
 """
 import hashlib
 import json
@@ -35,16 +27,11 @@ bp_exams = Blueprint('exams', __name__)
 
 @bp_exams.get('/api/student/exams')
 def student_exams():
-    """
-    Returns exams the student can see, including `already_submitted` count
-    so the dashboard can disable the Start button for completed exams.
-    """
     try:
         db    = get_db()
         token = get_token_from_request()
         info  = verify_token(token)
 
-        # Safe uid extraction — None if no token, -1 if demo mode
         uid = None
         if info and isinstance(info.get('user_id'), int) and info['user_id'] > 0:
             uid = info['user_id']
@@ -58,19 +45,20 @@ def student_exams():
                 FROM exams e
                 LEFT JOIN exam_enrollments ee ON ee.exam_id=e.id
                 WHERE e.status IN ('active','scheduled')
+                  AND COALESCE(e.is_archived,0)=0
                   AND (ee.student_id=? OR NOT EXISTS (
                         SELECT 1 FROM exam_enrollments WHERE exam_id=e.id))
                 ORDER BY CASE e.status WHEN 'active' THEN 0 ELSE 1 END,
                          COALESCE(e.scheduled_start,'9999')
             ''', (uid, uid)).fetchall()
         else:
-            # Anonymous / demo / no-token: serve open-enrollment exams only
             rows = db.execute('''
                 SELECT e.*,
                     (SELECT COUNT(*) FROM questions WHERE exam_id=e.id) AS question_count,
                     0 AS already_submitted
                 FROM exams e
                 WHERE e.status IN ('active','scheduled')
+                  AND COALESCE(e.is_archived,0)=0
                 ORDER BY CASE e.status WHEN 'active' THEN 0 ELSE 1 END,
                          COALESCE(e.scheduled_start,'9999')
             ''').fetchall()
@@ -86,7 +74,7 @@ def student_exams():
 @bp_exams.get('/api/exams')
 def get_exams():
     db    = get_db()
-    exams = db.execute('SELECT * FROM exams ORDER BY created_at DESC').fetchall()
+    exams = db.execute("SELECT * FROM exams WHERE COALESCE(is_archived,0)=0 ORDER BY created_at DESC").fetchall()
     result = []
     for e in exams:
         ex = dict(e)
@@ -178,10 +166,14 @@ def update_exam(exam_id):
 
 @bp_exams.delete('/api/exams/<int:exam_id>')
 def delete_exam(exam_id):
+    """Soft-delete: archive the exam instead of permanently deleting it."""
     db = get_db()
-    db.execute('DELETE FROM exams WHERE id=?', (exam_id,))
+    db.execute(
+        "UPDATE exams SET is_archived=1, archived_at=datetime('now') WHERE id=?",
+        (exam_id,)
+    )
     db.commit()
-    return jsonify({'success': True})
+    return jsonify({'success': True, 'archived': True})
 
 
 @bp_exams.post('/api/exams/<int:exam_id>/enroll')
@@ -217,7 +209,6 @@ def submit_exam():
 
     db = get_db()
 
-    # Resolve student from token
     token      = get_token_from_request()
     info       = verify_token(token)
     student_id = None

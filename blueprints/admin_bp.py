@@ -1,5 +1,9 @@
 """
 ExamGuard — Students & Analytics blueprint
+
+CHANGES:
+- DELETE /api/students/<id> now soft-archives instead of hard-deletes
+- Analytics queries exclude archived items
 """
 import sqlite3
 import logging
@@ -18,7 +22,7 @@ bp_admin = Blueprint('admin', __name__)
 def get_students():
     db   = get_db()
     rows = db.execute(
-        "SELECT id,name,email,student_id,avatar_initials,created_at,last_login FROM users WHERE role='student' AND is_active=1"
+        "SELECT id,name,email,student_id,avatar_initials,created_at,last_login FROM users WHERE role='student' AND is_active=1 AND COALESCE(is_archived,0)=0"
     ).fetchall()
     return jsonify([dict(r) for r in rows])
 
@@ -46,10 +50,14 @@ def add_student():
 
 @bp_admin.delete('/api/students/<int:sid>')
 def delete_student(sid):
+    """Soft-delete: move to archive instead of permanent deletion."""
     db = get_db()
-    db.execute("UPDATE users SET is_active=0 WHERE id=? AND role='student'", (sid,))
+    db.execute(
+        "UPDATE users SET is_archived=1, is_active=0, archived_at=datetime('now') WHERE id=? AND role='student'",
+        (sid,)
+    )
     db.commit()
-    return jsonify({'success': True})
+    return jsonify({'success': True, 'archived': True})
 
 
 # ── Analytics ─────────────────────────────────────────────────────────────────
@@ -65,11 +73,11 @@ def dashboard_stats():
         pass_rate  = round(passed / total_subs * 100, 1) if total_subs else 0
         return jsonify({
             'active_sessions':   active,
-            'total_sessions':    db.execute('SELECT COUNT(*) FROM sessions').fetchone()[0],
+            'total_sessions':    db.execute("SELECT COUNT(*) FROM sessions WHERE COALESCE(is_archived,0)=0").fetchone()[0],
             'total_violations':  db.execute('SELECT COUNT(*) FROM violations').fetchone()[0],
-            'high_risk':         db.execute("SELECT COUNT(*) FROM sessions WHERE risk_level='High'").fetchone()[0],
-            'total_students':    db.execute("SELECT COUNT(*) FROM users WHERE role='student' AND is_active=1").fetchone()[0],
-            'total_exams':       db.execute('SELECT COUNT(*) FROM exams').fetchone()[0],
+            'high_risk':         db.execute("SELECT COUNT(*) FROM sessions WHERE risk_level='High' AND COALESCE(is_archived,0)=0").fetchone()[0],
+            'total_students':    db.execute("SELECT COUNT(*) FROM users WHERE role='student' AND is_active=1 AND COALESCE(is_archived,0)=0").fetchone()[0],
+            'total_exams':       db.execute("SELECT COUNT(*) FROM exams WHERE COALESCE(is_archived,0)=0").fetchone()[0],
             'total_submissions': total_subs,
             'pass_rate':         pass_rate,
         })
@@ -92,7 +100,7 @@ def violations_by_type():
 def risk_distribution():
     db   = get_db()
     rows = db.execute(
-        "SELECT risk_level as level, COUNT(*) as count FROM sessions WHERE is_active=0 GROUP BY risk_level"
+        "SELECT risk_level as level, COUNT(*) as count FROM sessions WHERE is_active=0 AND COALESCE(is_archived,0)=0 GROUP BY risk_level"
     ).fetchall()
     return jsonify([dict(r) for r in rows])
 
@@ -102,7 +110,8 @@ def daily_sessions():
     db   = get_db()
     rows = db.execute('''
         SELECT DATE(created_at) as day, COUNT(*) as count
-        FROM sessions GROUP BY day ORDER BY day DESC LIMIT 14
+        FROM sessions WHERE COALESCE(is_archived,0)=0
+        GROUP BY day ORDER BY day DESC LIMIT 14
     ''').fetchall()
     return jsonify([dict(r) for r in rows])
 
@@ -114,7 +123,7 @@ def get_notifications():
         SELECT 'HIGH_RISK_SESSION' as type,
                student_name || ' — High Risk (score: ' || risk_score || ')' as message,
                created_at
-        FROM sessions WHERE risk_level='High'
+        FROM sessions WHERE risk_level='High' AND COALESCE(is_archived,0)=0
         ORDER BY created_at DESC LIMIT 10
     """).fetchall()
     return jsonify([dict(r) for r in rows])

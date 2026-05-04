@@ -14,7 +14,7 @@ from flask import Flask, render_template, jsonify, send_file, request, redirect
 
 from config import config as app_configs
 from database import get_db, close_db, init_db
-from blueprints import bp_auth, bp_exams, bp_sessions, bp_admin
+from blueprints import bp_auth, bp_exams, bp_sessions, bp_admin, bp_archive
 from auth import get_token_from_request, verify_token
 
 # Logging
@@ -44,6 +44,7 @@ app.register_blueprint(bp_auth)
 app.register_blueprint(bp_exams)
 app.register_blueprint(bp_sessions)
 app.register_blueprint(bp_admin)
+app.register_blueprint(bp_archive)
 
 # DB teardown
 app.teardown_appcontext(close_db)
@@ -62,7 +63,6 @@ def exam():
     info  = verify_token(token)
     if not info:
         return redirect('/')
-    # Block if student already submitted this exam
     exam_id = request.args.get('exam_id')
     if exam_id and info.get('user_id') and info['user_id'] > 0:
         db = get_db()
@@ -153,7 +153,19 @@ def report(session_id):
     return 'Session not found', 404
 
 
-# Static assets
+@app.get('/reset-password')
+def reset_password_page():
+    return render_template('index.html')
+
+
+@app.get('/archive')
+def archive_page():
+    token = get_token_from_request()
+    info  = verify_token(token)
+    if not info or info.get('role') != 'teacher':
+        return redirect('/')
+    return render_template('archive.html')
+
 
 @app.get('/static/sw.js')
 def service_worker():
@@ -164,8 +176,6 @@ def service_worker():
 def manifest():
     return app.send_static_file('manifest.json')
 
-
-# Downloads
 
 @app.get('/api/download_report/<session_id>')
 def download_report(session_id):
@@ -202,7 +212,6 @@ def submitted():
         return redirect('/')
     return render_template('submitted.html')
 
-# Email helper
 
 def send_report_email(to_email, student_name, session_id, report):
     if not app.config.get('MAIL_USER'):
@@ -231,8 +240,6 @@ def send_report_email(to_email, student_name, session_id, report):
         logger.warning('Email send failed: %s', e)
 
 
-# SocketIO
-
 @socketio.on('join')
 def on_join(data):
     room = data.get('session_id') or data.get('room')
@@ -246,8 +253,6 @@ def on_join_teacher(data):
     join_room('teachers')
     emit('joined', {'room': 'teachers'})
 
-
-# Entry point
 
 if __name__ == '__main__':
     with app.app_context():
