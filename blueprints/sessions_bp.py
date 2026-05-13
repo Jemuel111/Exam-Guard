@@ -164,6 +164,7 @@ def audio_alert():
 def end_session():
     session_id = (request.get_json(silent=True) or {}).get('session_id')
     session    = exam_sessions.get(session_id)
+
     if not session:
         return jsonify({'error': 'not found'}), 404
 
@@ -171,23 +172,28 @@ def end_session():
     session.ended     = True
     session.end_time  = datetime.now()
     session.save_reports()
+
     db = get_db()
     session.save_to_db(db)
+
+    # Auto push to teachers if high risk
+    risk = session.compute_risk()
+
+    if risk['level'] == 'High':
+        from blueprints.push_bp import send_push_to_teachers
+
+        send_push_to_teachers(
+            title='⚠ High Risk Session Detected',
+            body=f'{session.student_name} — Risk Score {risk["score"]} · {len(session.violations)} flags',
+            url=f'/report/{session_id}',
+            tag=f'session-{session_id}',
+            require_interaction=True,
+        )
+
     report = session.generate_report()
     logger.info('Session ended: %s, flags: %d', session_id, len(session.violations))
+
     return jsonify(report)
-
-
-@bp_sessions.post('/api/archive_session/<session_id>')
-def archive_session(session_id):
-    """Soft-archive a session (teacher action)."""
-    db = get_db()
-    db.execute(
-        "UPDATE sessions SET is_archived=1, archived_at=datetime('now') WHERE session_id=?",
-        (session_id,)
-    )
-    db.commit()
-    return jsonify({'success': True, 'archived': True})
 
 
 @bp_sessions.get('/api/status/<session_id>')

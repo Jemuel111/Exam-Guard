@@ -16,6 +16,8 @@ from config import config as app_configs
 from database import get_db, close_db, init_db
 from blueprints import bp_auth, bp_exams, bp_sessions, bp_admin, bp_archive
 from auth import get_token_from_request, verify_token
+from blueprints.push_notifications import bp_push, init_push_table
+
 
 # Logging
 os.makedirs('logs',    exist_ok=True)
@@ -45,6 +47,7 @@ app.register_blueprint(bp_exams)
 app.register_blueprint(bp_sessions)
 app.register_blueprint(bp_admin)
 app.register_blueprint(bp_archive)
+app.register_blueprint(bp_push)
 
 # DB teardown
 app.teardown_appcontext(close_db)
@@ -212,6 +215,18 @@ def submitted():
         return redirect('/')
     return render_template('submitted.html')
 
+@app.get('/offline.html')
+def offline_page():
+    return render_template('offline.html')
+
+@app.get('/push-test')
+def push_test():
+    token = get_token_from_request()
+    info  = verify_token(token)
+    if not info or info.get('role') != 'teacher':
+        return redirect('/')
+    return render_template('push_test.html')
+
 
 def send_report_email(to_email, student_name, session_id, report):
     if not app.config.get('MAIL_USER'):
@@ -257,6 +272,7 @@ def on_join_teacher(data):
 if __name__ == '__main__':
     with app.app_context():
         init_db(app)
+        init_push_table(app)
     logger.info('ExamGuard v2.1 starting at http://localhost:5000')
     socketio.run(app, debug=app.config.get('DEBUG', True),
                  host='0.0.0.0', port=5000)

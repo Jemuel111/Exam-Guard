@@ -610,5 +610,10 @@
 
     loadDashboard();
   </script>
+  <script src="/static/push.js"></script>
+  <script>
+    const pushUserId = parseInt(localStorage.getItem('eg_user_id') || '-1');
+    ExamGuardPush.init(pushUserId, 'student');
+  </script>
 </body>
 </html>
