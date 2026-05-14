@@ -3375,3 +3375,157 @@
 2026-05-13 17:41:34,687 [INFO] 127.0.0.1 - - [13/May/2026 17:41:34] "GET /api/dashboard_stats HTTP/1.1" 200 -
 2026-05-13 17:41:34,689 [INFO] 127.0.0.1 - - [13/May/2026 17:41:34] "GET /api/archive/count HTTP/1.1" 200 -
 2026-05-13 17:41:34,692 [INFO] 127.0.0.1 - - [13/May/2026 17:41:34] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 10:55:01,419 [INFO] Database initialized ✓
+2026-05-14 10:55:01,422 [INFO] Push subscriptions table ready
+2026-05-14 10:55:01,422 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-14 10:55:01,790 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.3:5000
+2026-05-14 10:55:01,790 [INFO] [33mPress CTRL+C to quit[0m
+2026-05-14 10:55:01,790 [INFO]  * Restarting with stat
+2026-05-14 10:55:02,464 [INFO] Database initialized ✓
+2026-05-14 10:55:02,465 [INFO] Push subscriptions table ready
+2026-05-14 10:55:02,465 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-14 10:55:02,502 [WARNING]  * Debugger is active!
+2026-05-14 10:55:02,516 [INFO]  * Debugger PIN: 130-332-172
+2026-05-14 10:55:10,215 [INFO] 127.0.0.1 - - [14/May/2026 10:55:10] "GET / HTTP/1.1" 200 -
+2026-05-14 10:55:10,258 [INFO] 127.0.0.1 - - [14/May/2026 10:55:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 10:55:10,822 [INFO] 127.0.0.1 - - [14/May/2026 10:55:10] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-14 10:55:11,013 [INFO] 127.0.0.1 - - [14/May/2026 10:55:11] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-05-14 10:55:11,137 [INFO] 127.0.0.1 - - [14/May/2026 10:55:11] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-14 10:55:11,153 [INFO] 127.0.0.1 - - [14/May/2026 10:55:11] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-14 10:55:11,155 [INFO] 127.0.0.1 - - [14/May/2026 10:55:11] "[36mGET /static/icons/icon-512.png HTTP/1.1[0m" 304 -
+2026-05-14 10:55:20,190 [INFO] 127.0.0.1 - - [14/May/2026 10:55:20] "POST /api/login HTTP/1.1" 200 -
+2026-05-14 10:55:20,244 [INFO] 127.0.0.1 - - [14/May/2026 10:55:20] "GET /teacher/dashboard HTTP/1.1" 200 -
+2026-05-14 10:55:20,293 [INFO] 127.0.0.1 - - [14/May/2026 10:55:20] "[36mGET /static/archive_patch.js HTTP/1.1[0m" 304 -
+2026-05-14 10:55:20,296 [INFO] 127.0.0.1 - - [14/May/2026 10:55:20] "GET /static/push.js HTTP/1.1" 200 -
+2026-05-14 10:55:20,330 [INFO] 127.0.0.1 - - [14/May/2026 10:55:20] "GET /socket.io/?EIO=4&transport=polling&t=PuaQFi1 HTTP/1.1" 200 -
+2026-05-14 10:55:20,351 [INFO] 127.0.0.1 - - [14/May/2026 10:55:20] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 10:55:20,352 [INFO] 127.0.0.1 - - [14/May/2026 10:55:20] "GET /api/exams HTTP/1.1" 200 -
+2026-05-14 10:55:20,356 [INFO] 127.0.0.1 - - [14/May/2026 10:55:20] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 10:55:20,431 [INFO] 127.0.0.1 - - [14/May/2026 10:55:20] "POST /socket.io/?EIO=4&transport=polling&t=PuaQFjZ&sid=jiEzcMw2cF_FuOYiAAAA HTTP/1.1" 200 -
+2026-05-14 10:55:20,433 [INFO] 127.0.0.1 - - [14/May/2026 10:55:20] "GET /socket.io/?EIO=4&transport=polling&t=PuaQFjc&sid=jiEzcMw2cF_FuOYiAAAA HTTP/1.1" 200 -
+2026-05-14 10:55:20,469 [INFO] 127.0.0.1 - - [14/May/2026 10:55:20] "GET /socket.io/?EIO=4&transport=polling&t=PuaQFk9&sid=jiEzcMw2cF_FuOYiAAAA HTTP/1.1" 200 -
+2026-05-14 10:55:20,475 [INFO] 127.0.0.1 - - [14/May/2026 10:55:20] "POST /socket.io/?EIO=4&transport=polling&t=PuaQFk9.0&sid=jiEzcMw2cF_FuOYiAAAA HTTP/1.1" 200 -
+2026-05-14 10:55:20,480 [INFO] 127.0.0.1 - - [14/May/2026 10:55:20] "GET /api/me HTTP/1.1" 200 -
+2026-05-14 10:55:20,778 [INFO] 127.0.0.1 - - [14/May/2026 10:55:20] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-14 10:55:30,338 [INFO] 127.0.0.1 - - [14/May/2026 10:55:30] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 10:55:30,341 [INFO] 127.0.0.1 - - [14/May/2026 10:55:30] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 10:55:40,494 [INFO] 127.0.0.1 - - [14/May/2026 10:55:40] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 10:55:40,497 [INFO] 127.0.0.1 - - [14/May/2026 10:55:40] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 10:55:50,493 [INFO] 127.0.0.1 - - [14/May/2026 10:55:50] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 10:55:50,495 [INFO] 127.0.0.1 - - [14/May/2026 10:55:50] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 10:55:51,493 [INFO] 127.0.0.1 - - [14/May/2026 10:55:51] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-14 10:56:00,493 [INFO] 127.0.0.1 - - [14/May/2026 10:56:00] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 10:56:00,496 [INFO] 127.0.0.1 - - [14/May/2026 10:56:00] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 10:56:10,493 [INFO] 127.0.0.1 - - [14/May/2026 10:56:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 10:56:10,495 [INFO] 127.0.0.1 - - [14/May/2026 10:56:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 10:56:17,982 [INFO] 127.0.0.1 - - [14/May/2026 10:56:17] "GET /push-test HTTP/1.1" 200 -
+2026-05-14 10:56:18,167 [INFO] 127.0.0.1 - - [14/May/2026 10:56:18] "[36mGET /static/push.js HTTP/1.1[0m" 304 -
+2026-05-14 10:56:18,204 [INFO] 127.0.0.1 - - [14/May/2026 10:56:18] "GET /api/push/subscription-count HTTP/1.1" 200 -
+2026-05-14 10:56:20,492 [INFO] 127.0.0.1 - - [14/May/2026 10:56:20] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 10:56:20,494 [INFO] 127.0.0.1 - - [14/May/2026 10:56:20] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 10:56:21,492 [INFO] 127.0.0.1 - - [14/May/2026 10:56:21] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-14 10:56:48,495 [INFO] 127.0.0.1 - - [14/May/2026 10:56:48] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 10:56:48,496 [INFO] 127.0.0.1 - - [14/May/2026 10:56:48] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 10:56:51,492 [INFO] 127.0.0.1 - - [14/May/2026 10:56:51] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-14 10:57:47,251 [INFO] 127.0.0.1 - - [14/May/2026 10:57:47] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-14 10:57:47,256 [INFO] 127.0.0.1 - - [14/May/2026 10:57:47] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 10:57:47,266 [INFO] 127.0.0.1 - - [14/May/2026 10:57:47] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 10:57:50,491 [INFO] 127.0.0.1 - - [14/May/2026 10:57:50] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 10:57:50,494 [INFO] 127.0.0.1 - - [14/May/2026 10:57:50] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 10:57:51,491 [INFO] 127.0.0.1 - - [14/May/2026 10:57:51] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-14 10:58:00,491 [INFO] 127.0.0.1 - - [14/May/2026 10:58:00] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 10:58:00,494 [INFO] 127.0.0.1 - - [14/May/2026 10:58:00] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 10:58:01,693 [ERROR] pywebpush not installed. Run: pip install pywebpush
+2026-05-14 10:58:01,694 [INFO] 127.0.0.1 - - [14/May/2026 10:58:01] "[35m[1mPOST /api/push/send HTTP/1.1[0m" 503 -
+2026-05-14 10:58:10,491 [INFO] 127.0.0.1 - - [14/May/2026 10:58:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 10:58:10,494 [INFO] 127.0.0.1 - - [14/May/2026 10:58:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 10:58:20,492 [INFO] 127.0.0.1 - - [14/May/2026 10:58:20] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 10:58:20,493 [INFO] 127.0.0.1 - - [14/May/2026 10:58:20] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 10:58:21,491 [INFO] 127.0.0.1 - - [14/May/2026 10:58:21] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-14 10:58:30,492 [INFO] 127.0.0.1 - - [14/May/2026 10:58:30] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 10:58:30,494 [INFO] 127.0.0.1 - - [14/May/2026 10:58:30] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 10:58:40,493 [INFO] 127.0.0.1 - - [14/May/2026 10:58:40] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 10:58:40,493 [INFO] 127.0.0.1 - - [14/May/2026 10:58:40] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 10:58:42,452 [INFO] 127.0.0.1 - - [14/May/2026 10:58:42] "GET /push-test HTTP/1.1" 200 -
+2026-05-14 10:58:42,470 [INFO] 127.0.0.1 - - [14/May/2026 10:58:42] "GET /static/push.js HTTP/1.1" 200 -
+2026-05-14 10:58:42,581 [INFO] 127.0.0.1 - - [14/May/2026 10:58:42] "GET /api/push/subscription-count HTTP/1.1" 200 -
+2026-05-14 10:58:42,680 [INFO] 127.0.0.1 - - [14/May/2026 10:58:42] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-05-14 10:58:47,941 [ERROR] pywebpush not installed. Run: pip install pywebpush
+2026-05-14 10:58:47,941 [INFO] 127.0.0.1 - - [14/May/2026 10:58:47] "[35m[1mPOST /api/push/send HTTP/1.1[0m" 503 -
+2026-05-14 10:59:21,725 [INFO] 127.0.0.1 - - [14/May/2026 10:59:21] "[33mPOST /api/push/send HTTP/1.1[0m" 404 -
+2026-05-14 10:59:28,749 [INFO] 127.0.0.1 - - [14/May/2026 10:59:28] "GET /api/push/subscription-count HTTP/1.1" 200 -
+2026-05-14 10:59:41,493 [INFO] 127.0.0.1 - - [14/May/2026 10:59:41] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 10:59:41,496 [INFO] 127.0.0.1 - - [14/May/2026 10:59:41] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 10:59:41,497 [INFO] 127.0.0.1 - - [14/May/2026 10:59:41] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-14 10:59:51,630 [INFO] 127.0.0.1 - - [14/May/2026 10:59:51] "GET /push-test HTTP/1.1" 200 -
+2026-05-14 10:59:51,652 [INFO] 127.0.0.1 - - [14/May/2026 10:59:51] "GET /static/push.js HTTP/1.1" 200 -
+2026-05-14 10:59:51,754 [INFO] 127.0.0.1 - - [14/May/2026 10:59:51] "GET /api/push/subscription-count HTTP/1.1" 200 -
+2026-05-14 10:59:51,837 [INFO] 127.0.0.1 - - [14/May/2026 10:59:51] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-05-14 11:00:42,493 [INFO] 127.0.0.1 - - [14/May/2026 11:00:42] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 11:00:42,495 [INFO] 127.0.0.1 - - [14/May/2026 11:00:42] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 11:00:42,496 [INFO] 127.0.0.1 - - [14/May/2026 11:00:42] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-14 11:01:43,492 [INFO] 127.0.0.1 - - [14/May/2026 11:01:43] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-14 11:01:43,493 [INFO] 127.0.0.1 - - [14/May/2026 11:01:43] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 11:01:43,496 [INFO] 127.0.0.1 - - [14/May/2026 11:01:43] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 11:02:01,493 [INFO]  * Detected change in '/Users/macbook/Downloads/examguard/cv_engine.py', reloading
+2026-05-14 11:02:01,631 [INFO]  * Restarting with stat
+2026-05-14 11:04:26,542 [INFO] Database initialized ✓
+2026-05-14 11:04:26,544 [INFO] Push subscriptions table ready
+2026-05-14 11:04:26,544 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-14 11:04:26,743 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.3:5000
+2026-05-14 11:04:26,743 [INFO] [33mPress CTRL+C to quit[0m
+2026-05-14 11:04:26,743 [INFO]  * Restarting with stat
+2026-05-14 11:04:27,593 [INFO] Database initialized ✓
+2026-05-14 11:04:27,596 [INFO] Push subscriptions table ready
+2026-05-14 11:04:27,597 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-14 11:04:27,627 [WARNING]  * Debugger is active!
+2026-05-14 11:04:27,637 [INFO]  * Debugger PIN: 130-332-172
+2026-05-14 11:04:27,655 [INFO] 127.0.0.1 - - [14/May/2026 11:04:27] "GET /socket.io/?EIO=4&transport=polling&t=PuaSLHP HTTP/1.1" 200 -
+2026-05-14 11:04:27,667 [INFO] 127.0.0.1 - - [14/May/2026 11:04:27] "POST /socket.io/?EIO=4&transport=polling&t=PuaSLKA&sid=dRNXJ0EBxDW2IenOAAAA HTTP/1.1" 200 -
+2026-05-14 11:04:27,678 [INFO] 127.0.0.1 - - [14/May/2026 11:04:27] "GET /socket.io/?EIO=4&transport=polling&t=PuaSLKB&sid=dRNXJ0EBxDW2IenOAAAA HTTP/1.1" 200 -
+2026-05-14 11:04:44,167 [INFO] 127.0.0.1 - - [14/May/2026 11:04:44] "GET / HTTP/1.1" 200 -
+2026-05-14 11:04:44,213 [INFO] 127.0.0.1 - - [14/May/2026 11:04:44] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 11:04:44,473 [INFO] 127.0.0.1 - - [14/May/2026 11:04:44] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-05-14 11:04:44,485 [INFO] 127.0.0.1 - - [14/May/2026 11:04:44] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-14 11:04:44,497 [INFO] 127.0.0.1 - - [14/May/2026 11:04:44] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-14 11:04:46,505 [INFO] 127.0.0.1 - - [14/May/2026 11:04:46] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-14 11:04:46,505 [INFO] 127.0.0.1 - - [14/May/2026 11:04:46] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 11:04:46,514 [INFO] 127.0.0.1 - - [14/May/2026 11:04:46] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 11:04:51,705 [INFO] 127.0.0.1 - - [14/May/2026 11:04:51] "POST /api/login HTTP/1.1" 200 -
+2026-05-14 11:04:51,764 [INFO] 127.0.0.1 - - [14/May/2026 11:04:51] "GET /teacher/dashboard HTTP/1.1" 200 -
+2026-05-14 11:04:51,814 [INFO] 127.0.0.1 - - [14/May/2026 11:04:51] "[36mGET /static/archive_patch.js HTTP/1.1[0m" 304 -
+2026-05-14 11:04:51,814 [INFO] 127.0.0.1 - - [14/May/2026 11:04:51] "[36mGET /static/push.js HTTP/1.1[0m" 304 -
+2026-05-14 11:04:51,842 [INFO] 127.0.0.1 - - [14/May/2026 11:04:51] "GET /socket.io/?EIO=4&transport=polling&t=PuaSRDw HTTP/1.1" 200 -
+2026-05-14 11:04:51,869 [INFO] 127.0.0.1 - - [14/May/2026 11:04:51] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 11:04:51,879 [INFO] 127.0.0.1 - - [14/May/2026 11:04:51] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 11:04:51,889 [INFO] 127.0.0.1 - - [14/May/2026 11:04:51] "GET /api/exams HTTP/1.1" 200 -
+2026-05-14 11:04:51,968 [INFO] 127.0.0.1 - - [14/May/2026 11:04:51] "POST /socket.io/?EIO=4&transport=polling&t=PuaSRFt&sid=escInA9IxuCfuYmKAAAC HTTP/1.1" 200 -
+2026-05-14 11:04:51,975 [INFO] 127.0.0.1 - - [14/May/2026 11:04:51] "GET /socket.io/?EIO=4&transport=polling&t=PuaSRFw&sid=escInA9IxuCfuYmKAAAC HTTP/1.1" 200 -
+2026-05-14 11:04:52,007 [INFO] 127.0.0.1 - - [14/May/2026 11:04:52] "GET /socket.io/?EIO=4&transport=polling&t=PuaSRGV&sid=escInA9IxuCfuYmKAAAC HTTP/1.1" 200 -
+2026-05-14 11:04:52,008 [INFO] 127.0.0.1 - - [14/May/2026 11:04:52] "GET /api/me HTTP/1.1" 200 -
+2026-05-14 11:04:52,313 [INFO] 127.0.0.1 - - [14/May/2026 11:04:52] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-14 11:05:01,852 [INFO] 127.0.0.1 - - [14/May/2026 11:05:01] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 11:05:01,853 [INFO] 127.0.0.1 - - [14/May/2026 11:05:01] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 11:05:07,720 [INFO] 127.0.0.1 - - [14/May/2026 11:05:07] "[33mGET /teacher/push-test HTTP/1.1[0m" 404 -
+2026-05-14 11:05:07,759 [INFO] 127.0.0.1 - - [14/May/2026 11:05:07] "GET /socket.io/?EIO=4&transport=websocket&sid=escInA9IxuCfuYmKAAAC HTTP/1.1" 200 -
+2026-05-14 11:05:12,260 [INFO] 127.0.0.1 - - [14/May/2026 11:05:12] "[33mGET /teacher/push_test HTTP/1.1[0m" 404 -
+2026-05-14 11:05:15,429 [INFO] 127.0.0.1 - - [14/May/2026 11:05:15] "[33mGET /teacher/pushtest HTTP/1.1[0m" 404 -
+2026-05-14 11:05:40,472 [INFO] 127.0.0.1 - - [14/May/2026 11:05:40] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-14 11:05:40,475 [INFO] 127.0.0.1 - - [14/May/2026 11:05:40] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-14 11:05:40,476 [INFO] 127.0.0.1 - - [14/May/2026 11:05:40] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-14 11:05:43,246 [INFO] 127.0.0.1 - - [14/May/2026 11:05:43] "GET /push-test HTTP/1.1" 200 -
+2026-05-14 11:05:43,274 [INFO] 127.0.0.1 - - [14/May/2026 11:05:43] "[36mGET /static/push.js HTTP/1.1[0m" 304 -
+2026-05-14 11:05:43,332 [INFO] 127.0.0.1 - - [14/May/2026 11:05:43] "GET /socket.io/?EIO=4&transport=websocket&sid=dRNXJ0EBxDW2IenOAAAA HTTP/1.1" 200 -
+2026-05-14 11:05:43,355 [INFO] 127.0.0.1 - - [14/May/2026 11:05:43] "GET /api/push/subscription-count HTTP/1.1" 200 -
+2026-05-14 11:05:57,224 [INFO] 127.0.0.1 - - [14/May/2026 11:05:57] "[33mPOST /api/push/send HTTP/1.1[0m" 404 -
+2026-05-14 11:07:41,034 [INFO] 127.0.0.1 - - [14/May/2026 11:07:41] "[33mGET /teacher/pushtest HTTP/1.1[0m" 404 -
+2026-05-14 11:07:44,873 [INFO] 127.0.0.1 - - [14/May/2026 11:07:44] "GET /push-test HTTP/1.1" 200 -
+2026-05-14 11:07:44,890 [INFO] 127.0.0.1 - - [14/May/2026 11:07:44] "[36mGET /static/push.js HTTP/1.1[0m" 304 -
+2026-05-14 11:07:44,931 [INFO] 127.0.0.1 - - [14/May/2026 11:07:44] "GET /api/push/subscription-count HTTP/1.1" 200 -
+2026-05-14 11:07:54,721 [INFO] 127.0.0.1 - - [14/May/2026 11:07:54] "[33mPOST /api/push/send HTTP/1.1[0m" 404 -

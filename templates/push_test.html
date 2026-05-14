@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ExamGuard — Push Notification Test Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:#080c14; --bg1:#0d1424; --bg2:#111c30; --bg3:#141f35;
+      --acc:#2563eb; --ok:#22c55e; --warn:#f59e0b; --danger:#ef4444;
+      --hi:#f0f6ff; --mid:#6b84a8; --low:#2d4060;
+      --bd:rgba(255,255,255,0.06);
+      --sans:'Space Grotesk',sans-serif;
+      --mono:'Space Mono',monospace;
+    }
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--hi);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    body::before {
+      content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+      background-image:
+        linear-gradient(rgba(37,99,235,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(37,99,235,0.04) 1px, transparent 1px);
+      background-size:48px 48px;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      position: sticky; top: 0; z-index: 100;
+      height: 56px; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 32px;
+      background: rgba(8,12,20,0.92); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--bd);
+    }
+    .logo { font-family: var(--mono); font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.04em; display: flex; align-items: center; gap: 10px; }
+    .logo-hex { width: 24px; height: 24px; background: var(--acc);
+      display: flex; align-items: center; justify-content: center;
+      clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%); }
+    .logo-hex svg { width: 12px; height: 12px; fill: white; }
+    .back-btn {
+      font-family: var(--mono); font-size: 0.62rem; font-weight: 700;
+      color: var(--mid); border: 1px solid var(--bd); background: none;
+      padding: 6px 14px; cursor: pointer; text-decoration: none;
+      transition: all 0.12s; display: inline-flex; align-items: center; gap: 6px;
+    }
+    .back-btn:hover { color: var(--hi); border-color: var(--acc); }
+
+    /* ── Layout ── */
+    .main { max-width: 900px; margin: 0 auto; padding: 40px 24px; position: relative; z-index: 5; }
+    .page-header { margin-bottom: 36px; }
+    .page-eyebrow {
+      font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--acc); margin-bottom: 8px;
+    }
+    .page-title { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .page-sub { font-size: 0.85rem; color: var(--mid); line-height: 1.65; }
+
+    /* ── Status cards ── */
+    .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px; margin-bottom: 28px; }
+    .stat-card {
+      background: var(--bg1); border: 1px solid var(--bd);
+      padding: 20px; position: relative; overflow: hidden;
+    }
+    .stat-card::after { content:''; position:absolute; top:0; left:0; right:0; height:2px; }
+    .stat-card.s-blue::after  { background: var(--acc); }
+    .stat-card.s-green::after { background: var(--ok); }
+    .stat-card.s-amber::after { background: var(--warn); }
+    .stat-card.s-red::after   { background: var(--danger); }
+    .stat-label {
+      font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--low); margin-bottom: 8px;
+    }
+    .stat-value { font-family: var(--mono); font-size: 1.4rem; font-weight: 700; line-height: 1; }
+    .stat-sub { font-size: 0.68rem; color: var(--low); margin-top: 4px; }
+
+    /* ── Panels ── */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .panel {
+      background: var(--bg1); border: 1px solid var(--bd);
+      overflow: hidden;
+    }
+    .panel-hd {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 20px; height: 48px; border-bottom: 1px solid var(--bd);
+    }
+    .panel-title {
+      font-family: var(--mono); font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--mid);
+    }
+    .panel-body { padding: 20px; }
+
+    /* ── Form elements ── */
+    .form-group { margin-bottom: 14px; }
+    .form-label {
+      display: block; font-family: var(--mono); font-size: 0.52rem;
+      font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--low); margin-bottom: 6px;
+    }
+    .field {
+      width: 100%; padding: 9px 12px;
+      background: var(--bg2); border: 1px solid var(--bd);
+      color: var(--hi); font-family: var(--sans); font-size: 0.85rem;
+      outline: none; transition: border-color 0.12s;
+    }
+    .field:focus { border-color: var(--acc); }
+    .field::placeholder { color: var(--low); }
+    select.field { appearance: none; cursor: pointer; }
+    textarea.field { resize: vertical; min-height: 80px; line-height: 1.6; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 8px; font-family: var(--mono); font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 0.04em; padding: 9px 20px; border: 1px solid;
+      cursor: pointer; background: none; transition: all 0.12s; white-space: nowrap;
+    }
+    .btn-primary { background: var(--acc); color: #fff; border-color: var(--acc); }
+    .btn-primary:hover { background: #1d4ed8; border-color: #1d4ed8; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-ok { color: var(--ok); border-color: rgba(34,197,94,0.3); }
+    .btn-ok:hover { background: rgba(34,197,94,0.08); }
+    .btn-ghost { color: var(--mid); border-color: var(--bd); }
+    .btn-ghost:hover { color: var(--hi); border-color: rgba(37,99,235,0.4); }
+    .btn-full { width: 100%; }
+
+    /* ── Permission status ── */
+    .perm-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-family: var(--mono); font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.08em; padding: 4px 10px; border: 1px solid;
+    }
+    .perm-badge.granted { color: var(--ok); border-color: rgba(34,197,94,0.3); background: rgba(34,197,94,0.06); }
+    .perm-badge.denied  { color: var(--danger); border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.06); }
+    .perm-badge.default { color: var(--warn); border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.06); }
+
+    /* ── Result box ── */
+    .result-box {
+      background: var(--bg2); border: 1px solid var(--bd);
+      border-left: 3px solid var(--acc);
+      padding: 14px 16px; font-family: var(--mono); font-size: 0.72rem;
+      line-height: 1.7; display: none; margin-top: 12px;
+    }
+    .result-box.show { display: block; animation: fadeIn 0.2s ease; }
+    .result-box.ok   { border-left-color: var(--ok); }
+    .result-box.warn { border-left-color: var(--warn); }
+    .result-box.err  { border-left-color: var(--danger); }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── Setup steps ── */
+    .setup-steps { counter-reset: steps; }
+    .step {
+      display: flex; gap: 16px; padding: 16px 0;
+      border-bottom: 1px solid var(--bd);
+    }
+    .step:last-child { border-bottom: none; }
+    .step-num {
+      width: 28px; height: 28px; flex-shrink: 0;
+      background: rgba(37,99,235,0.1); border: 1px solid rgba(37,99,235,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--mono); font-size: 0.65rem; font-weight: 700; color: var(--acc);
+    }
+    .step-title { font-size: 0.82rem; font-weight: 600; margin-bottom: 4px; }
+    .step-desc { font-size: 0.75rem; color: var(--mid); line-height: 1.6; }
+    .step-desc code {
+      font-family: var(--mono); font-size: 0.68rem;
+      background: var(--bg3); padding: 1px 5px; color: var(--acc);
+    }
+
+    /* ── Log ── */
+    .log-area {
+      background: var(--bg); border: 1px solid var(--bd);
+      font-family: var(--mono); font-size: 0.65rem; color: var(--mid);
+      padding: 12px; max-height: 160px; overflow-y: auto; line-height: 1.8;
+    }
+    .log-line { display: flex; gap: 10px; }
+    .log-time { color: var(--low); flex-shrink: 0; }
+    .log-ok   { color: var(--ok); }
+    .log-warn { color: var(--warn); }
+    .log-err  { color: var(--danger); }
+
+    .sub-list { max-height: 180px; overflow-y: auto; }
+    .sub-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 0; border-bottom: 1px solid var(--bd); font-size: 0.78rem;
+    }
+    .sub-item:last-child { border-bottom: none; }
+    .sub-endpoint { font-family: var(--mono); font-size: 0.6rem; color: var(--low);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 200px; }
+    .sub-role { font-family: var(--mono); font-size: 0.55rem; font-weight: 700;
+      letter-spacing: 0.1em; padding: 2px 7px; border: 1px solid; }
+    .sub-role.teacher { color: var(--acc); border-color: rgba(37,99,235,0.3); }
+    .sub-role.student { color: var(--ok); border-color: rgba(34,197,94,0.3); }
+
+    .empty { text-align: center; padding: 28px; color: var(--low);
+      font-family: var(--mono); font-size: 0.65rem; }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="logo">
+      <div class="logo-hex"><svg viewBox="0 0 12 14" fill="white"><path d="M6 0L0 2.5v4.5C0 10.5 6 14 6 14s6-3.5 6-7V2.5L6 0z"/></svg></div>
+      EXAM<span style="color:var(--acc)">GUARD</span> · Push Test Panel
+    </div>
+    <a href="/teacher/dashboard" class="back-btn">← Back to Dashboard</a>
+  </div>
+
+  <div class="main">
+    <div class="page-header">
+      <div class="page-eyebrow">Developer Tools · Push Notifications</div>
+      <div class="page-title">Push Notification Test Panel</div>
+      <p class="page-sub">
+        Verify that Web Push is correctly configured, test sending notifications to teachers and students,
+        and monitor subscription counts. Requires VAPID keys in your <code style="font-family:var(--mono);font-size:0.8em;color:var(--acc)">.env</code> file.
+      </p>
+    </div>
+
+    <!-- Status cards -->
+    <div class="status-grid">
+      <div class="stat-card s-blue">
+        <div class="stat-label">Browser Support</div>
+        <div class="stat-value" id="swSupport" style="color:var(--warn)">Checking…</div>
+        <div class="stat-sub" id="swSupportSub">—</div>
+      </div>
+      <div class="stat-card s-green">
+        <div class="stat-label">Permission</div>
+        <div class="stat-value" id="permStatus" style="color:var(--warn)">—</div>
+        <div class="stat-sub" id="permSub">—</div>
+      </div>
+      <div class="stat-card s-amber">
+        <div class="stat-label">My Subscription</div>
+        <div class="stat-value" id="subStatus" style="color:var(--warn)">—</div>
+        <div class="stat-sub">On this device</div>
+      </div>
+      <div class="stat-card s-blue">
+        <div class="stat-label">Server Subs</div>
+        <div class="stat-value" id="serverSubCount" style="color:var(--acc)">—</div>
+        <div class="stat-sub" id="serverSubBreakdown">Loading…</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+
+      <!-- Left: This Device -->
+      <div class="panel">
+        <div class="panel-hd">
+          <span class="panel-title">This Device</span>
+          <span id="permBadge" class="perm-badge default">DEFAULT</span>
+        </div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label class="form-label">Subscribe as</label>
+            <select class="field" id="subscribeRole">
+              <option value="teacher">Teacher</option>
+              <option value="student">Student</option>
+            </select>
+          </div>
+          <button class="btn btn-primary btn-full" id="subscribeBtn" onclick="handleSubscribe()">
+            🔔 Enable Push Notifications
+          </button>
+          <button class="btn btn-ghost btn-full" style="margin-top:8px" onclick="handleUnsubscribe()">
+            Unsubscribe This Device
+          </button>
+          <div class="result-box" id="subResult"></div>
+
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--bd)">
+            <div class="form-label" style="margin-bottom:8px">Activity Log</div>
+            <div class="log-area" id="logArea">
+              <div class="log-line"><span class="log-time">--:--:--</span><span>Waiting for actions…</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Send Test Notification -->
+      <div class="panel">
+        <div class="panel-hd"><span class="panel-title">Send Test Notification</span></div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label class="form-label">Send To</label>
+            <select class="field" id="sendRole">
+              <option value="teacher">All Teachers</option>
+              <option value="student">All Students</option>
+              <option value="all">Everyone</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Title</label>
+            <input class="field" id="notifTitle" value="ExamGuard Alert" placeholder="Notification title"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea class="field" id="notifBody" placeholder="Notification body…">High-risk session detected. Please review the monitoring report.</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Link URL (optional)</label>
+            <input class="field" id="notifUrl" value="/teacher/dashboard" placeholder="/teacher/dashboard"/>
+          </div>
+          <button class="btn btn-primary btn-full" onclick="sendTestNotification()">
+            📤 Send Notification
+          </button>
+          <div class="result-box" id="sendResult"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subscriptions list -->
+    <div class="panel" style="margin-bottom:20px">
+      <div class="panel-hd">
+        <span class="panel-title">Active Subscriptions</span>
+        <button class="btn btn-ghost" style="font-size:0.55rem;padding:4px 10px" onclick="loadSubscriptions()">Refresh</button>
+      </div>
+      <div class="panel-body" style="padding:0">
+        <div class="sub-list" id="subList">
+          <div class="empty">Loading subscriptions…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Setup guide -->
+    <div class="panel">
+      <div class="panel-hd"><span class="panel-title">Setup Guide</span></div>
+      <div class="panel-body">
+        <div class="setup-steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div>
+              <div class="step-title">Install pywebpush</div>
+              <div class="step-desc">Run: <code>pip install pywebpush</code></div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div>
+              <div class="step-title">Generate VAPID Keys</div>
+              <div class="step-desc">
+                Run once: <code>python -c "from py_vapid import Vapid; v=Vapid(); v.generate_keys(); print(v.public_key)"</code><br>
+                This prints your public key and creates <code>private_key.pem</code>.
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div>
+              <div class="step-title">Add to .env</div>
+              <div class="step-desc">
+                <code>VAPID_PUBLIC_KEY=&lt;your public key&gt;</code><br>
+                <code>VAPID_PRIVATE_KEY=&lt;contents of private_key.pem&gt;</code><br>
+                <code>VAPID_CLAIMS_EMAIL=mailto:admin@yourdomain.com</code>
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div>
+              <div class="step-title">Register blueprint in app.py</div>
+              <div class="step-desc">
+                <code>from blueprints.push_bp import bp_push, init_push_table</code><br>
+                <code>app.register_blueprint(bp_push)</code><br>
+                Then after <code>init_db(app)</code>: <code>init_push_table(app)</code>
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div>
+              <div class="step-title">Add push.js to dashboards</div>
+              <div class="step-desc">
+                Add to <code>teacher_dashboard.html</code> and <code>student_dashboard.html</code>:<br>
+                <code>&lt;script src="/static/push.js"&gt;&lt;/script&gt;</code><br>
+                Then call: <code>ExamGuardPush.init(userId, role)</code>
+              </div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">6</div>
+            <div>
+              <div class="step-title">Trigger from session violations</div>
+              <div class="step-desc">
+                In <code>cv_engine.py</code> or <code>sessions_bp.py</code>, import and call:<br>
+                <code>from blueprints.push_bp import send_push_to_teachers</code><br>
+                <code>send_push_to_teachers("⚠ High Risk", f"{student} flagged", url=f"/report/{sid}")</code>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/push.js"></script>
+  <script>
+    const token = localStorage.getItem('eg_token') || '';
+    const authH = {
+      'Content-Type': 'application/json',
+      'X-Demo-Mode': '1',
+      'Authorization': `Bearer ${token}`,
+    };
+
+    // ── Logging ──────────────────────────────────────────────────────────────
+    function log(msg, type = '') {
+      const area = document.getElementById('logArea');
+      const time = new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      const line = document.createElement('div');
+      line.className = 'log-line';
+      line.innerHTML = `<span class="log-time">${time}</span><span class="${type ? 'log-'+type : ''}">${msg}</span>`;
+      area.appendChild(line);
+      area.scrollTop = area.scrollHeight;
+      // Remove placeholder
+      const placeholder = area.querySelector('.log-line:first-child');
+      if (area.children.length > 1 && placeholder && placeholder.textContent.includes('Waiting')) {
+        placeholder.remove();
+      }
+    }
+
+    function showResult(id, msg, type = '') {
+      const el = document.getElementById(id);
+      el.textContent = msg;
+      el.className = `result-box show ${type}`;
+    }
+
+    // ── Status checks ─────────────────────────────────────────────────────────
+    async function checkStatus() {
+      // Browser support
+      const supported = ExamGuardPush.isSupported();
+      const supEl = document.getElementById('swSupport');
+      supEl.textContent = supported ? 'Supported' : 'Not Supported';
+      supEl.style.color = supported ? 'var(--ok)' : 'var(--danger)';
+      document.getElementById('swSupportSub').textContent =
+        supported ? 'SW + PushManager + Notification' : 'Missing API(s)';
+
+      if (!supported) return;
+
+      // Permission
+      const perm = Notification.permission;
+      const permEl = document.getElementById('permStatus');
+      permEl.textContent = perm.charAt(0).toUpperCase() + perm.slice(1);
+      permEl.style.color = perm === 'granted' ? 'var(--ok)' : perm === 'denied' ? 'var(--danger)' : 'var(--warn)';
+      document.getElementById('permSub').textContent =
+        perm === 'granted' ? 'Ready to receive' : perm === 'denied' ? 'Blocked in browser' : 'Not yet requested';
+
+      const badge = document.getElementById('permBadge');
+      badge.textContent = perm.toUpperCase();
+      badge.className = `perm-badge ${perm}`;
+
+      // Subscription state
+      const state = await ExamGuardPush.getState();
+      const subEl = document.getElementById('subStatus');
+      subEl.textContent = state === 'subscribed' ? 'Active' : state === 'denied' ? 'Blocked' : 'None';
+      subEl.style.color = state === 'subscribed' ? 'var(--ok)' : state === 'denied' ? 'var(--danger)' : 'var(--warn)';
+
+      const btn = document.getElementById('subscribeBtn');
+      if (state === 'subscribed') {
+        btn.textContent = '✓ Already Subscribed';
+        btn.style.background = 'rgba(34,197,94,0.1)';
+        btn.style.borderColor = 'rgba(34,197,94,0.3)';
+        btn.style.color = 'var(--ok)';
+      }
+
+      // Server count
+      loadServerCount();
+    }
+
+    async function loadServerCount() {
+      try {
+        const d = await fetch('/api/push/subscription-count', {headers:authH}).then(r=>r.json());
+        document.getElementById('serverSubCount').textContent = d.total;
+        document.getElementById('serverSubBreakdown').textContent =
+          `${d.teachers} teacher · ${d.students} student`;
+      } catch {
+        document.getElementById('serverSubCount').textContent = '?';
+        document.getElementById('serverSubBreakdown').textContent = 'Server not reachable';
+      }
+    }
+
+    async function loadSubscriptions() {
+      const list = document.getElementById('subList');
+      try {
+        const d = await fetch('/api/push/subscription-count', {headers:authH}).then(r=>r.json());
+        if (d.total === 0) {
+          list.innerHTML = '<div class="empty">No active subscriptions yet.<br>Subscribe this device above to get started.</div>';
+          return;
+        }
+        list.innerHTML = `
+          <div style="padding:12px 20px;border-bottom:1px solid var(--bd);font-family:var(--mono);font-size:0.55rem;color:var(--low);letter-spacing:0.1em;display:flex;justify-content:space-between">
+            <span>ENDPOINT</span><span>ROLE</span>
+          </div>
+          <div style="padding:12px 20px">
+            <div class="sub-item">
+              <div>
+                <div style="font-size:0.78rem;margin-bottom:3px">${d.teachers} Teacher subscription${d.teachers !== 1 ? 's' : ''}</div>
+                <div class="sub-endpoint">Registered on this server</div>
+              </div>
+              <span class="sub-role teacher">TEACHER</span>
+            </div>
+            <div class="sub-item">
+              <div>
+                <div style="font-size:0.78rem;margin-bottom:3px">${d.students} Student subscription${d.students !== 1 ? 's' : ''}</div>
+                <div class="sub-endpoint">Registered on this server</div>
+              </div>
+              <span class="sub-role student">STUDENT</span>
+            </div>
+          </div>`;
+      } catch {
+        list.innerHTML = '<div class="empty">Could not load subscriptions. Is the server running?</div>';
+      }
+    }
+
+    // ── Actions ───────────────────────────────────────────────────────────────
+    async function handleSubscribe() {
+      const role = document.getElementById('subscribeRole').value;
+      log(`Requesting permission and subscribing as ${role}…`);
+      document.getElementById('subscribeBtn').disabled = true;
+      document.getElementById('subscribeBtn').textContent = 'Subscribing…';
+
+      // Init push with a dummy user_id=-1 (test panel)
+      await ExamGuardPush.init(-1, role);
+      const result = await ExamGuardPush.subscribe();
+
+      if (result.success) {
+        log('Subscription successful!', 'ok');
+        showResult('subResult', `✓ Subscribed as ${role}. You should receive test notifications now.`, 'ok');
+      } else {
+        log(`Subscription failed: ${result.reason}`, 'err');
+        showResult('subResult', `✗ Failed: ${result.reason}`, 'err');
+      }
+
+      document.getElementById('subscribeBtn').disabled = false;
+      document.getElementById('subscribeBtn').textContent = '🔔 Enable Push Notifications';
+      await checkStatus();
+      loadSubscriptions();
+    }
+
+    async function handleUnsubscribe() {
+      log('Unsubscribing this device…');
+      const result = await ExamGuardPush.unsubscribe();
+      if (result.success) {
+        log('Unsubscribed successfully', 'warn');
+        showResult('subResult', '✓ Unsubscribed. This device will no longer receive push notifications.', 'warn');
+      }
+      await checkStatus();
+      loadSubscriptions();
+    }
+
+    async function sendTestNotification() {
+      const role  = document.getElementById('sendRole').value;
+      const title = document.getElementById('notifTitle').value || 'ExamGuard';
+      const body  = document.getElementById('notifBody').value || 'Test notification';
+      const url   = document.getElementById('notifUrl').value || '/';
+
+      log(`Sending to ${role}: "${title}"`);
+      showResult('sendResult', 'Sending…', '');
+
+      try {
+        const res = await fetch('/api/push/send', {
+          method: 'POST',
+          headers: authH,
+          body: JSON.stringify({ title, body, url, role }),
+        });
+        const d = await res.json();
+
+        if (d.success) {
+          log(`Sent to ${d.sent}/${d.total} devices`, 'ok');
+          showResult('sendResult',
+            `✓ Sent to ${d.sent} device${d.sent !== 1 ? 's' : ''} (${d.errors} failed) out of ${d.total} subscriptions.`, 'ok');
+        } else {
+          log(`Send failed: ${d.error}`, 'err');
+          showResult('sendResult', `✗ Error: ${d.error}`, 'err');
+        }
+      } catch (e) {
+        log(`Network error: ${e.message}`, 'err');
+        showResult('sendResult', `✗ Could not reach server: ${e.message}`, 'err');
+      }
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+    checkStatus();
+    loadSubscriptions();
+  </script>
+</body>
+</html>

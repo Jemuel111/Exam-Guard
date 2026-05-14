@@ -16,7 +16,7 @@ from config import config as app_configs
 from database import get_db, close_db, init_db
 from blueprints import bp_auth, bp_exams, bp_sessions, bp_admin, bp_archive
 from auth import get_token_from_request, verify_token
-from blueprints.push_notifications import bp_push, init_push_table
+from blueprints.push_bp import bp_push, init_push_table
 
 
 # Logging

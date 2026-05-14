@@ -15,6 +15,7 @@ FIXES:
   is_looking_away via the else branch in some edge cases).
 - decode_frame logs the exact exception and returns None cleanly; callers
   already handle None but the silent failure made debugging hard.
+- Fixed duplicate 'if v:' block and corrected push_bp import path.
 """
 import base64
 import logging
@@ -214,18 +215,17 @@ def process_frame(session, frame_b64: str, socketio=None) -> dict:
                 session.stats['multiple_face_events'] += 1
                 session._multi_face_logged = True
                 alerts.append({'type': 'MULTIPLE_FACES', 'count': face_count, 'violation': v})
-                if v:
-                    try:
-                        from blueprints.push_notifications import send_push_to_teachers
-                        send_push_to_teachers(
-                            title='🚨 Multiple Faces Detected',
-                            body=f'{session.student_name} — {face_count} people visible',
-                            url=f'/report/{session.session_id}',
-                            tag=f'multiface-{session.session_id}',
-                            require_interaction=True,
-                        )
-                    except Exception as push_err:
-                        logger.warning('Push notify error: %s', push_err)
+                try:
+                    from blueprints.push_bp import send_push_to_teachers
+                    send_push_to_teachers(
+                        title='🚨 Multiple Faces Detected',
+                        body=f'{session.student_name} — {face_count} people visible',
+                        url=f'/report/{session.session_id}',
+                        tag=f'multiface-{session.session_id}',
+                        require_interaction=True,
+                    )
+                except Exception as push_err:
+                    logger.warning('Push notify error: %s', push_err)
         else:
             alerts.append({'type': 'MULTIPLE_FACES', 'count': face_count})
     else:
