@@ -180,7 +180,7 @@ def end_session():
     risk = session.compute_risk()
 
     if risk['level'] == 'High':
-        from blueprints.push_bp import send_push_to_teachers
+        from blueprints.push_notifications import send_push_to_teachers
 
         send_push_to_teachers(
             title='⚠ High Risk Session Detected',

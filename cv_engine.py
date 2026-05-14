@@ -216,7 +216,7 @@ def process_frame(session, frame_b64: str, socketio=None) -> dict:
                 alerts.append({'type': 'MULTIPLE_FACES', 'count': face_count, 'violation': v})
                 if v:
                     try:
-                        from blueprints.push_bp import send_push_to_teachers
+                        from blueprints.push_notifications import send_push_to_teachers
                         send_push_to_teachers(
                             title='🚨 Multiple Faces Detected',
                             body=f'{session.student_name} — {face_count} people visible',

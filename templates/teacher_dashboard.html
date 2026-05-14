@@ -457,7 +457,7 @@
       <svg width="11" height="11" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.5 3.5l1.4 1.4M11.1 11.1l1.4 1.4M3.5 12.5l1.4-1.4M11.1 4.9l1.4-1.4"/><circle cx="8" cy="8" r="3"/></svg>
       <span id="themeLabel">Dark Mode</span>
     </button>
-    <div id="pushToggleContainer" data-push-toggle style="margin-bottom:8px"></div>
+    <div id="pushToggleContainer" data-push-toggle></div>
     <a href="/" class="btn btn-ghost" style="width:100%;justify-content:center;font-size:0.62rem" onclick="doLogout()">← Logout</a>
   </div>
 </aside>
@@ -1218,17 +1218,24 @@ setInterval(()=>{ loadStats(); loadRecentSessions(); }, 10000);
 
 </script>
 <script src="/static/archive_patch.js"></script>
-<div id="pushToggleContainer" data-push-toggle></div>
- 
 <script src="/static/push.js"></script>
 <script>
-  // Init push with teacher's user ID and role
-  // (sbName is already set in the existing dashboard JS)
-  const pushUserId = parseInt(localStorage.getItem('eg_user_id') || '-1');
-  ExamGuardPush.init(pushUserId, 'teacher');
- 
-  // Render the toggle button in the sidebar footer
-  ExamGuardPush.renderToggleButton('pushToggleContainer');
+  // Save user_id on page load from token
+  (async () => {
+    try {
+      const res = await fetch('/api/me', { headers: authHeader });
+      const data = await res.json();
+      if (data.id) localStorage.setItem('eg_user_id', data.id);
+    } catch(e) {}
+  })();
+
+  // Init push after DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    const pushUserId = parseInt(localStorage.getItem('eg_user_id') || '-1');
+    ExamGuardPush.init(pushUserId, 'teacher');
+    ExamGuardPush.renderToggleButton('pushToggleContainer');
+  });
 </script>
+
 </body>
 </html>
