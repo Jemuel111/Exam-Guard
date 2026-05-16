@@ -5936,3 +5936,5 @@ Response body:push subscription has unsubscribed or expired.
 2026-05-17 01:03:40,048 [INFO] 127.0.0.1 - - [17/May/2026 01:03:40] "GET /api/dashboard_stats HTTP/1.1" 200 -
 2026-05-17 01:03:50,041 [INFO] 127.0.0.1 - - [17/May/2026 01:03:50] "GET /api/dashboard_stats HTTP/1.1" 200 -
 2026-05-17 01:03:50,041 [INFO] 127.0.0.1 - - [17/May/2026 01:03:50] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-17 01:04:02,058 [INFO] 127.0.0.1 - - [17/May/2026 01:04:02] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-17 01:04:02,066 [INFO] 127.0.0.1 - - [17/May/2026 01:04:02] "GET /api/dashboard_stats HTTP/1.1" 200 -
