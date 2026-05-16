@@ -55,51 +55,56 @@ const ExamGuardPush = (() => {
 
   async function subscribe() {
     if (!isSupported()) {
-      console.warn('[Push] Not supported in this browser');
       return { success: false, reason: 'not-supported' };
     }
 
-    // Request notification permission
     const permission = await Notification.requestPermission();
     if (permission !== 'granted') {
-      console.warn('[Push] Permission denied');
       return { success: false, reason: 'denied' };
     }
 
-    // Get service worker registration
-    _swReg = await navigator.serviceWorker.ready;
-
-    // Check if already subscribed
-    const existing = await _swReg.pushManager.getSubscription();
-    if (existing) {
-      await _saveSubscription(existing);
-      return { success: true, reason: 'already-subscribed' };
+    // Force SW registration if not already done
+    let reg;
+    try {
+      reg = await navigator.serviceWorker.register('/static/sw.js');
+      await navigator.serviceWorker.ready;
+      _swReg = await navigator.serviceWorker.ready;
+    } catch (e) {
+      console.error('[Push] SW registration failed:', e);
+      return { success: false, reason: 'sw-failed: ' + e.message };
     }
 
-    // Get VAPID key
     const vapidKey = await getVapidKey();
     if (!vapidKey) {
-      console.error('[Push] VAPID public key not available — check server config');
       return { success: false, reason: 'no-vapid-key' };
     }
 
-    // Subscribe
+    console.log('[Push] VAPID key length:', vapidKey.length);
+    console.log('[Push] VAPID key:', vapidKey);
+
     try {
+      // Unsubscribe from any existing broken subscription first
+      const existing = await _swReg.pushManager.getSubscription();
+      if (existing) {
+        await existing.unsubscribe();
+        console.log('[Push] Cleared existing subscription');
+      }
+
       const subscription = await _swReg.pushManager.subscribe({
-        userVisibleOnly:      true,
+        userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(vapidKey),
       });
 
+      console.log('[Push] Got subscription:', subscription.endpoint);
       await _saveSubscription(subscription);
       localStorage.setItem('eg_push_subscribed', '1');
-      console.log('[Push] Subscribed successfully');
       return { success: true, reason: 'subscribed' };
+
     } catch (err) {
-      console.error('[Push] Subscribe error:', err);
+      console.error('[Push] pushManager.subscribe error:', err);
       return { success: false, reason: err.message };
     }
   }
-
   // ── Save subscription to server ───────────────────────────────────────────
 
   async function _saveSubscription(subscription) {

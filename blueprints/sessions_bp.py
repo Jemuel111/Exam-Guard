@@ -19,6 +19,7 @@ from auth import get_token_from_request, verify_token
 from cv_engine import process_frame
 from database import get_db
 from session_model import ExamSession
+from blueprints.push_bp import send_push_to_teachers
 
 logger      = logging.getLogger(__name__)
 bp_sessions = Blueprint('sessions', __name__)
@@ -180,7 +181,7 @@ def end_session():
     risk = session.compute_risk()
 
     if risk['level'] == 'High':
-        from blueprints.push_notifications import send_push_to_teachers
+        from blueprints.push_bp import send_push_to_teachers
 
         send_push_to_teachers(
             title='⚠ High Risk Session Detected',
