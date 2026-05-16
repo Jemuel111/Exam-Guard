@@ -1,15 +1,27 @@
 {
-    "name": "ExamGuard",
-    "short_name": "ExamGuard",
-    "description": "AI-Powered Online Exam Monitoring System",
-    "start_url": "/",
-    "display": "standalone",
-    "background_color": "#080c14",
-    "theme_color": "#0057FF",
-    "orientation": "landscape-primary",
-    "icons": [
-      { "src": "/static/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-      { "src": "/static/icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
-    ],
-    "categories": ["education", "productivity"]
-  }
+  "name": "ExamGuard",
+  "short_name": "ExamGuard",
+  "description": "AI-Powered Online Exam Monitoring System",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080c14",
+  "theme_color": "#2563eb",
+  "orientation": "any",
+  "icons": [
+    { "src": "/static/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/static/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "shortcuts": [
+    {
+      "name": "Teacher Dashboard",
+      "url": "/teacher/dashboard",
+      "description": "Monitor live exam sessions"
+    },
+    {
+      "name": "Student Dashboard",
+      "url": "/student/dashboard",
+      "description": "View your exam results"
+    }
+  ],
+  "categories": ["education", "productivity"]
+}

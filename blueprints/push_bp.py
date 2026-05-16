@@ -133,12 +133,22 @@ def send_push_to_user(user_id, title, body, url='/', tag='examguard', require_in
         logger.warning('VAPID_PRIVATE_KEY not set — push not sent')
         return 0, 0
 
-    from flask import current_app
-    with current_app.app_context():
+    try:
         db = get_db()
         subs = db.execute(
             'SELECT * FROM push_subscriptions WHERE user_id=?', (user_id,)
         ).fetchall()
+    except RuntimeError:
+        # Called outside request context (e.g. background thread) — use app context
+        from flask import current_app
+        with current_app.app_context():
+            import sqlite3
+            conn = sqlite3.connect(current_app.config['DATABASE'])
+            conn.row_factory = sqlite3.Row
+            subs = conn.execute(
+                'SELECT * FROM push_subscriptions WHERE user_id=?', (user_id,)
+            ).fetchall()
+            conn.close()
 
     payload = json.dumps({
         'title': title,
@@ -190,12 +200,22 @@ def send_push_to_teachers(title, body, url='/teacher/dashboard', tag='examguard-
         logger.warning('VAPID_PRIVATE_KEY not set — push not sent')
         return 0, 0
 
-    from flask import current_app
-    with current_app.app_context():
+    try:
         db = get_db()
         subs = db.execute(
             "SELECT * FROM push_subscriptions WHERE role='teacher'"
         ).fetchall()
+    except RuntimeError:
+        # Called outside request context (e.g. from SocketIO thread)
+        from flask import current_app
+        with current_app.app_context():
+            import sqlite3
+            conn = sqlite3.connect(current_app.config['DATABASE'])
+            conn.row_factory = sqlite3.Row
+            subs = conn.execute(
+                "SELECT * FROM push_subscriptions WHERE role='teacher'"
+            ).fetchall()
+            conn.close()
 
     payload = json.dumps({
         'title': title,

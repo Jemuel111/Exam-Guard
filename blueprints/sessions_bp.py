@@ -20,6 +20,8 @@ from cv_engine import process_frame
 from database import get_db
 from session_model import ExamSession
 from blueprints.push_bp import send_push_to_teachers
+from crypto import encrypt, decrypt
+from crypto import encrypt, decrypt
 
 logger      = logging.getLogger(__name__)
 bp_sessions = Blueprint('sessions', __name__)
@@ -104,7 +106,7 @@ def start_session():
         INSERT INTO sessions
         (session_id,student_id,exam_id,student_name,start_time,is_active,stats)
         VALUES (?,?,?,?,?,1,?)
-    ''', (session_id, student_id, exam_id, student_name,
+    ''', (session_id, student_id, exam_id, encrypt(student_name),
           datetime.now().strftime('%H:%M:%S'), json.dumps(session.stats)))
     db.commit()
     logger.info('Session started: %s for %s (student_id=%s)', session_id, student_name, student_id)

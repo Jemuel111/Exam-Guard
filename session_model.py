@@ -19,6 +19,7 @@ FIXES:
 import csv
 import json
 import logging
+from crypto import encrypt, decrypt
 import os
 import time
 from datetime import datetime

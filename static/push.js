@@ -66,7 +66,7 @@ const ExamGuardPush = (() => {
     // Force SW registration if not already done
     let reg;
     try {
-      reg = await navigator.serviceWorker.register('/static/sw.js');
+      reg = await navigator.serviceWorker.register('/static/sw.js', { scope: '/' });
       await navigator.serviceWorker.ready;
       _swReg = await navigator.serviceWorker.ready;
     } catch (e) {

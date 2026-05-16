@@ -132,7 +132,7 @@ self.addEventListener('push', event => {
       badge: '/static/icons/icon-192.png',
       tag: data.tag || 'examguard-notification',
       data: data.url || '/',
-      vibrate: [200, 100, 200],
+      vibrate: data.requireInteraction ? [300, 100, 300, 100, 300] : [200, 100, 200],
       requireInteraction: data.requireInteraction || false,
     })
   );

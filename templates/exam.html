@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <link rel="manifest" href="/manifest.json"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ExamGuard — Active Session</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -436,6 +437,7 @@
     function startAnalysis() { analyzeInterval=setInterval(analyzeFrame,1500); }
 
     let examStart=Date.now(), examDurationMs=EXAM_DURATION*60000;
+    let _warned10 = false, _warned1 = false;
     function startTimer() {
       setInterval(()=>{
         const remaining=Math.max(0,examDurationMs-(Date.now()-examStart));
@@ -443,6 +445,30 @@
         document.getElementById('timerDisplay').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
         if (remaining<300000) document.getElementById('timerDisplay').className='timer-display warning';
         if (remaining<60000)  document.getElementById('timerDisplay').className='timer-display critical';
+        // 10-minute warning push
+        if (!_warned10 && remaining <= 600000 && remaining > 590000) {
+          _warned10 = true;
+          if ('vibrate' in navigator) navigator.vibrate([300, 100, 300]);
+          if ('serviceWorker' in navigator && Notification.permission === 'granted') {
+            navigator.serviceWorker.ready.then(reg => reg.showNotification('⏰ 10 Minutes Remaining', {
+              body: 'You have 10 minutes left to complete your exam.',
+              tag: 'exam-warning-10',
+              requireInteraction: false,
+            }));
+          }
+        }
+        // 1-minute warning push
+        if (!_warned1 && remaining <= 60000 && remaining > 50000) {
+          _warned1 = true;
+          if ('vibrate' in navigator) navigator.vibrate([500, 100, 500, 100, 500]);
+          if ('serviceWorker' in navigator && Notification.permission === 'granted') {
+            navigator.serviceWorker.ready.then(reg => reg.showNotification('🚨 1 Minute Remaining', {
+              body: 'Only 1 minute left! Submit your exam now.',
+              tag: 'exam-warning-1',
+              requireInteraction: true,
+            }));
+          }
+        }
         if (remaining===0) endExam();
       },1000);
     }

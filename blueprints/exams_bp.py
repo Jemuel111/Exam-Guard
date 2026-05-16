@@ -18,6 +18,7 @@ from flask import Blueprint, request, jsonify, g
 from auth import login_required, get_token_from_request, verify_token
 from database import get_db
 from grading import grade_submission
+from blueprints.push_bp import send_push_to_user
 
 logger   = logging.getLogger(__name__)
 bp_exams = Blueprint('exams', __name__)
@@ -161,6 +162,27 @@ def update_exam(exam_id):
         exam_id
     ))
     db.commit()
+
+    # Notify enrolled students when exam goes active
+    if data.get('status') == 'active':
+        exam = db.execute('SELECT * FROM exams WHERE id=?', (exam_id,)).fetchone()
+        enrolled = db.execute(
+            'SELECT student_id FROM exam_enrollments WHERE exam_id=?', (exam_id,)
+        ).fetchall()
+        for row in enrolled:
+            if row['student_id']:
+                try:
+                    send_push_to_user(
+                        user_id=row['student_id'],
+                        title='📝 Exam Started',
+                        body=f'{exam["title"]} is now live. Open ExamGuard to begin.',
+                        url='/student/dashboard',
+                        tag=f'exam-start-{exam_id}',
+                        require_interaction=True,
+                    )
+                except Exception as e:
+                    logger.warning('Push to student %s failed: %s', row['student_id'], e)
+
     return jsonify({'success': True})
 
 
@@ -237,4 +259,25 @@ def submit_exam():
     ))
     db.commit()
     logger.info('Submission graded: %s — %.1f%%', session_id, result['percentage'])
+
+    # Notify student of their result
+    if student_id:
+        exam_title = ''
+        if exam_id:
+            ex = db.execute('SELECT title FROM exams WHERE id=?', (exam_id,)).fetchone()
+            if ex:
+                exam_title = ex['title']
+        status = '✅ Passed' if passed else '❌ Not passed'
+        try:
+            send_push_to_user(
+                user_id=student_id,
+                title=f'{status} — {exam_title or "Exam"} Results',
+                body=f'You scored {result["percentage"]:.1f}% ({result["score"]}/{result["max_score"]} pts). Tap to view your report.',
+                url='/student/dashboard',
+                tag=f'result-{session_id}',
+                require_interaction=True,
+            )
+        except Exception as e:
+            logger.warning('Push result to student %s failed: %s', student_id, e)
+
     return jsonify({**result, 'passed': passed, 'passing_score': passing})

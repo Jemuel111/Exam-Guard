@@ -172,7 +172,10 @@ def archive_page():
 
 @app.get('/static/sw.js')
 def service_worker():
-    return app.send_static_file('sw.js')
+    response = app.make_response(app.send_static_file('sw.js'))
+    response.headers['Service-Worker-Allowed'] = '/'
+    response.headers['Content-Type'] = 'application/javascript'
+    return response
 
 
 @app.get('/manifest.json')

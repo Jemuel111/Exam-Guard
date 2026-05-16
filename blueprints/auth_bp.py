@@ -15,6 +15,7 @@ from flask import Blueprint, request, jsonify, current_app
 
 from auth import (hash_password, verify_password, generate_token,
                   revoke_token, get_token_from_request, verify_token)
+from crypto import encrypt, decrypt, USER_FIELDS
 from database import get_db
 
 logger  = logging.getLogger(__name__)
@@ -186,6 +187,13 @@ def _send_reset_email(to_email: str, user_name: str, token: str, app) -> bool:
         return False
 
 
+import hashlib
+
+def _email_hash(email: str) -> str:
+    """One-way SHA-256 hash for indexed lookup of encrypted email."""
+    return hashlib.sha256(email.lower().strip().encode()).hexdigest()
+
+
 # ── Login ─────────────────────────────────────────────────────────────────────
 
 @bp_auth.post('/api/login')
@@ -199,7 +207,8 @@ def login():
     if not email or not password:
         return jsonify({'success': False, 'error': 'Email and password are required.'}), 400
 
-    db = get_db()
+    db         = get_db()
+    email_hash = _email_hash(email)
 
     # ── Registration ──────────────────────────────────────────────────────────
     if is_reg:
@@ -209,41 +218,42 @@ def login():
         initials = ''.join(p[0].upper() for p in name.split()[:2])
         try:
             db.execute(
-                'INSERT INTO users (email,password_hash,role,name,student_id,avatar_initials) VALUES (?,?,?,?,?,?)',
-                (email, hash_password(password), role, name, sid, initials)
+                'INSERT INTO users (email,email_hash,password_hash,role,name,student_id,avatar_initials) VALUES (?,?,?,?,?,?,?)',
+                (encrypt(email), email_hash, hash_password(password), role, encrypt(name), encrypt(sid), initials)
             )
             db.commit()
         except sqlite3.IntegrityError:
             return jsonify({'success': False, 'error': 'Email already registered.'}), 409
 
-        user  = db.execute('SELECT * FROM users WHERE email=?', (email,)).fetchone()
+        user  = db.execute('SELECT * FROM users WHERE email_hash=?', (email_hash,)).fetchone()
         token = generate_token(user['id'], role, name)
-        return jsonify({'success': True, 'token': token, 'role': role, 'name': name})
+        return jsonify({'success': True, 'token': token, 'role': role, 'name': name, 'user_id': user['id']})
 
     # ── Login ─────────────────────────────────────────────────────────────────
     user = db.execute(
-        'SELECT * FROM users WHERE email=? AND role=? AND is_active=1',
-        (email, role)
+        'SELECT * FROM users WHERE email_hash=? AND role=? AND is_active=1',
+        (email_hash, role)
     ).fetchone()
 
     if user and verify_password(password, user['password_hash']):
-        token = generate_token(user['id'], role, user['name'])
+        decrypted_name = decrypt(user['name'])
+        token = generate_token(user['id'], role, decrypted_name)
         db.execute(
-            "UPDATE users SET last_login=datetime('now') WHERE id=?",
+            "UPDATE users SET last_login=datetime(\'now\') WHERE id=?",
             (user['id'],)
         )
         db.execute(
             'INSERT INTO audit_log (user_id,action,ip) VALUES (?,?,?)',
-            (user['id'], 'LOGIN', request.remote_addr)
+            (user['id'], 'LOGIN', encrypt(request.remote_addr))
         )
         db.commit()
         return jsonify({
             'success': True,
             'token':   token,
             'role':    role,
-            'name':    user['name'],
+            'name':    decrypted_name,
             'user_id': user['id'],
-            'avatar':  user['avatar_initials'] or user['name'][0].upper(),
+            'avatar':  user['avatar_initials'] or decrypted_name[0].upper(),
         })
 
     logger.warning('Failed login attempt for %s from %s', email, request.remote_addr)

@@ -10,7 +10,9 @@ import sqlite3
 import json
 import logging
 import os
+import hashlib
 from flask import g, current_app
+from crypto import encrypt, decrypt
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +51,8 @@ def init_db(app):
     c.executescript('''
         CREATE TABLE IF NOT EXISTS users (
             id              INTEGER PRIMARY KEY AUTOINCREMENT,
-            email           TEXT UNIQUE NOT NULL COLLATE NOCASE,
+            email           TEXT,
+            email_hash      TEXT UNIQUE NOT NULL DEFAULT '',
             password_hash   TEXT NOT NULL,
             role            TEXT NOT NULL CHECK(role IN ('teacher','student')),
             name            TEXT NOT NULL,
@@ -171,6 +174,7 @@ def init_db(app):
     migrations = [
         ("users", "is_archived", "ALTER TABLE users ADD COLUMN is_archived INTEGER DEFAULT 0"),
         ("users", "archived_at", "ALTER TABLE users ADD COLUMN archived_at TEXT"),
+        ("users", "email_hash",  "ALTER TABLE users ADD COLUMN email_hash TEXT"),
         ("exams", "is_archived", "ALTER TABLE exams ADD COLUMN is_archived INTEGER DEFAULT 0"),
         ("exams", "archived_at", "ALTER TABLE exams ADD COLUMN archived_at TEXT"),
         ("sessions", "is_archived", "ALTER TABLE sessions ADD COLUMN is_archived INTEGER DEFAULT 0"),
@@ -184,71 +188,6 @@ def init_db(app):
                 logger.info('Migration applied: %s.%s', table, col)
         except Exception as e:
             logger.warning('Migration skipped %s.%s: %s', table, col, e)
-
-    # Seed demo users with proper bcrypt hashes
-    demo_users = [
-        ('teacher@school.edu', 'teacher123', 'teacher', 'Ms. Santos',    None,       'MS'),
-        ('student@school.edu', 'student123', 'student', 'Juan dela Cruz', 'STU-001', 'JD'),
-        ('maria@school.edu',   'student123', 'student', 'Maria Santos',   'STU-002', 'MS'),
-        ('pedro@school.edu',   'student123', 'student', 'Pedro Reyes',    'STU-003', 'PR'),
-        ('ana@school.edu',     'student123', 'student', 'Ana Garcia',     'STU-004', 'AG'),
-        ('jose@school.edu',    'student123', 'student', 'Jose Ramos',     'STU-005', 'JR'),
-    ]
-    for email, pw, role, name, sid, initials in demo_users:
-        existing = conn.execute('SELECT id FROM users WHERE email=?', (email,)).fetchone()
-        if not existing:
-            pw_hash = bcrypt.hashpw(pw.encode(), bcrypt.gensalt()).decode()
-            conn.execute(
-                'INSERT INTO users (email,password_hash,role,name,student_id,avatar_initials) VALUES (?,?,?,?,?,?)',
-                (email, pw_hash, role, name, sid, initials)
-            )
-
-    # Seed demo exams
-    from datetime import datetime, timedelta
-    demo_exams = [
-        ('Algebra Finals',     'Mathematics', 60, 75,
-         'Answer all questions carefully. No calculators allowed.', 'active', None, None),
-        ('Chemistry Quiz 3',   'Science',     30, 70,
-         'Multiple choice only.', 'scheduled',
-         (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d 09:00'),
-         (datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d 09:30')),
-        ('English Literature', 'English',     90, 75,
-         'Read all passages carefully.', 'scheduled',
-         (datetime.now() + timedelta(days=5)).strftime('%Y-%m-%d 13:00'),
-         (datetime.now() + timedelta(days=5)).strftime('%Y-%m-%d 14:30')),
-    ]
-    for ex in demo_exams:
-        existing = conn.execute('SELECT id FROM exams WHERE title=?', (ex[0],)).fetchone()
-        if not existing:
-            conn.execute('''INSERT INTO exams
-                (title,subject,duration_minutes,passing_score,instructions,status,
-                 scheduled_start,scheduled_end,created_by) VALUES (?,?,?,?,?,?,?,?,1)''', ex)
-            exam_id = conn.execute('SELECT last_insert_rowid()').fetchone()[0]
-            if ex[0] == 'Algebra Finals':
-                qs = [
-                    ('What is the quadratic formula?', 'mc',
-                     json.dumps(['x = (-b ± √(b²-4ac)) / 2a','x = -b/2a','x = b²-4ac','x = 2a/b']), 0, 2, 1),
-                    ('Simplify: 3x + 2x', 'mc',
-                     json.dumps(['5x','6x','x⁵','5x²']), 0, 1, 2),
-                    ('What is the slope-intercept form?', 'mc',
-                     json.dumps(['y = mx + b','y = ax² + bx + c','y = x/m + b','y = m/x']), 0, 1, 3),
-                    ('The sum of angles in a triangle is 180°.', 'tf',
-                     json.dumps(['True','False']), 0, 1, 4),
-                    ('What is the derivative of x²?', 'mc',
-                     json.dumps(['2x','x','x²','2']), 0, 2, 5),
-                    ('Solve for x: 2x + 6 = 14', 'fitb', None, None, 1, 6),
-                    ('Explain the Pythagorean theorem in your own words.', 'essay', None, None, 3, 7),
-                ]
-                for q in qs:
-                    conn.execute('''INSERT INTO questions
-                        (exam_id,question_text,question_type,choices,correct_answer,points,order_num)
-                        VALUES (?,?,?,?,?,?,?)''', (exam_id,) + q)
-                for sid in range(2, 7):
-                    try:
-                        conn.execute('INSERT INTO exam_enrollments (exam_id,student_id) VALUES (?,?)',
-                                     (exam_id, sid))
-                    except sqlite3.IntegrityError:
-                        pass
 
     conn.commit()
     conn.close()

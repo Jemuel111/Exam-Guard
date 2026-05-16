@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
+  <link rel="manifest" href="/manifest.json"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#f0f4fa"/>
   <title>ExamGuard — Student Dashboard</title>
@@ -161,6 +162,26 @@
     ::-webkit-scrollbar { width:3px; }
     ::-webkit-scrollbar-track { background:transparent; }
     ::-webkit-scrollbar-thumb { background:var(--bg2); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .topnav { padding: 0 16px; }
+      .nav-right { gap: 6px; }
+      .student-chip span:not(.chip-av) { display: none; }
+      .main { padding: 24px 16px; }
+      .greeting { flex-direction: column; gap: 16px; margin-bottom: 24px; padding-bottom: 20px; }
+      .stat-pills { gap: 6px; }
+      .stat-pill { padding: 8px 12px; min-width: 60px; }
+      .sp-num { font-size: 1rem; }
+      .score-bar-wrap { flex-direction: column; align-items: flex-start; gap: 12px; padding: 16px; }
+      .score-bar-track { width: 100%; }
+    }
+    @media (max-width: 480px) {
+      .topnav { padding: 0 12px; }
+      .main { padding: 16px 12px; }
+      .g-name { font-size: 1.2rem; }
+      .stat-pills { flex-wrap: wrap; }
+    }
   </style>
 </head>
 <body>

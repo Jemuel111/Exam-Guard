@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#2563eb"/>
+  <link rel="manifest" href="/manifest.json"/>
   <title>ExamGuard — Teacher Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -386,9 +388,91 @@
     ::-webkit-scrollbar { width:3px; height:3px; }
     ::-webkit-scrollbar-track { background:transparent; }
     ::-webkit-scrollbar-thumb { background:var(--bg3); }
+
+    /* ── MOBILE HAMBURGER ── */
+    .mob-topbar { display:none; position:fixed; top:0; left:0; right:0; height:52px; z-index:200;
+      background:var(--bg1); border-bottom:1px solid var(--bd);
+      align-items:center; justify-content:space-between; padding:0 16px; }
+    .mob-logo { font-family:var(--mono); font-size:0.75rem; font-weight:700; letter-spacing:0.04em; }
+    .mob-logo b { color:var(--acc); }
+    .mob-hamburger { background:none; border:1px solid var(--bd); color:var(--mid);
+      width:36px; height:36px; display:flex; align-items:center; justify-content:center;
+      cursor:pointer; font-size:1.1rem; transition:all 0.12s; }
+    .mob-hamburger:hover { border-color:var(--acc); color:var(--hi); }
+    .sidebar-overlay { display:none; position:fixed; inset:0; z-index:150;
+      background:rgba(0,0,0,0.4); backdrop-filter:blur(4px); }
+    .sidebar-overlay.open { display:block; }
+
+    /* ── RESPONSIVE BREAKPOINTS ── */
+    @media (max-width: 1024px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .charts-row { grid-template-columns: 1fr; }
+      .qa-grid { grid-template-columns: repeat(3, 1fr); }
+      .live-layout { grid-template-columns: 1fr; }
+      .live-feed-panel { max-height: 300px; }
+      .panels-row { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      /* Show mobile topbar, hide desktop sidebar */
+      .mob-topbar { display:flex; }
+      .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+        z-index: 160;
+        top: 0;
+      }
+      .sidebar.open { transform: translateX(0); }
+      .main { margin-left: 0; padding-top: 52px; }
+      .topbar { display: none; }
+      .content { padding: 16px; }
+
+      /* Grids */
+      .stats-row { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .qa-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .charts-row { grid-template-columns: 1fr; }
+      .panels-row { grid-template-columns: 1fr; }
+      .live-layout { grid-template-columns: 1fr; }
+
+      /* Student grid smaller tiles */
+      .student-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+
+      /* Stat values smaller */
+      .stat-value { font-size: 1.4rem; }
+
+      /* Tables scroll */
+      .tbl-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+      /* Modals full screen */
+      .session-modal { padding: 0; align-items: flex-end; }
+      .session-modal-inner { max-width: 100%; max-height: 92vh; border-radius: 0; }
+      .modal { max-width: 100% !important; margin: 0; }
+
+      /* Live controls stack */
+      .live-controls { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .live-status-bar { flex-wrap: wrap; gap: 8px; }
+    }
+
+    @media (max-width: 480px) {
+      .stats-row { grid-template-columns: 1fr 1fr; gap: 6px; }
+      .qa-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+      .stat-value { font-size: 1.2rem; }
+      .stat-label { font-size: 0.48rem; }
+      .student-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+      .content { padding: 12px; }
+      .qa-card { padding: 12px; }
+    }
   </style>
 </head>
 <body>
+
+<!-- Mobile topbar -->
+<div class="mob-topbar">
+  <div class="mob-logo">EXAM<b>GUARD</b></div>
+  <button class="mob-hamburger" onclick="toggleSidebar()" aria-label="Menu">☰</button>
+</div>
+<!-- Sidebar overlay for mobile -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
 <div class="rt-toast-container" id="rtToasts"></div>
 
@@ -443,13 +527,13 @@
     <a class="sb-link" onclick="showPage('students',this)">
       <span class="sb-icon"><svg viewBox="0 0 16 16"><circle cx="6" cy="5" r="2.5"/><path d="M1 13c0-2.8 2.2-5 5-5"/><circle cx="12" cy="5" r="2.5"/><path d="M10 8c1.5 0 5 .8 5 5"/></svg></span>Students
     </a>
-    <a class="sb-link" onclick="showPage('submissions',this)">
+    <a class="sb-link" onclick="showPage('submissions',this); clearSubsBadge();">
       <span class="sb-icon"><svg viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12"/><path d="M5 8l2 2 4-4"/></svg></span>Submissions
-      <span class="sb-badge b-green" id="subsBadge">0</span>
+      <span class="sb-badge b-green" id="subsBadge" style="display:none">0</span>
     </a>
-    <a class="sb-link" onclick="showPage('reports',this)">
+    <a class="sb-link" onclick="showPage('reports',this); clearReportsBadge();">
       <span class="sb-icon"><svg viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12"/><path d="M5 5h6M5 8h6M5 11h4"/></svg></span>Reports
-      <span class="sb-badge b-blue" id="reportsBadge">0</span>
+      <span class="sb-badge b-blue" id="reportsBadge" style="display:none">0</span>
     </a>
   </nav>
   <div class="sb-footer">
@@ -467,9 +551,9 @@
     <span class="tb-title" id="pageTitle">DASHBOARD</span>
     <div class="tb-right">
       <div class="live-pill"><div class="live-dot"></div><span id="activeCount">0</span> ACTIVE</div>
-      <button class="notif-btn" onclick="showPage('reports')" title="Notifications">
+      <button class="notif-btn" onclick="showPage('reports'); clearNotifBadge();" title="Notifications">
         <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 2a5 5 0 0 1 5 5v3l1 2H2l1-2V7a5 5 0 0 1 5-5z"/><path d="M6.5 13.5a1.5 1.5 0 0 0 3 0"/></svg>
-        <span class="notif-badge show" id="notifBadge">0</span>
+        <span class="notif-badge" id="notifBadge">0</span>
       </button>
       <button class="btn btn-primary btn-sm" onclick="showModal('createExam')">+ New Exam</button>
     </div>
@@ -494,12 +578,12 @@
         <a class="qa-card" onclick="showModal('createExam')"><div class="qa-icon"><svg viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></svg></div><div class="qa-label">New Exam</div></a>
         <a class="qa-card" onclick="showModal('addStudent')"><div class="qa-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg></div><div class="qa-label">Add Student</div></a>
         <a class="qa-card" onclick="showPage('analytics')"><div class="qa-icon"><svg viewBox="0 0 16 16"><path d="M2 12l3-4 3 2 3-5 3 3"/></svg></div><div class="qa-label">Analytics</div></a>
-        <a class="qa-card" onclick="showPage('reports')"><div class="qa-icon"><svg viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12"/><path d="M5 5h6M5 8h6M5 11h4"/></svg></div><div class="qa-label">Reports</div></a>
+        <a class="qa-card" onclick="showPage('reports'); clearReportsBadge()"><div class="qa-icon"><svg viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12"/><path d="M5 5h6M5 8h6M5 11h4"/></svg></div><div class="qa-label">Reports</div></a>
         <a class="qa-card" onclick="showPage('live',document.querySelector('.sb-link:nth-child(3)'))"><div class="qa-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="3"/><circle cx="8" cy="8" r="6" stroke-dasharray="2 2"/></svg></div><div class="qa-label">Live Monitor</div></a>
       </div>
       <div class="panels-row">
         <div class="panel"><div class="panel-hd"><span class="panel-title">RECENT EXAMS</span><a class="panel-link" onclick="showPage('exams')">View all</a></div><div id="recentExams"><div class="empty-state">Loading...</div></div></div>
-        <div class="panel"><div class="panel-hd"><span class="panel-title">RECENT SESSIONS</span><a class="panel-link" onclick="showPage('reports')">View all</a></div><div id="recentSessions"><div class="empty-state">Loading...</div></div></div>
+        <div class="panel"><div class="panel-hd"><span class="panel-title">RECENT SESSIONS</span><a class="panel-link" onclick="showPage('reports'); clearReportsBadge()">View all</a></div><div id="recentSessions"><div class="empty-state">Loading...</div></div></div>
       </div>
     </div>
 
@@ -923,6 +1007,14 @@ try {
     }
     const flags = parseInt(document.getElementById('liveTotalFlags').textContent) || 0;
     document.getElementById('liveTotalFlags').textContent = flags + 1;
+    // Re-show badge for new high severity violations
+    if (violation && (violation.severity === 'high' || violation.severity === 'critical')) {
+      sessionStorage.removeItem('notif_cleared');
+      const badge = document.getElementById('notifBadge');
+      const current = parseInt(badge.textContent) || 0;
+      badge.textContent = current + 1;
+      badge.classList.add('show');
+    }
   });
   socket.on('connect', () => { console.log('[ExamGuard] SocketIO connected'); });
   socket.on('disconnect', () => { console.log('[ExamGuard] SocketIO disconnected'); });
@@ -936,6 +1028,12 @@ function pushRtToast(studentName, v) {
   div.innerHTML = `<div class="rt-toast-name">${studentName}</div><div class="rt-toast-msg">${v.type.replace('_',' ')} — ${v.details}</div>`;
   container.appendChild(div);
   setTimeout(() => div.remove(), 6000);
+  // Vibrate on mobile: urgent pattern for high severity, single pulse for medium
+  if ('vibrate' in navigator) {
+    navigator.vibrate(v.severity === 'high' || v.severity === 'critical'
+      ? [200, 100, 200, 100, 200]
+      : [150]);
+  }
 }
 
 function addToFeed(studentName, sessionId, v) {
@@ -972,9 +1070,45 @@ async function loadStats() {
   document.getElementById('ds-flags').textContent    = d.total_violations || 0;
   document.getElementById('activeCount').textContent = d.active_sessions || 0;
   document.getElementById('activeBadge').textContent = d.active_sessions || 0;
-  document.getElementById('reportsBadge').textContent= d.total_sessions || 0;
+  // Reports badge: show count of new sessions since last cleared
+  const lastSeen = parseInt(sessionStorage.getItem('reports_last_seen') || '0');
+  const total = d.total_sessions || 0;
+  const newReports = Math.max(0, total - lastSeen);
+  const rBadge = document.getElementById('reportsBadge');
+  if (newReports > 0 && !sessionStorage.getItem('reports_cleared')) {
+    rBadge.textContent = newReports;
+    rBadge.style.display = '';
+  }
   document.getElementById('notifBadge').textContent  = d.high_risk || 0;
-  if ((d.high_risk||0) > 0) document.getElementById('notifBadge').classList.add('show');
+  // Only show badge if user hasn't already cleared it this session
+  if ((d.high_risk||0) > 0 && !sessionStorage.getItem('notif_cleared')) {
+    document.getElementById('notifBadge').classList.add('show');
+  }
+}
+
+function clearNotifBadge() {
+  const badge = document.getElementById('notifBadge');
+  badge.classList.remove('show');
+  badge.textContent = '0';
+  sessionStorage.setItem('notif_cleared', '1');
+}
+
+function clearReportsBadge() {
+  const badge = document.getElementById('reportsBadge');
+  badge.style.display = 'none';
+  badge.textContent = '0';
+  sessionStorage.setItem('reports_cleared', '1');
+  sessionStorage.setItem('reports_last_seen', document.getElementById('ds-active').textContent || '0');
+}
+
+function clearSubsBadge() {
+  const badge = document.getElementById('subsBadge');
+  badge.style.display = 'none';
+  badge.textContent = '0';
+  sessionStorage.setItem('subs_cleared', '1');
+  // Store current total so next new submission re-triggers the badge
+  const total = parseInt(badge.dataset.total || '0');
+  sessionStorage.setItem('subs_last_seen', total.toString());
 }
 
 async function loadRecentExams() {
@@ -1043,7 +1177,15 @@ async function loadStudents() {
 async function loadSubmissions() {
   const res = await fetch('/api/sessions', {headers:authHeader}).then(r=>r.json()).catch(()=>[]);
   const tbody = document.getElementById('submissionsTableBody');
-  document.getElementById('subsBadge').textContent = res.length || 0;
+  const lastSeenSubs = parseInt(sessionStorage.getItem('subs_last_seen') || '0');
+  const totalSubs = res.length || 0;
+  const newSubs = Math.max(0, totalSubs - lastSeenSubs);
+  const sBadge = document.getElementById('subsBadge');
+  sBadge.dataset.total = totalSubs;
+  if (newSubs > 0 && !sessionStorage.getItem('subs_cleared')) {
+    sBadge.textContent = newSubs;
+    sBadge.style.display = '';
+  }
   if (!res.length) { tbody.innerHTML='<tr><td colspan="7"><div class="empty-state">No submissions yet.</div></td></tr>'; return; }
   tbody.innerHTML = res.map(s => {
     const pct = s.percentage ? parseFloat(s.percentage).toFixed(1) : null;
@@ -1234,6 +1376,20 @@ setInterval(()=>{ loadStats(); loadRecentSessions(); }, 10000);
     const pushUserId = parseInt(localStorage.getItem('eg_user_id') || '-1');
     ExamGuardPush.init(pushUserId, 'teacher');
     ExamGuardPush.renderToggleButton('pushToggleContainer');
+  });
+
+  // Mobile sidebar toggle
+  function toggleSidebar() {
+    const sidebar = document.querySelector('.sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('open');
+  }
+  // Close sidebar when a nav link is clicked on mobile
+  document.querySelectorAll('.sb-link').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 768) toggleSidebar();
+    });
   });
 </script>
 

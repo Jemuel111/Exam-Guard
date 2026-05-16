@@ -7,3 +7,4 @@ eventlet==0.35.2
 bcrypt==4.1.2
 python-dotenv==1.0.0
 pywebpush==2.0.0
+cryptography>=42.0.0
