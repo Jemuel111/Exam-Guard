@@ -5922,3 +5922,17 @@ Response body:push subscription has unsubscribed or expired.
 2026-05-17 01:02:48,592 [INFO] 127.0.0.1 - - [17/May/2026 01:02:48] "GET /api/dashboard_stats HTTP/1.1" 200 -
 2026-05-17 01:02:49,290 [INFO] 127.0.0.1 - - [17/May/2026 01:02:49] "GET /api/sessions HTTP/1.1" 200 -
 2026-05-17 01:02:49,291 [INFO] 127.0.0.1 - - [17/May/2026 01:02:49] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-17 01:03:00,044 [INFO] 127.0.0.1 - - [17/May/2026 01:03:00] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-17 01:03:00,047 [INFO] 127.0.0.1 - - [17/May/2026 01:03:00] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-17 01:03:10,043 [INFO] 127.0.0.1 - - [17/May/2026 01:03:10] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-17 01:03:10,044 [INFO] 127.0.0.1 - - [17/May/2026 01:03:10] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-17 01:03:10,047 [INFO] 127.0.0.1 - - [17/May/2026 01:03:10] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-17 01:03:20,042 [INFO] 127.0.0.1 - - [17/May/2026 01:03:20] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-17 01:03:20,043 [INFO] 127.0.0.1 - - [17/May/2026 01:03:20] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-17 01:03:30,041 [INFO] 127.0.0.1 - - [17/May/2026 01:03:30] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-17 01:03:30,043 [INFO] 127.0.0.1 - - [17/May/2026 01:03:30] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-17 01:03:40,045 [INFO] 127.0.0.1 - - [17/May/2026 01:03:40] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-17 01:03:40,045 [INFO] 127.0.0.1 - - [17/May/2026 01:03:40] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-17 01:03:40,048 [INFO] 127.0.0.1 - - [17/May/2026 01:03:40] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-17 01:03:50,041 [INFO] 127.0.0.1 - - [17/May/2026 01:03:50] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-17 01:03:50,041 [INFO] 127.0.0.1 - - [17/May/2026 01:03:50] "GET /api/sessions HTTP/1.1" 200 -
