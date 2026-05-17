@@ -19,7 +19,7 @@ from auth import get_token_from_request, verify_token
 from cv_engine import process_frame
 from database import get_db
 from session_model import ExamSession
-from blueprints.push_bp import send_push_to_teachers
+from blueprints.push_bp import send_push_to_teachers, send_fcm_to_teachers
 from crypto import encrypt, decrypt
 from crypto import encrypt, decrypt
 
@@ -191,6 +191,11 @@ def end_session():
             url=f'/report/{session_id}',
             tag=f'session-{session_id}',
             require_interaction=True,
+        )
+        send_fcm_to_teachers(
+            title='⚠ High Risk Session Detected',
+            body=f'{session.student_name} — Risk Score {risk["score"]} · {len(session.violations)} flags',
+            data={'url': f'/report/{session_id}', 'session_id': session_id},
         )
 
     report = session.generate_report()

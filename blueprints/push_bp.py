@@ -20,6 +20,70 @@ import os
 from flask import Blueprint, request, jsonify, current_app
 from database import get_db
 
+# ── Firebase Admin (FCM) ──────────────────────────────────────────────────────
+
+def _get_fcm():
+    """Lazy-init Firebase Admin SDK for FCM push to mobile devices."""
+    try:
+        import firebase_admin
+        from firebase_admin import credentials, messaging
+        if not firebase_admin._apps:
+            import os
+            key_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'serviceAccountKey.json')
+            if os.path.exists(key_path):
+                cred = credentials.Certificate(key_path)
+                firebase_admin.initialize_app(cred)
+                logger.info('Firebase Admin SDK initialized')
+            else:
+                logger.warning('serviceAccountKey.json not found — FCM disabled')
+                return None, None
+        return firebase_admin, messaging
+    except ImportError:
+        logger.warning('firebase-admin not installed — FCM disabled')
+        return None, None
+
+
+def send_fcm_to_user(user_id, title, body, data=None):
+    db = get_db()
+    try:
+        tokens = db.execute('SELECT fcm_token FROM fcm_tokens WHERE user_id=?', (user_id,)).fetchall()
+    except RuntimeError:
+        from flask import current_app
+        with current_app.app_context():
+            import sqlite3
+            conn = sqlite3.connect(current_app.config['DATABASE'])
+            conn.row_factory = sqlite3.Row
+            tokens = conn.execute('SELECT fcm_token FROM fcm_tokens WHERE user_id=?', (user_id,)).fetchall()
+            conn.close()
+    sent = 0
+    for row in tokens:
+        token = row['fcm_token']
+        if token.startswith('ExponentPushToken'):
+            if send_expo_push(token, title, body, data):
+                sent += 1
+    return sent, 0
+
+
+def send_fcm_to_teachers(title, body, data=None):
+    db = get_db()
+    try:
+        tokens = db.execute("SELECT fcm_token FROM fcm_tokens WHERE role='teacher'").fetchall()
+    except RuntimeError:
+        from flask import current_app
+        with current_app.app_context():
+            import sqlite3
+            conn = sqlite3.connect(current_app.config['DATABASE'])
+            conn.row_factory = sqlite3.Row
+            tokens = conn.execute("SELECT fcm_token FROM fcm_tokens WHERE role='teacher'").fetchall()
+            conn.close()
+    sent = 0
+    for row in tokens:
+        token = row['fcm_token']
+        if token.startswith('ExponentPushToken'):
+            if send_expo_push(token, title, body, data):
+                sent += 1
+    return sent, 0
+
 logger = logging.getLogger(__name__)
 bp_push = Blueprint('push', __name__)
 
@@ -54,9 +118,42 @@ def init_push_table(app):
             created_at TEXT DEFAULT (datetime('now'))
         )
     ''')
+    conn.execute('''
+        CREATE TABLE IF NOT EXISTS fcm_tokens (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id    INTEGER NOT NULL,
+            role       TEXT NOT NULL,
+            fcm_token  TEXT UNIQUE NOT NULL,
+            created_at TEXT DEFAULT (datetime('now')),
+            UNIQUE(user_id, fcm_token)
+        )
+    ''')
     conn.commit()
     conn.close()
     logger.info('Push subscriptions table ready')
+
+
+# ── FCM token registration (mobile app) ──────────────────────────────────────
+
+@bp_push.post('/api/push/fcm-token')
+def register_fcm_token():
+    """Mobile app registers its FCM token after login."""
+    data      = request.get_json(silent=True) or {}
+    token     = data.get('fcm_token')
+    user_id   = data.get('user_id')
+    role      = data.get('role', 'student')
+
+    if not token or not user_id:
+        return jsonify({'success': False, 'error': 'fcm_token and user_id required'}), 400
+
+    db = get_db()
+    db.execute('''
+        INSERT OR REPLACE INTO fcm_tokens (user_id, role, fcm_token)
+        VALUES (?, ?, ?)
+    ''', (user_id, role, token))
+    db.commit()
+    logger.info('FCM token saved for user_id=%s role=%s', user_id, role)
+    return jsonify({'success': True})
 
 
 # ── VAPID public key (sent to client so it can subscribe) ─────────────────────
@@ -133,22 +230,12 @@ def send_push_to_user(user_id, title, body, url='/', tag='examguard', require_in
         logger.warning('VAPID_PRIVATE_KEY not set — push not sent')
         return 0, 0
 
-    try:
+    from flask import current_app
+    with current_app.app_context():
         db = get_db()
         subs = db.execute(
             'SELECT * FROM push_subscriptions WHERE user_id=?', (user_id,)
         ).fetchall()
-    except RuntimeError:
-        # Called outside request context (e.g. background thread) — use app context
-        from flask import current_app
-        with current_app.app_context():
-            import sqlite3
-            conn = sqlite3.connect(current_app.config['DATABASE'])
-            conn.row_factory = sqlite3.Row
-            subs = conn.execute(
-                'SELECT * FROM push_subscriptions WHERE user_id=?', (user_id,)
-            ).fetchall()
-            conn.close()
 
     payload = json.dumps({
         'title': title,
@@ -200,22 +287,12 @@ def send_push_to_teachers(title, body, url='/teacher/dashboard', tag='examguard-
         logger.warning('VAPID_PRIVATE_KEY not set — push not sent')
         return 0, 0
 
-    try:
+    from flask import current_app
+    with current_app.app_context():
         db = get_db()
         subs = db.execute(
             "SELECT * FROM push_subscriptions WHERE role='teacher'"
         ).fetchall()
-    except RuntimeError:
-        # Called outside request context (e.g. from SocketIO thread)
-        from flask import current_app
-        with current_app.app_context():
-            import sqlite3
-            conn = sqlite3.connect(current_app.config['DATABASE'])
-            conn.row_factory = sqlite3.Row
-            subs = conn.execute(
-                "SELECT * FROM push_subscriptions WHERE role='teacher'"
-            ).fetchall()
-            conn.close()
 
     payload = json.dumps({
         'title': title,
@@ -250,7 +327,30 @@ def send_push_to_teachers(title, body, url='/teacher/dashboard', tag='examguard-
 
     return sent, errors
 
-
+def send_expo_push(token, title, body, data=None):
+    """Send push via Expo Push API — works with Expo Go during development."""
+    import urllib.request, json as _json
+    payload = _json.dumps({
+        'to': token,
+        'title': title,
+        'body': body,
+        'data': data or {},
+        'sound': 'default',
+    }).encode()
+    req = urllib.request.Request(
+        'https://exp.host/--/api/v2/push/send',
+        data=payload,
+        headers={'Content-Type': 'application/json'},
+        method='POST'
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=10) as res:
+            result = _json.loads(res.read())
+            logger.info('Expo push sent: %s', result)
+            return True
+    except Exception as e:
+        logger.error('Expo push error: %s', e)
+        return False
 # ── Manual send endpoint (teacher dashboard → test panel) ─────────────────────
 
 @bp_push.post('/api/push/send')
