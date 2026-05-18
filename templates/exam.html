@@ -136,6 +136,35 @@
     .cam-prompt-sub { color:var(--text-muted); font-size:0.9rem; max-width:400px; text-align:center; }
     .btn-allow { background:var(--green); color:#000; border:none; padding:12px 32px;
       border-radius:10px; font-weight:700; font-size:0.95rem; cursor:pointer; margin-top:8px; }
+      /* ── MOBILE RESPONSIVE ── */
+@media (max-width: 768px) {
+  .exam-layout { flex-direction: column; }
+  .exam-sidebar { width: 100%; height: auto; position: relative;
+                  border-right: none; border-bottom: 1px solid var(--bd); }
+  .exam-main { padding: 16px; }
+  .question-card { padding: 16px; }
+  .question-text { font-size: 1rem; }
+  .choices { gap: 8px; }
+  .choice-btn { padding: 12px 14px; font-size: 0.9rem; }
+  .exam-topbar { padding: 0 16px; }
+  .timer-display { font-size: 1.2rem; }
+  .nav-btns { gap: 8px; }
+  .nav-btn { padding: 10px 16px; font-size: 0.85rem; }
+  .cam-wrap { width: 80px; height: 60px; }
+  .q-nav-grid { grid-template-columns: repeat(6, 1fr); gap: 4px; }
+  .q-nav-btn { width: 32px; height: 32px; font-size: 0.7rem; }
+  .submit-btn { width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .exam-topbar { flex-wrap: wrap; gap: 8px; height: auto; padding: 8px 12px; }
+  .exam-main { padding: 12px; }
+  .question-card { padding: 12px; }
+  .choice-btn { padding: 10px 12px; font-size: 0.85rem; }
+  .q-nav-grid { grid-template-columns: repeat(5, 1fr); }
+  .cam-wrap { width: 60px; height: 45px; }
+  .timer-display { font-size: 1rem; }
+}
   </style>
 </head>
 <body>
