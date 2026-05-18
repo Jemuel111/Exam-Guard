@@ -219,14 +219,15 @@
 
     .student-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:10px; }
 
-    .student-tile { background:var(--bg1); border:1px solid var(--bd); overflow:hidden; position:relative;
+    .student-tile { background:var(--bg1); border:1px solid var(--bd); overflow:hidden; position:relative; cursor:pointer;
       transition:border-color 0.2s, transform 0.2s; cursor:pointer;
       box-shadow:0 1px 3px rgba(15,23,42,0.06); }
     [data-theme="dark"] .student-tile { background:var(--bg); box-shadow:none; }
     .student-tile:hover { transform:translateY(-2px); }
     .student-tile.tile-ok     { border-left:3px solid var(--ok); }
     .student-tile.tile-warn   { border-left:3px solid var(--warn); }
-    .student-tile.tile-danger { border-left:3px solid var(--danger); animation:tile-flash 1.5s ease infinite; }
+    .student-tile.tile-danger { border-left:3px solid var(--danger); animation:tile-flash 2s ease infinite; box-shadow:0 0 0 0 rgba(239,68,68,0.15); }
+    @keyframes tile-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.2)} 50%{box-shadow:0 0 0 8px rgba(239,68,68,0)} }
     @keyframes tile-flash { 0%,100%{border-color:var(--danger)} 50%{border-color:rgba(220,38,38,0.3)} }
 
     .tile-header { padding:10px 12px 8px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--bd); }
@@ -372,7 +373,20 @@
     .student-check-item:last-child { border-bottom:none; }
     .student-check-item input { accent-color:var(--acc); }
 
-    .empty-state { text-align:center; padding:48px; color:var(--low); font-size:0.82rem; }
+    .empty-state { text-align:center; padding:48px 24px; color:var(--low); font-size:0.82rem; }
+    .empty-state-icon { width:44px; height:44px; border:1px solid var(--bd); display:flex;
+      align-items:center; justify-content:center; margin:0 auto 12px; background:var(--bg2); }
+    .empty-state-icon svg { width:18px; height:18px; stroke:var(--low); fill:none; stroke-width:1.5; stroke-linecap:round; }
+    .empty-state-title { font-size:0.82rem; font-weight:600; color:var(--mid); margin-bottom:4px; }
+    .empty-state-sub { font-family:var(--mono); font-size:0.58rem; color:var(--low); line-height:1.8; }
+    /* ── SKELETON ── */
+    .skeleton { background:linear-gradient(90deg,var(--bg2) 25%,var(--bg1) 50%,var(--bg2) 75%);
+      background-size:200% 100%; animation:shimmer 1.5s infinite; display:block; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    /* ── STAT CARD ANIMATION ── */
+    .stat-card { transition:transform 0.15s, box-shadow 0.15s; }
+    .stat-card:hover { transform:translateY(-2px); box-shadow:0 4px 20px rgba(0,0,0,0.08); }
+    [data-theme="dark"] .stat-card:hover { box-shadow:0 4px 20px rgba(0,0,0,0.3); }
 
     /* RT toast */
     .rt-toast-container { position:fixed; top:70px; right:24px; z-index:200; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
@@ -385,6 +399,7 @@
     .rt-toast-name { font-weight:600; color:var(--hi); margin-bottom:2px; }
     .rt-toast-msg { font-family:var(--mono); font-size:0.62rem; color:var(--mid); }
 
+    @keyframes page-fade { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
     ::-webkit-scrollbar { width:3px; height:3px; }
     ::-webkit-scrollbar-track { background:transparent; }
     ::-webkit-scrollbar-thumb { background:var(--bg3); }
@@ -882,7 +897,7 @@ function buildTile(s) {
     </div>
     <div class="tile-footer">
       <span class="tile-elapsed">${elapsed}</span>
-      <span class="tile-risk ${riskLevel}">${riskLevel}</span>
+      <span class="tile-risk ${riskLevel}" style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.08em;padding:2px 6px;border:1px solid ${riskLevel==="High"?"rgba(239,68,68,0.4)":riskLevel==="Medium"?"rgba(245,158,11,0.4)":"rgba(34,197,94,0.3)"};color:${riskLevel==="High"?"var(--danger)":riskLevel==="Medium"?"var(--warn)":"var(--ok)"}">${riskLevel.toUpperCase()}</span>
     </div>
   </div>`;
 }
@@ -1115,7 +1130,11 @@ async function loadRecentExams() {
   const exams = await api('/api/exams');
   if (!exams) return;
   const el = document.getElementById('recentExams');
-  if (!exams.length) { el.innerHTML='<div class="empty-state">No exams yet</div>'; return; }
+  if (!exams.length) { el.innerHTML=`<div class="empty-state">
+          <div class="empty-state-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg></div>
+          <div class="empty-state-title">No exams yet</div>
+          <div class="empty-state-sub">Create your first exam to get started.</div>
+        </div>`; return; }
   el.innerHTML = exams.slice(0,4).map(e=>`
     <div class="exam-row">
       <div><div class="exam-row-name">${e.title}</div>
@@ -1128,7 +1147,11 @@ async function loadRecentSessions() {
   const sessions = await api('/api/sessions');
   if (!sessions) return;
   const el = document.getElementById('recentSessions');
-  if (!sessions.length) { el.innerHTML='<div class="empty-state">No sessions yet</div>'; return; }
+  if (!sessions.length) { el.innerHTML=`<div class="empty-state">
+          <div class="empty-state-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+          <div class="empty-state-title">No sessions yet</div>
+          <div class="empty-state-sub">Sessions will appear here when students start exams.</div>
+        </div>`; return; }
   el.innerHTML = sessions.slice(0,4).map(s=>`
     <div class="alert-item">
       <div class="alert-stripe ${s.risk_level==='High'?'high':s.risk_level==='Medium'?'medium':'low'}"></div>
@@ -1144,7 +1167,7 @@ async function loadRecentSessions() {
 async function loadExams() {
   const exams = await api('/api/exams');
   const tbody = document.getElementById('examsTableBody');
-  if (!exams||!exams.length) { tbody.innerHTML='<tr><td colspan="8"><div class="empty-state">No exams yet. Click "Create Exam" to start.</div></td></tr>'; return; }
+  if (!exams||!exams.length) { tbody.innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg></div><div class="empty-state-title">No exams yet</div><div class="empty-state-sub">Click &ldquo;+ New Exam&rdquo; to create your first exam.</div></div></td></tr>'; return; }
   tbody.innerHTML = exams.map(e=>`
     <tr>
       <td><strong>${e.title}</strong></td><td>${e.subject||'—'}</td>
@@ -1162,7 +1185,7 @@ async function loadExams() {
 async function loadStudents() {
   const students = await api('/api/students');
   const tbody = document.getElementById('studentsTableBody');
-  if (!students||!students.length) { tbody.innerHTML='<tr><td colspan="6"><div class="empty-state">No students registered.</div></td></tr>'; return; }
+  if (!students||!students.length) { tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="empty-state-title">No students registered</div><div class="empty-state-sub">Add students via the &ldquo;Add Student&rdquo; button above.</div></div></td></tr>'; return; }
   tbody.innerHTML = students.map(s=>`
     <tr>
       <td style="font-family:var(--mono);font-size:0.62rem;color:var(--low)">${s.student_id||'—'}</td>
@@ -1186,7 +1209,7 @@ async function loadSubmissions() {
     sBadge.textContent = newSubs;
     sBadge.style.display = '';
   }
-  if (!res.length) { tbody.innerHTML='<tr><td colspan="7"><div class="empty-state">No submissions yet.</div></td></tr>'; return; }
+  if (!res.length) { tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/></svg></div><div class="empty-state-title">No submissions yet</div><div class="empty-state-sub">Submissions will appear here after students complete exams.</div></div></td></tr>'; return; }
   tbody.innerHTML = res.map(s => {
     const pct = s.percentage ? parseFloat(s.percentage).toFixed(1) : null;
     const cls = !pct ? '' : pct>=75?'':'warn';
@@ -1204,7 +1227,7 @@ async function loadSubmissions() {
 async function loadReports() {
   const sessions = await api('/api/sessions');
   const tbody = document.getElementById('reportsTableBody');
-  if (!sessions||!sessions.length) { tbody.innerHTML='<tr><td colspan="7"><div class="empty-state">No sessions yet.</div></td></tr>'; return; }
+  if (!sessions||!sessions.length) { tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><div class="empty-state-title">No sessions recorded</div><div class="empty-state-sub">Sessions appear here after students start monitored exams.</div></div></td></tr>'; return; }
   tbody.innerHTML = sessions.map(s=>`
     <tr>
       <td><strong>${s.student_name}</strong></td>

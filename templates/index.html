@@ -81,11 +81,29 @@
     .metrics-strip { display:flex; align-items:center; justify-content:center;
       border:1px solid var(--bd); max-width:540px; margin:0 auto; animation:fade-up 0.6s 0.32s ease both;
       background:var(--bg1); }
-    .metric { flex:1; padding:16px 20px; text-align:center; border-right:1px solid var(--bd); }
+    .metric { flex:1; padding:16px 20px; text-align:center; border-right:1px solid var(--bd); position:relative; overflow:hidden; }
     .metric:last-child { border-right:none; }
-    .metric-num { font-family:var(--mono); font-size:1.4rem; font-weight:700; color:var(--hi); display:block; }
+    .metric::after { content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+      width:0; height:2px; background:var(--acc); transition:width 0.3s; }
+    .metric:hover::after { width:100%; }
+    .metric-num { font-family:var(--mono); font-size:1.4rem; font-weight:700; color:var(--hi); display:block;
+      transition:color 0.2s; }
+    .metric:hover .metric-num { color:var(--acc); }
     .metric-lbl { font-family:var(--mono); font-size:0.52rem; letter-spacing:0.12em; color:var(--low); text-transform:uppercase; display:block; margin-top:2px; }
     @keyframes fade-up { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    
+    /* ── LOADING SKELETON ── */
+    .skeleton { background:linear-gradient(90deg,var(--bg2) 25%,var(--bg1) 50%,var(--bg2) 75%);
+      background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:2px; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    
+    /* ── EMPTY STATE ── */
+    .empty-state-hero { text-align:center; padding:60px 24px; }
+    .empty-icon { width:56px; height:56px; border:1px solid var(--bd); display:flex;
+      align-items:center; justify-content:center; margin:0 auto 16px; background:var(--bg2); }
+    .empty-icon svg { width:22px; height:22px; stroke:var(--low); fill:none; stroke-width:1.5; stroke-linecap:round; }
+    .empty-title { font-size:0.88rem; font-weight:600; color:var(--hi); margin-bottom:6px; }
+    .empty-sub { font-family:var(--mono); font-size:0.62rem; color:var(--low); line-height:1.7; }
 
     .roles-section { position:relative; z-index:5; max-width:960px; margin:0 auto; padding:0 48px 100px; }
     .section-label { font-family:var(--mono); font-size:0.58rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--low); margin-bottom:6px; }

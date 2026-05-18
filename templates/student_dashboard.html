@@ -163,6 +163,40 @@
     ::-webkit-scrollbar-track { background:transparent; }
     ::-webkit-scrollbar-thumb { background:var(--bg2); }
 
+    /* ── SKELETON LOADING ── */
+    .skeleton { background:linear-gradient(90deg,var(--bg2) 25%,var(--bg1) 50%,var(--bg2) 75%);
+      background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:2px; display:block; }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+    .skeleton-card { background:var(--bg1); border:1px solid var(--bd); border-left:3px solid var(--bd);
+      padding:20px 24px; margin-bottom:10px; }
+    .skeleton-line { height:12px; margin-bottom:8px; }
+    .skeleton-line.wide { width:60%; }
+    .skeleton-line.narrow { width:35%; height:10px; }
+
+    /* ── EMPTY STATE ── */
+    .empty-block { text-align:center; padding:48px 24px; border:1px dashed var(--bd); margin-bottom:10px; }
+    .empty-icon { width:48px; height:48px; border:1px solid var(--bd); display:flex;
+      align-items:center; justify-content:center; margin:0 auto 14px; background:var(--bg2); }
+    .empty-icon svg { width:20px; height:20px; stroke:var(--low); fill:none; stroke-width:1.5; stroke-linecap:round; }
+    .empty-title { font-size:0.85rem; font-weight:600; color:var(--mid); margin-bottom:4px; }
+    .empty-sub { font-family:var(--mono); font-size:0.58rem; color:var(--low); line-height:1.8; }
+
+    /* ── SCORE RING ── */
+    .score-ring-wrap { position:relative; width:72px; height:72px; flex-shrink:0; }
+    .score-ring-wrap svg { transform:rotate(-90deg); }
+    .score-ring-bg { fill:none; stroke:var(--bg2); stroke-width:4; }
+    .score-ring-fill { fill:none; stroke-width:4; stroke-linecap:round;
+      stroke-dasharray:201; transition:stroke-dashoffset 1s cubic-bezier(0.16,1,0.3,1); }
+    .score-ring-fill.ok   { stroke:var(--ok); }
+    .score-ring-fill.warn { stroke:var(--warn); }
+    .score-ring-fill.bad  { stroke:var(--danger); }
+    .score-ring-label { position:absolute; inset:0; display:flex; align-items:center;
+      justify-content:center; font-family:var(--mono); font-size:0.72rem; font-weight:700; }
+
+    /* ── CARD HOVER ── */
+    .exam-card { transition:all 0.15s cubic-bezier(0.4,0,0.2,1); }
+    .exam-card:hover { transform:translateX(2px); }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
       .topnav { padding: 0 16px; }
@@ -378,7 +412,14 @@
     function renderAvailable(exams) {
       const el = document.getElementById('availableExams');
       if (!exams.length) {
-        el.innerHTML = '<div style="color:var(--low);font-size:0.8rem;padding:12px 0;font-family:var(--mono)">No exams available right now.</div>';
+        el.innerHTML = `
+          <div class="empty-block">
+            <div class="empty-icon">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>
+            </div>
+            <div class="empty-title">No exams available right now</div>
+            <div class="empty-sub">Your teacher will notify you when an exam is ready.<br>Check back later or contact your instructor.</div>
+          </div>`;
         return;
       }
 

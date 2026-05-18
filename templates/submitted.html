@@ -47,6 +47,26 @@
     .note { background:rgba(37,99,235,0.05); border:1px solid rgba(37,99,235,0.15);
       padding:14px 18px; font-size:0.78rem; color:var(--mid); line-height:1.65; margin-bottom:28px; text-align:left; }
     .note strong { color:var(--acc); }
+    
+    /* Score display */
+    .score-display { margin-bottom:28px; }
+    .score-ring-wrap { position:relative; width:96px; height:96px; margin:0 auto 16px; }
+    .score-ring-wrap svg { transform:rotate(-90deg); }
+    .score-ring-bg { fill:none; stroke:var(--bg2); stroke-width:6; }
+    .score-ring-fill { fill:none; stroke-width:6; stroke-linecap:round;
+      stroke-dasharray:264; stroke-dashoffset:264; transition:stroke-dashoffset 1.2s cubic-bezier(0.16,1,0.3,1) 0.3s; }
+    .score-ring-fill.pass { stroke:var(--ok); }
+    .score-ring-fill.fail { stroke:var(--danger); }
+    .score-ring-label { position:absolute; inset:0; display:flex; flex-direction:column;
+      align-items:center; justify-content:center; }
+    .score-pct { font-family:var(--mono); font-size:1.3rem; font-weight:700; line-height:1; }
+    .score-pct.pass { color:var(--ok); }
+    .score-pct.fail { color:var(--danger); }
+    .score-verdict { font-family:var(--mono); font-size:0.5rem; letter-spacing:0.1em; color:var(--low); margin-top:3px; }
+    
+    /* Confetti burst for pass */
+    @keyframes confetti { 0%{transform:translateY(0) rotate(0);opacity:1} 100%{transform:translateY(-40px) rotate(180deg);opacity:0} }
+    .confetti-dot { position:absolute; width:4px; height:4px; border-radius:50%; animation:confetti 0.8s ease-out both; }
 
     .btn { display:inline-flex; align-items:center; justify-content:center; gap:8px;
       font-family:var(--mono); font-size:0.65rem; font-weight:700; letter-spacing:0.04em;
@@ -60,12 +80,25 @@
 </head>
 <body>
   <div class="card">
-    <div class="check-icon">
+    <div class="check-icon" id="resultIcon">
       <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
     </div>
-    <div class="eyebrow">Exam Submitted</div>
-    <h1>You're all done!</h1>
-    <p class="subtitle">Your answers and monitoring session have been recorded. Your instructor will review your submission and get back to you with results.</p>
+    <div class="eyebrow" id="resultEyebrow">Exam Submitted</div>
+    <h1 id="resultTitle">Submission Recorded</h1>
+    <p class="subtitle" id="resultSubtitle">Your answers and monitoring session have been recorded. Your instructor will review your submission shortly.</p>
+
+    <div class="score-display" id="scoreDisplay" style="display:none">
+      <div class="score-ring-wrap">
+        <svg viewBox="0 0 96 96" width="96" height="96">
+          <circle class="score-ring-bg" cx="48" cy="48" r="42"/>
+          <circle class="score-ring-fill" id="scoreRing" cx="48" cy="48" r="42"/>
+        </svg>
+        <div class="score-ring-label">
+          <span class="score-pct" id="scorePct">—</span>
+          <span class="score-verdict" id="scoreVerdict">SCORE</span>
+        </div>
+      </div>
+    </div>
 
     <div class="info-box">
       <div class="info-row">
@@ -83,7 +116,7 @@
     </div>
 
     <div class="note">
-      <strong>📌 Note:</strong> Your exam results and any monitoring flags will be reviewed by your instructor before any academic decisions are made. No automated judgments have been applied.
+      <strong>Note:</strong> Your exam results and any monitoring flags will be reviewed by your instructor before any academic decisions are made. No automated judgments have been applied.
     </div>
 
     <a href="/student/dashboard" class="btn btn-primary">← Back to Dashboard</a>
@@ -95,9 +128,49 @@
     const params = new URLSearchParams(window.location.search);
     const name = params.get('name') || localStorage.getItem('eg_name') || '—';
     const session = params.get('session') || '—';
+    const score = parseFloat(params.get('score'));
+    const passed = params.get('passed') === 'true';
+
     document.getElementById('infoName').textContent = name;
     document.getElementById('infoSession').textContent = session;
     document.getElementById('infoTime').textContent = new Date().toLocaleTimeString('en-PH', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+
+    // Show score ring if score is available
+    if (!isNaN(score)) {
+      const scoreDisplay = document.getElementById('scoreDisplay');
+      const scoreRing    = document.getElementById('scoreRing');
+      const scorePct     = document.getElementById('scorePct');
+      const scoreVerdict = document.getElementById('scoreVerdict');
+      const resultIcon   = document.getElementById('resultIcon');
+      const resultEyebrow = document.getElementById('resultEyebrow');
+      const resultTitle  = document.getElementById('resultTitle');
+      const resultSubtitle = document.getElementById('resultSubtitle');
+
+      scoreDisplay.style.display = 'block';
+      scorePct.textContent = `${Math.round(score)}%`;
+      scorePct.className = `score-pct ${passed ? 'pass' : 'fail'}`;
+      scoreVerdict.textContent = passed ? 'PASSED' : 'FAILED';
+      scoreRing.className = `score-ring-fill ${passed ? 'pass' : 'fail'}`;
+
+      // Animate ring
+      const circumference = 264;
+      const offset = circumference - (score / 100) * circumference;
+      setTimeout(() => { scoreRing.style.strokeDashoffset = offset; }, 100);
+
+      // Update icon and text based on result
+      if (passed) {
+        resultEyebrow.textContent = 'Exam Passed';
+        resultTitle.textContent = 'Congratulations!';
+        resultSubtitle.textContent = `You scored ${Math.round(score)}% and passed this exam. Your instructor will review the full submission shortly.`;
+        resultIcon.style.background = 'rgba(22,163,74,0.1)';
+        resultIcon.style.borderColor = 'rgba(22,163,74,0.25)';
+        resultIcon.querySelector('svg').style.stroke = 'var(--ok)';
+      } else {
+        resultEyebrow.textContent = 'Exam Submitted';
+        resultTitle.textContent = 'Submission Recorded';
+        resultSubtitle.textContent = `You scored ${Math.round(score)}% on this exam. Your instructor will review your submission and monitoring session.`;
+      }
+    }
   </script>
 </body>
 </html>
