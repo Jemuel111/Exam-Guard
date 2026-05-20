@@ -38,7 +38,7 @@ def _send_reset_email(to_email: str, user_name: str, token: str, app) -> bool:
         logger.warning('MAIL_USER / MAIL_PASS not configured — cannot send reset email')
         return False
 
-    reset_link = f"http://localhost:5000/?token={token}"
+    reset_link = f"https://examguardapp.duckdns.org/?token={token}"
 
     html_body = f"""
 <!DOCTYPE html>
@@ -48,23 +48,23 @@ def _send_reset_email(to_email: str, user_name: str, token: str, app) -> bool:
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ExamGuard — Password Reset</title>
 </head>
-<body style="margin:0;padding:0;background-color:#080c14;font-family:'Segoe UI',Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#080c14;padding:40px 20px;">
+<body style="margin:0;padding:0;background-color:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;padding:48px 20px;">
     <tr>
       <td align="center">
-        <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+        <table width="540" cellpadding="0" cellspacing="0" style="max-width:540px;width:100%;">
 
           <!-- Header -->
           <tr>
-            <td style="background:#0d1424;border:1px solid rgba(255,255,255,0.06);border-bottom:none;padding:28px 36px;text-align:left;">
+            <td style="background:#ffffff;border:1px solid #e4e4e7;border-bottom:none;border-radius:12px 12px 0 0;padding:24px 32px;">
               <table cellpadding="0" cellspacing="0">
                 <tr>
-                  <td style="background:#2563eb;width:28px;height:28px;text-align:center;vertical-align:middle;clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);">
-                    <span style="color:#fff;font-size:14px;font-weight:700;">🛡</span>
+                  <td style="background:#2563eb;width:30px;height:30px;border-radius:7px;text-align:center;vertical-align:middle;">
+                    <span style="color:#fff;font-size:14px;font-weight:700;line-height:30px;display:block;">G</span>
                   </td>
                   <td style="padding-left:10px;">
-                    <span style="font-family:'Courier New',monospace;font-size:13px;font-weight:700;letter-spacing:0.06em;color:#f0f6ff;">
-                      EXAM<span style="color:#3b82f6;">GUARD</span>
+                    <span style="font-size:15px;font-weight:600;letter-spacing:-0.02em;color:#09090b;">
+                      Exam<span style="color:#2563eb;">Guard</span>
                     </span>
                   </td>
                 </tr>
@@ -74,36 +74,36 @@ def _send_reset_email(to_email: str, user_name: str, token: str, app) -> bool:
 
           <!-- Blue accent bar -->
           <tr>
-            <td style="background:linear-gradient(90deg,#2563eb,#06b6d4);height:3px;font-size:0;line-height:0;">&nbsp;</td>
+            <td style="background:#2563eb;height:2px;font-size:0;line-height:0;">&nbsp;</td>
           </tr>
 
           <!-- Body -->
           <tr>
-            <td style="background:#0d1424;border:1px solid rgba(255,255,255,0.06);border-top:none;border-bottom:none;padding:40px 36px;">
+            <td style="background:#ffffff;border:1px solid #e4e4e7;border-top:none;border-bottom:none;padding:40px 32px;">
 
               <!-- Eyebrow -->
-              <p style="margin:0 0 8px;font-family:'Courier New',monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#3b82f6;">
-                ACCOUNT RECOVERY
+              <p style="margin:0 0 6px;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#2563eb;font-weight:500;">
+                Account Recovery
               </p>
 
               <!-- Title -->
-              <h1 style="margin:0 0 16px;font-size:24px;font-weight:700;letter-spacing:-0.02em;color:#f0f6ff;line-height:1.2;">
-                Reset Your Password
+              <h1 style="margin:0 0 16px;font-size:22px;font-weight:700;letter-spacing:-0.03em;color:#09090b;line-height:1.2;">
+                Reset your password
               </h1>
 
               <!-- Body text -->
-              <p style="margin:0 0 28px;font-size:14px;line-height:1.75;color:#6b84a8;">
-                Hi <strong style="color:#f0f6ff;">{user_name}</strong>,<br><br>
-                We received a request to reset your ExamGuard password. Click the button below to choose a new password. This link will expire in <strong style="color:#f0f6ff;">1 hour</strong>.
+              <p style="margin:0 0 32px;font-size:14px;line-height:1.75;color:#52525b;">
+                Hi <strong style="color:#09090b;">{user_name}</strong>,<br><br>
+                We received a request to reset your ExamGuard password. Click the button below to set a new password. This link expires in <strong style="color:#09090b;">1 hour</strong>.
               </p>
 
               <!-- CTA Button -->
-              <table cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
+              <table cellpadding="0" cellspacing="0" style="margin-bottom:36px;">
                 <tr>
-                  <td style="background:#2563eb;border-radius:0;">
+                  <td style="background:#2563eb;border-radius:8px;">
                     <a href="{reset_link}"
-                       style="display:inline-block;padding:14px 32px;font-family:'Courier New',monospace;font-size:12px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:#ffffff;text-decoration:none;">
-                      Reset My Password →
+                       style="display:inline-block;padding:12px 28px;font-size:14px;font-weight:600;letter-spacing:-0.01em;color:#ffffff;text-decoration:none;">
+                      Reset My Password &rarr;
                     </a>
                   </td>
                 </tr>
@@ -112,25 +112,25 @@ def _send_reset_email(to_email: str, user_name: str, token: str, app) -> bool:
               <!-- Divider -->
               <table cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:24px;">
                 <tr>
-                  <td style="border-top:1px solid rgba(255,255,255,0.06);font-size:0;">&nbsp;</td>
+                  <td style="border-top:1px solid #e4e4e7;font-size:0;">&nbsp;</td>
                 </tr>
               </table>
 
               <!-- Fallback link -->
-              <p style="margin:0 0 6px;font-family:'Courier New',monospace;font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:#2d4060;">
-                BUTTON NOT WORKING? COPY THIS LINK:
+              <p style="margin:0 0 6px;font-size:12px;color:#a1a1aa;">
+                If the button above does not work, copy and paste this link into your browser:
               </p>
-              <p style="margin:0 0 28px;font-family:'Courier New',monospace;font-size:11px;color:#3b82f6;word-break:break-all;line-height:1.6;">
+              <p style="margin:0 0 28px;font-family:'Courier New',monospace;font-size:11px;color:#2563eb;word-break:break-all;line-height:1.6;">
                 {reset_link}
               </p>
 
               <!-- Warning box -->
               <table cellpadding="0" cellspacing="0" width="100%">
                 <tr>
-                  <td style="background:rgba(37,99,235,0.06);border:1px solid rgba(37,99,235,0.15);border-left:3px solid #2563eb;padding:14px 16px;">
-                    <p style="margin:0;font-size:12px;line-height:1.65;color:#6b84a8;">
-                      <strong style="color:#f0f6ff;">Didn't request this?</strong><br>
-                      You can safely ignore this email — your password won't change unless you click the link above.
+                  <td style="background:#f4f4f5;border:1px solid #e4e4e7;border-left:3px solid #2563eb;border-radius:0 6px 6px 0;padding:14px 16px;">
+                    <p style="margin:0;font-size:13px;line-height:1.65;color:#52525b;">
+                      <strong style="color:#09090b;">Didn't request this?</strong><br>
+                      You can safely ignore this email. Your password will not change unless you click the link above.
                     </p>
                   </td>
                 </tr>
@@ -141,17 +141,17 @@ def _send_reset_email(to_email: str, user_name: str, token: str, app) -> bool:
 
           <!-- Footer -->
           <tr>
-            <td style="background:#080c14;border:1px solid rgba(255,255,255,0.06);border-top:none;padding:20px 36px;">
+            <td style="background:#fafafa;border:1px solid #e4e4e7;border-top:none;border-radius:0 0 12px 12px;padding:18px 32px;">
               <table cellpadding="0" cellspacing="0" width="100%">
                 <tr>
                   <td>
-                    <p style="margin:0;font-family:'Courier New',monospace;font-size:10px;letter-spacing:0.1em;color:#2d4060;text-transform:uppercase;">
-                      EXAMGUARD · SECURE EXAM PLATFORM
+                    <p style="margin:0;font-size:11px;letter-spacing:0.04em;color:#a1a1aa;text-transform:uppercase;">
+                      ExamGuard &middot; Secure Exam Platform
                     </p>
                   </td>
                   <td align="right">
-                    <p style="margin:0;font-family:'Courier New',monospace;font-size:10px;color:#2d4060;">
-                      DO NOT REPLY
+                    <p style="margin:0;font-size:11px;color:#a1a1aa;">
+                      Do not reply to this email
                     </p>
                   </td>
                 </tr>

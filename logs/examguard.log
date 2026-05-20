@@ -6406,3 +6406,26 @@ Response body:push subscription has unsubscribed or expired.
 2026-05-20 09:54:03,273 [INFO] 127.0.0.1 - - [20/May/2026 09:54:03] "GET /api/sessions HTTP/1.1" 200 -
 2026-05-20 09:54:03,273 [INFO] 127.0.0.1 - - [20/May/2026 09:54:03] "GET /api/dashboard_stats HTTP/1.1" 200 -
 2026-05-20 09:54:03,276 [INFO] 127.0.0.1 - - [20/May/2026 09:54:03] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-20 09:55:03,262 [INFO] 127.0.0.1 - - [20/May/2026 09:55:03] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-20 09:55:03,262 [INFO] 127.0.0.1 - - [20/May/2026 09:55:03] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-20 09:55:03,264 [INFO] 127.0.0.1 - - [20/May/2026 09:55:03] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-20 09:56:03,265 [INFO] 127.0.0.1 - - [20/May/2026 09:56:03] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-20 09:56:03,266 [INFO] 127.0.0.1 - - [20/May/2026 09:56:03] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-20 09:56:03,268 [INFO] 127.0.0.1 - - [20/May/2026 09:56:03] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-20 09:56:34,495 [INFO] 127.0.0.1 - - [20/May/2026 09:56:34] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-20 09:56:34,495 [INFO] 127.0.0.1 - - [20/May/2026 09:56:34] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-20 09:56:34,498 [INFO] 127.0.0.1 - - [20/May/2026 09:56:34] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-20 09:56:36,736 [INFO] 127.0.0.1 - - [20/May/2026 09:56:36] "[32mGET /teacher/dashboard HTTP/1.1[0m" 302 -
+2026-05-20 09:56:36,754 [INFO] 127.0.0.1 - - [20/May/2026 09:56:36] "GET / HTTP/1.1" 200 -
+2026-05-20 09:56:36,763 [INFO] 127.0.0.1 - - [20/May/2026 09:56:36] "GET /socket.io/?EIO=4&transport=websocket&sid=UcYQHwW_GyPZIxv8AAAA HTTP/1.1" 200 -
+2026-05-20 09:56:36,782 [INFO] 127.0.0.1 - - [20/May/2026 09:56:36] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-20 09:56:36,850 [INFO] 127.0.0.1 - - [20/May/2026 09:56:36] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-20 09:56:36,861 [INFO] 127.0.0.1 - - [20/May/2026 09:56:36] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-20 09:56:38,389 [INFO] 127.0.0.1 - - [20/May/2026 09:56:38] "[36mGET /static/sw.js HTTP/1.1[0m" 304 -
+2026-05-20 10:14:24,705 [INFO]  * Detected change in '/Users/macbook/Downloads/examguard/blueprints/auth_bp.py', reloading
+2026-05-20 10:14:24,904 [INFO]  * Restarting with stat
+2026-05-20 10:14:26,578 [INFO] Database initialized ✓
+2026-05-20 10:14:26,579 [INFO] Push subscriptions table ready
+2026-05-20 10:14:26,580 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-20 10:14:26,613 [WARNING]  * Debugger is active!
+2026-05-20 10:14:26,625 [INFO]  * Debugger PIN: 130-332-172
