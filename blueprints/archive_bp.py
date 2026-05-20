@@ -7,6 +7,7 @@ Teachers can restore or permanently delete from archive.
 import logging
 from flask import Blueprint, request, jsonify
 from database import get_db
+from crypto import decrypt
 
 logger = logging.getLogger(__name__)
 bp_archive = Blueprint('archive', __name__)
@@ -21,16 +22,30 @@ def get_archive():
         exams = db.execute(
             "SELECT id, title, subject, duration_minutes, status, created_at, archived_at, 'exam' as item_type FROM exams WHERE is_archived=1 ORDER BY archived_at DESC"
         ).fetchall()
-        students = db.execute(
+        students_raw = db.execute(
             "SELECT id, name, email, student_id, created_at, archived_at, 'student' as item_type FROM users WHERE role='student' AND is_archived=1 ORDER BY archived_at DESC"
         ).fetchall()
-        sessions = db.execute(
+        sessions_raw = db.execute(
             "SELECT session_id as id, student_name as name, start_time as created_at, archived_at, 'session' as item_type, risk_level, total_violations FROM sessions WHERE is_archived=1 ORDER BY archived_at DESC"
         ).fetchall()
+        # Decrypt student fields
+        students = []
+        for r in students_raw:
+            s = dict(r)
+            s['name']       = decrypt(s['name'])
+            s['email']      = decrypt(s['email'])
+            s['student_id'] = decrypt(s['student_id']) if s['student_id'] else ''
+            students.append(s)
+        # Decrypt session student_name
+        sessions = []
+        for r in sessions_raw:
+            s = dict(r)
+            s['name'] = decrypt(s['name'])
+            sessions.append(s)
         return jsonify({
             'exams': [dict(r) for r in exams],
-            'students': [dict(r) for r in students],
-            'sessions': [dict(r) for r in sessions],
+            'students': students,
+            'sessions': sessions,
         })
     except Exception as e:
         logger.error('get_archive error: %s', e)

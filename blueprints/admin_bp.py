@@ -24,7 +24,14 @@ def get_students():
     rows = db.execute(
         "SELECT id,name,email,student_id,avatar_initials,created_at,last_login FROM users WHERE role='student' AND is_active=1 AND COALESCE(is_archived,0)=0"
     ).fetchall()
-    return jsonify([dict(r) for r in rows])
+    students = []
+    for r in rows:
+        s = dict(r)
+        s['name']       = decrypt(s['name'])
+        s['email']      = decrypt(s['email'])
+        s['student_id'] = decrypt(s['student_id']) if s['student_id'] else ''
+        students.append(s)
+    return jsonify(students)
 
 
 @bp_admin.post('/api/students')
@@ -35,13 +42,16 @@ def add_student():
     if not name or not email:
         return jsonify({'success': False, 'error': 'Name and email are required'}), 400
 
-    db       = get_db()
-    initials = ''.join(p[0].upper() for p in name.split()[:2])
+    db         = get_db()
+    initials   = ''.join(p[0].upper() for p in name.split()[:2])
+    email_hash = _email_hash(email)
     try:
-        db.execute('''INSERT INTO users (email,password_hash,role,name,student_id,avatar_initials)
-                      VALUES (?,?,?,?,?,?)''',
-                   (email, hash_password(data.get('password', 'student123')),
-                    'student', name, data.get('student_id', ''), initials))
+        db.execute('''INSERT INTO users (email,email_hash,password_hash,role,name,student_id,avatar_initials)
+                      VALUES (?,?,?,?,?,?,?)''',
+                   (encrypt(email), email_hash,
+                    hash_password(data.get('password', 'student123')),
+                    'student', encrypt(name),
+                    encrypt(data.get('student_id', '')), initials))
         db.commit()
         return jsonify({'success': True})
     except sqlite3.IntegrityError:

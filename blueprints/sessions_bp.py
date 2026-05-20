@@ -75,7 +75,12 @@ def get_sessions():
                 GROUP BY s.session_id
                 ORDER BY s.created_at DESC LIMIT 50
             ''').fetchall()
-        return jsonify([dict(r) for r in rows])
+        sessions = []
+        for r in rows:
+            s = dict(r)
+            s['student_name'] = decrypt(s['student_name']) if s.get('student_name') else ''
+            sessions.append(s)
+        return jsonify(sessions)
     except Exception as e:
         logger.error('/api/sessions error: %s', e, exc_info=True)
         return jsonify([])

@@ -279,10 +279,10 @@ def me():
         return jsonify({'error': 'Not found'}), 404
     return jsonify({
         'id':         user['id'],
-        'name':       user['name'],
-        'email':      user['email'],
+        'name':       decrypt(user['name']),
+        'email':      decrypt(user['email']),
         'role':       user['role'],
-        'student_id': user['student_id'],
+        'student_id': decrypt(user['student_id']) if user['student_id'] else '',
         'avatar':     user['avatar_initials'],
     })
 
@@ -304,8 +304,8 @@ def forgot_password():
 
     db   = get_db()
     user = db.execute(
-        'SELECT * FROM users WHERE email=? AND role=? AND is_active=1',
-        (email, role)
+        'SELECT * FROM users WHERE email_hash=? AND is_active=1',
+        (_email_hash(email),)
     ).fetchone()
 
     # Always return success to prevent email enumeration
@@ -331,8 +331,11 @@ def forgot_password():
 
     logger.info('Password reset token generated for user %s (%s)', user['id'], email)
 
+    # Decrypt name before sending email
+    decrypted_name = decrypt(user['name'])
+
     # Try to send the real email
-    mail_sent = _send_reset_email(email, user['name'], token, current_app)
+    mail_sent = _send_reset_email(email, decrypted_name, token, current_app)
 
     if mail_sent:
         return generic_ok
