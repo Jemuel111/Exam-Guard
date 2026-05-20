@@ -198,22 +198,34 @@ def _email_hash(email: str) -> str:
 
 @bp_auth.post('/api/login')
 def login():
+    import re as _re
+    import sqlite3
     data     = request.get_json(silent=True) or {}
     email    = (data.get('email') or '').lower().strip()
     password = data.get('password', '')
     role     = data.get('role', 'student')
     is_reg   = bool(data.get('register', False))
 
-    if not email or not password:
-        return jsonify({'success': False, 'error': 'Email and password are required.'}), 400
+    # ── Specific empty field errors ───────────────────────────────────────────
+    if not email and not password:
+        return jsonify({'success': False, 'error': 'Please enter your email and password.'}), 400
+    if not email:
+        return jsonify({'success': False, 'error': 'Please enter your email address.'}), 400
+    if not password:
+        return jsonify({'success': False, 'error': 'Please enter your password.'}), 400
+    if not _re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', email):
+        return jsonify({'success': False, 'error': 'Please enter a valid email address.'}), 400
 
     db         = get_db()
     email_hash = _email_hash(email)
 
     # ── Registration ──────────────────────────────────────────────────────────
     if is_reg:
-        import sqlite3
-        name     = data.get('name') or email.split('@')[0].title()
+        name = (data.get('name') or '').strip()
+        if not name:
+            return jsonify({'success': False, 'error': 'Please enter your full name.'}), 400
+        if len(password) < 6:
+            return jsonify({'success': False, 'error': 'Password must be at least 6 characters.'}), 400
         sid      = data.get('student_id', '')
         initials = ''.join(p[0].upper() for p in name.split()[:2])
         try:
@@ -223,7 +235,7 @@ def login():
             )
             db.commit()
         except sqlite3.IntegrityError:
-            return jsonify({'success': False, 'error': 'Email already registered.'}), 409
+            return jsonify({'success': False, 'error': 'That email is already registered. Try signing in instead.'}), 409
 
         user  = db.execute('SELECT * FROM users WHERE email_hash=?', (email_hash,)).fetchone()
         token = generate_token(user['id'], role, name)
@@ -239,7 +251,7 @@ def login():
         decrypted_name = decrypt(user['name'])
         token = generate_token(user['id'], role, decrypted_name)
         db.execute(
-            "UPDATE users SET last_login=datetime(\'now\') WHERE id=?",
+            "UPDATE users SET last_login=datetime('now') WHERE id=?",
             (user['id'],)
         )
         db.execute(
@@ -257,7 +269,7 @@ def login():
         })
 
     logger.warning('Failed login attempt for %s from %s', email, request.remote_addr)
-    return jsonify({'success': False, 'error': 'Invalid credentials.'}), 401
+    return jsonify({'success': False, 'error': 'Incorrect email or password. Please try again.'}), 401
 
 
 @bp_auth.post('/api/logout')
@@ -300,7 +312,10 @@ def forgot_password():
     role  = data.get('role', 'student')
 
     if not email:
-        return jsonify({'success': False, 'error': 'Email is required.'}), 400
+        return jsonify({'success': False, 'error': 'Please enter your email address.'}), 400
+    import re as _re
+    if not _re.match(r'^[^@\s]+@[^@\s]+\.[^@\s]+$', email):
+        return jsonify({'success': False, 'error': 'Please enter a valid email address.'}), 400
 
     db   = get_db()
     user = db.execute(
@@ -388,11 +403,12 @@ def reset_password():
     token        = data.get('token', '').strip()
     new_password = data.get('password', '').strip()
 
-    if not token or not new_password:
-        return jsonify({'success': False, 'error': 'Token and new password are required.'}), 400
-
+    if not token:
+        return jsonify({'success': False, 'error': 'Reset token is missing. Please use the link from your email.'}), 400
+    if not new_password:
+        return jsonify({'success': False, 'error': 'Please enter a new password.'}), 400
     if len(new_password) < 6:
-        return jsonify({'success': False, 'error': 'Password must be at least 6 characters.'}), 400
+        return jsonify({'success': False, 'error': 'Password must be at least 6 characters long.'}), 400
 
     db  = get_db()
     row = db.execute(
@@ -401,7 +417,7 @@ def reset_password():
     ).fetchone()
 
     if not row:
-        return jsonify({'success': False, 'error': 'Invalid or already used reset link.'}), 400
+        return jsonify({'success': False, 'error': 'This reset link is invalid or has already been used. Please request a new one.'}), 400
 
     if datetime.strptime(row['expires_at'], '%Y-%m-%d %H:%M:%S') < datetime.now():
         db.execute('DELETE FROM password_reset_tokens WHERE token=?', (token,))
