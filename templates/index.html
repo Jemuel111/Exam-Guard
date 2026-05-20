@@ -3,424 +3,332 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="theme-color" content="#dde1e7"/>
+  <meta name="theme-color" content="#fafafa"/>
   <link rel="manifest" href="/manifest.json"/>
   <title>ExamGuard — Secure Online Examination</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      /* Neumorphism base */
-      --nm-bg:    #dde1e7;
-      --nm-bg1:   #e8ecf1;
-      --nm-hi:    #3D4852;
-      --nm-mid:   #6B7280;
-      --nm-low:   #9CA3AF;
-      --nm-acc:   #4f6ef7;
-      --nm-ok:    #38B2AC;
-      --nm-danger:#e05260;
-      --nm-warn:  #d97706;
-      --sh-light: rgba(255,255,255,0.75);
-      --sh-dark:  rgba(163,177,198,0.65);
-      /* Dashboard bridge tokens — keep dashboards feeling related but crisp */
-      --bg:    #eef1f6;
-      --bg1:   #f8fafc;
-      --bg2:   #e4e9f0;
-      --acc:   #4f6ef7;
-      --ok:    #0d9488;
-      --warn:  #d97706;
-      --danger:#e05260;
-      --hi:    #1e293b;
-      --mid:   #5a6a7e;
-      --low:   #94a3b8;
-      --bd:    rgba(79,110,247,0.10);
-      --sans:  'DM Sans', sans-serif;
-      --display: 'Plus Jakarta Sans', sans-serif;
-      --mono:  'DM Mono', monospace;
-      /* Shadows */
-      --s-out: 9px 9px 18px var(--sh-dark), -9px -9px 18px var(--sh-light);
-      --s-out-lg: 14px 14px 28px var(--sh-dark), -14px -14px 28px var(--sh-light);
-      --s-in:  inset 6px 6px 12px var(--sh-dark), inset -6px -6px 12px var(--sh-light);
-      --s-in-deep: inset 10px 10px 20px var(--sh-dark), inset -10px -10px 20px var(--sh-light);
+      --bg:      #fafafa;
+      --bg1:     #ffffff;
+      --bg2:     #f4f4f5;
+      --bg3:     #e4e4e7;
+      --acc:     #2563eb;
+      --acc2:    #1d4ed8;
+      --ok:      #059669;
+      --warn:    #d97706;
+      --danger:  #dc2626;
+      --hi:      #09090b;
+      --mid:     #52525b;
+      --low:     #a1a1aa;
+      --bd:      #e4e4e7;
+      --bd2:     #d4d4d8;
+      --sans:    'Inter', system-ui, sans-serif;
+      --mono:    'JetBrains Mono', monospace;
     }
-
+    [data-theme="dark"] {
+      --bg:      #09090b;
+      --bg1:     #111113;
+      --bg2:     #18181b;
+      --bg3:     #27272a;
+      --acc:     #3b82f6;
+      --acc2:    #2563eb;
+      --ok:      #10b981;
+      --hi:      #fafafa;
+      --mid:     #a1a1aa;
+      --low:     #52525b;
+      --bd:      #27272a;
+      --bd2:     #3f3f46;
+    }
     html { scroll-behavior: smooth; }
     body {
-      font-family: var(--sans);
-      background: var(--nm-bg);
-      color: var(--nm-hi);
-      min-height: 100vh;
-      overflow-x: hidden;
+      font-family: var(--sans); background: var(--bg);
+      color: var(--hi); min-height: 100vh; overflow-x: hidden;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── NAV ── */
+    /* NAV */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      height: 64px; display: flex; align-items: center; justify-content: space-between;
-      padding: 0 48px;
-      background: rgba(221,225,231,0.88);
-      backdrop-filter: blur(24px);
-      box-shadow: 0 2px 24px rgba(163,177,198,0.25);
+      height: 56px; display: flex; align-items: center;
+      justify-content: space-between; padding: 0 24px;
+      background: rgba(250,250,250,0.85); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--bd);
     }
-    .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    [data-theme="dark"] nav { background: rgba(9,9,11,0.85); }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
     .logo-mark {
-      width: 36px; height: 36px; background: var(--nm-acc);
-      border-radius: 12px; display: flex; align-items: center; justify-content: center;
-      box-shadow: 4px 4px 10px rgba(163,177,198,0.6), -2px -2px 8px rgba(255,255,255,0.7);
+      width: 28px; height: 28px; background: var(--acc); border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
     }
-    .logo-mark svg { width: 16px; height: 16px; fill: white; }
-    .logo-name {
-      font-family: var(--display); font-size: 1rem; font-weight: 800;
-      letter-spacing: -0.02em; color: var(--nm-hi);
-    }
-    .logo-name b { color: var(--nm-acc); }
-    .nav-center { display: flex; gap: 4px; }
+    .logo-mark svg { width: 14px; height: 14px; fill: white; }
+    .logo-name { font-size: 0.9rem; font-weight: 600; color: var(--hi); letter-spacing: -0.02em; }
+    .logo-name b { color: var(--acc); }
+    .nav-center { display: flex; gap: 2px; }
     .nav-link {
-      font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.06em;
-      color: var(--nm-mid); padding: 6px 16px; text-decoration: none;
-      border-radius: 20px; transition: all 0.2s;
+      font-size: 0.8rem; color: var(--mid); padding: 5px 12px; text-decoration: none;
+      border-radius: 6px; transition: all 0.15s; font-weight: 500;
     }
-    .nav-link:hover { color: var(--nm-hi); background: rgba(255,255,255,0.5); }
-    .nav-right { display: flex; gap: 10px; align-items: center; }
+    .nav-link:hover { color: var(--hi); background: var(--bg2); }
+    .nav-right { display: flex; gap: 8px; align-items: center; }
     .btn {
-      font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.04em; font-weight: 500;
-      padding: 9px 22px; border: none; cursor: pointer; text-decoration: none;
-      display: inline-flex; align-items: center; gap: 8px; border-radius: 16px;
-      transition: all 0.25s ease-out; background: var(--nm-bg);
+      font-size: 0.8rem; font-weight: 500; padding: 7px 16px; border-radius: 7px;
+      border: 1px solid transparent; cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s;
+      font-family: var(--sans); letter-spacing: -0.01em;
     }
     .btn-ghost {
-      color: var(--nm-mid);
-      box-shadow: var(--s-out);
+      color: var(--mid); border-color: var(--bd); background: transparent;
     }
-    .btn-ghost:hover {
-      color: var(--nm-hi);
-      box-shadow: var(--s-out-lg);
-      transform: translateY(-1px);
-    }
-    .btn-ghost:active {
-      box-shadow: var(--s-in);
-      transform: translateY(0.5px);
-    }
-    .btn-solid {
-      background: var(--nm-acc); color: #fff;
-      box-shadow: 6px 6px 14px rgba(79,110,247,0.35), -3px -3px 10px rgba(255,255,255,0.5);
-    }
-    .btn-solid:hover {
-      background: #3d5be8;
-      box-shadow: 8px 8px 18px rgba(79,110,247,0.45), -4px -4px 12px rgba(255,255,255,0.55);
-      transform: translateY(-1px);
-    }
-    .btn-solid:active { transform: translateY(0.5px); }
+    .btn-ghost:hover { color: var(--hi); background: var(--bg2); border-color: var(--bd2); }
+    .btn-solid { color: #fff; background: var(--acc); border-color: var(--acc); }
+    .btn-solid:hover { background: var(--acc2); border-color: var(--acc2); }
     .theme-toggle {
-      background: var(--nm-bg); border: none; color: var(--nm-mid); cursor: pointer;
-      padding: 8px 12px; display: flex; align-items: center; gap: 6px;
-      font-family: var(--mono); font-size: 0.6rem; border-radius: 12px;
-      box-shadow: var(--s-out); transition: all 0.2s;
+      background: none; border: 1px solid var(--bd); color: var(--mid); cursor: pointer;
+      padding: 6px 10px; display: flex; align-items: center; gap: 5px;
+      font-family: var(--mono); font-size: 0.62rem; border-radius: 6px; transition: all 0.15s;
     }
-    .theme-toggle:hover { color: var(--nm-hi); transform: translateY(-1px); }
+    .theme-toggle:hover { color: var(--hi); border-color: var(--bd2); background: var(--bg2); }
 
-    /* ── HERO ── */
+    /* HERO */
     .hero {
-      position: relative; min-height: 100vh;
-      display: flex; align-items: center; justify-content: center;
-      padding: 120px 48px 80px; text-align: center;
-      overflow: hidden;
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 120px 24px 80px; text-align: center; position: relative;
     }
-    /* Decorative neumorphic orbs */
-    .hero::before {
-      content: ''; position: absolute; top: 10%; right: 8%;
-      width: 280px; height: 280px; border-radius: 50%;
-      background: var(--nm-bg);
-      box-shadow: var(--s-out-lg);
-      animation: float 6s ease-in-out infinite;
-      pointer-events: none;
-    }
-    .hero::after {
-      content: ''; position: absolute; bottom: 15%; left: 5%;
-      width: 160px; height: 160px; border-radius: 50%;
-      background: var(--nm-bg);
-      box-shadow: var(--s-out);
-      animation: float 8s ease-in-out infinite reverse;
-      pointer-events: none;
-    }
-    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-16px)} }
-    @keyframes fade-up { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
+    .hero-inner { max-width: 680px; }
+    @keyframes fade-up { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-    .hero-inner { max-width: 760px; position: relative; z-index: 5; }
     .status-pill {
-      display: inline-flex; align-items: center; gap: 10px;
-      background: var(--nm-bg); border-radius: 99px;
-      padding: 8px 20px; margin-bottom: 40px;
-      font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em;
-      color: var(--nm-ok); box-shadow: var(--s-out);
-      animation: fade-up 0.6s ease both;
+      display: inline-flex; align-items: center; gap: 8px;
+      border: 1px solid var(--bd); background: var(--bg1);
+      padding: 5px 14px; border-radius: 99px; margin-bottom: 32px;
+      font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.06em;
+      color: var(--ok); animation: fade-up 0.5s ease both;
     }
-    .pulse-dot { width: 6px; height: 6px; background: var(--nm-ok); border-radius: 50%; animation: pulse 2s infinite; }
+    .pulse-dot { width: 6px; height: 6px; background: var(--ok); border-radius: 50%; animation: pulse 2s infinite; flex-shrink: 0; }
+
     .hero-title {
-      font-family: var(--display); font-size: clamp(2.6rem,5.5vw,4.4rem);
-      font-weight: 800; line-height: 1.06; letter-spacing: -0.03em;
-      color: var(--nm-hi); margin-bottom: 24px;
-      animation: fade-up 0.6s 0.08s ease both;
+      font-size: clamp(2.4rem, 5.5vw, 4rem); font-weight: 700;
+      line-height: 1.08; letter-spacing: -0.04em; color: var(--hi);
+      margin-bottom: 20px; animation: fade-up 0.5s 0.06s ease both;
     }
-    .hero-title .hl { color: var(--nm-acc); }
+    .hero-title .hl { color: var(--acc); }
     .hero-sub {
-      font-size: 1.05rem; color: var(--nm-mid); line-height: 1.75;
-      max-width: 500px; margin: 0 auto 52px;
-      animation: fade-up 0.6s 0.16s ease both;
+      font-size: 1rem; color: var(--mid); line-height: 1.75;
+      max-width: 480px; margin: 0 auto 44px;
+      animation: fade-up 0.5s 0.12s ease both;
     }
     .hero-actions {
       display: flex; align-items: center; justify-content: center;
-      gap: 14px; flex-wrap: wrap; margin-bottom: 72px;
-      animation: fade-up 0.6s 0.24s ease both;
+      gap: 10px; flex-wrap: wrap; margin-bottom: 64px;
+      animation: fade-up 0.5s 0.18s ease both;
     }
-    .btn-lg { font-size: 0.78rem; padding: 14px 32px; border-radius: 20px; }
+    .btn-lg { font-size: 0.875rem; padding: 10px 22px; border-radius: 8px; }
 
-    /* ── METRICS ── */
+    /* METRICS */
     .metrics-strip {
-      display: flex; align-items: center; justify-content: center;
-      max-width: 560px; margin: 0 auto;
-      background: var(--nm-bg); border-radius: 24px;
-      box-shadow: var(--s-out);
-      animation: fade-up 0.6s 0.32s ease both;
-      overflow: hidden;
+      display: flex; max-width: 480px; margin: 0 auto;
+      border: 1px solid var(--bd); border-radius: 12px;
+      background: var(--bg1); overflow: hidden;
+      animation: fade-up 0.5s 0.24s ease both;
     }
     .metric {
-      flex: 1; padding: 20px 24px; text-align: center;
-      position: relative; cursor: default;
-      transition: background 0.2s;
+      flex: 1; padding: 18px 16px; text-align: center;
+      border-right: 1px solid var(--bd); transition: background 0.15s;
     }
-    .metric + .metric { border-left: 1px solid rgba(163,177,198,0.3); }
-    .metric:hover { background: rgba(255,255,255,0.35); }
+    .metric:last-child { border-right: none; }
+    .metric:hover { background: var(--bg2); }
     .metric-num {
-      font-family: var(--display); font-size: 1.6rem; font-weight: 800;
-      color: var(--nm-hi); display: block; transition: color 0.2s;
+      font-size: 1.5rem; font-weight: 700; color: var(--hi);
+      display: block; letter-spacing: -0.03em; line-height: 1;
     }
-    .metric:hover .metric-num { color: var(--nm-acc); }
     .metric-lbl {
-      font-family: var(--mono); font-size: 0.5rem; letter-spacing: 0.12em;
-      color: var(--nm-low); text-transform: uppercase; display: block; margin-top: 4px;
+      font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.08em;
+      color: var(--low); text-transform: uppercase; display: block; margin-top: 5px;
     }
 
-    /* ── SECTIONS ── */
-    .roles-section {
-      position: relative; max-width: 1000px; margin: 0 auto;
-      padding: 0 48px 100px;
-    }
+    /* SECTIONS */
+    .section { max-width: 960px; margin: 0 auto; padding: 0 24px 80px; }
     .section-label {
-      font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.16em;
-      text-transform: uppercase; color: var(--nm-low); margin-bottom: 8px;
+      font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--low); margin-bottom: 6px;
+      display: flex; align-items: center; gap: 8px;
     }
+    .section-label::before { content: ''; display: block; width: 16px; height: 1px; background: var(--bd2); }
     .section-title {
-      font-family: var(--display); font-size: 1.7rem; font-weight: 700;
-      letter-spacing: -0.02em; color: var(--nm-hi); margin-bottom: 36px;
+      font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em;
+      color: var(--hi); margin-bottom: 32px;
     }
-    .roles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+    /* ROLE CARDS */
+    .roles-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .role-card {
-      background: var(--nm-bg); border-radius: 32px; padding: 40px 36px;
-      cursor: pointer; text-decoration: none; color: inherit; display: block;
-      position: relative; overflow: hidden;
-      box-shadow: var(--s-out);
-      transition: all 0.3s ease-out;
+      background: var(--bg1); border: 1px solid var(--bd); border-radius: 12px;
+      padding: 32px 28px; cursor: pointer; text-decoration: none; color: inherit;
+      display: block; position: relative; overflow: hidden;
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
     .role-card:hover {
-      box-shadow: var(--s-out-lg);
-      transform: translateY(-3px);
+      border-color: var(--acc); 
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
     }
-    .role-card-num {
-      font-family: var(--mono); font-size: 0.55rem; letter-spacing: 0.12em;
-      color: var(--nm-low); margin-bottom: 28px; display: block;
+    .role-card-badge {
+      display: inline-flex; align-items: center;
+      font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.1em;
+      color: var(--low); background: var(--bg2); border: 1px solid var(--bd);
+      padding: 2px 8px; border-radius: 4px; margin-bottom: 24px;
     }
     .role-icon {
-      width: 52px; height: 52px; border-radius: 18px; margin-bottom: 24px;
+      width: 40px; height: 40px; border-radius: 10px; margin-bottom: 20px;
       display: flex; align-items: center; justify-content: center;
-      background: var(--nm-bg);
-      box-shadow: var(--s-in-deep);
+      background: rgba(37,99,235,0.08); border: 1px solid rgba(37,99,235,0.15);
     }
     .role-icon svg {
-      width: 22px; height: 22px; stroke: var(--nm-acc); fill: none;
-      stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+      width: 18px; height: 18px; stroke: var(--acc); fill: none;
+      stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;
     }
-    .role-name {
-      font-family: var(--display); font-size: 1.2rem; font-weight: 700;
-      letter-spacing: -0.01em; margin-bottom: 10px; color: var(--nm-hi);
-    }
-    .role-desc { font-size: 0.85rem; color: var(--nm-mid); line-height: 1.7; margin-bottom: 28px; }
-    .role-features { list-style: none; margin-bottom: 32px; }
+    .role-name { font-size: 1rem; font-weight: 600; margin-bottom: 8px; letter-spacing: -0.02em; color: var(--hi); }
+    .role-desc { font-size: 0.82rem; color: var(--mid); line-height: 1.65; margin-bottom: 24px; }
+    .role-features { list-style: none; margin-bottom: 28px; }
     .role-features li {
-      font-family: var(--mono); font-size: 0.62rem; color: var(--nm-mid);
-      padding: 9px 0; border-bottom: 1px solid rgba(163,177,198,0.25);
-      display: flex; align-items: center; gap: 10px;
+      font-size: 0.78rem; color: var(--mid); padding: 7px 0;
+      border-bottom: 1px solid var(--bd); display: flex; align-items: flex-start; gap: 8px; line-height: 1.5;
     }
     .role-features li:last-child { border: none; }
-    .role-features li::before { content: '→'; color: var(--nm-acc); font-size: 0.62rem; flex-shrink: 0; }
-    .role-cta { font-family: var(--mono); font-size: 0.65rem; font-weight: 500; color: var(--nm-acc); letter-spacing: 0.04em; }
+    .role-features li::before { content: ''; width: 4px; height: 4px; background: var(--acc); border-radius: 50%; flex-shrink: 0; margin-top: 7px; }
+    .role-cta { font-size: 0.78rem; font-weight: 600; color: var(--acc); display: flex; align-items: center; gap: 4px; }
 
-    /* ── FEATURES ── */
-    .features-section { max-width: 1000px; margin: 0 auto; padding: 0 48px 100px; }
-    .feat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
-    .feat-cell {
-      background: var(--nm-bg); border-radius: 24px; padding: 28px 26px;
-      box-shadow: var(--s-out); transition: all 0.25s ease-out;
-    }
-    .feat-cell:hover { box-shadow: var(--s-out-lg); transform: translateY(-2px); }
+    /* FEATURES */
+    .feat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--bd); border: 1px solid var(--bd); border-radius: 12px; overflow: hidden; }
+    .feat-cell { background: var(--bg1); padding: 24px 22px; transition: background 0.15s; }
+    .feat-cell:hover { background: var(--bg2); }
     .feat-tag {
-      font-family: var(--mono); font-size: 0.52rem; font-weight: 500;
-      letter-spacing: 0.12em; text-transform: uppercase; color: var(--nm-acc);
-      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+      font-family: var(--mono); font-size: 0.56rem; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--acc);
+      margin-bottom: 12px; display: block;
     }
-    .feat-tag::before { content: ''; display: block; width: 14px; height: 1px; background: var(--nm-acc); }
-    .feat-name { font-family: var(--display); font-size: 0.92rem; font-weight: 700; margin-bottom: 8px; color: var(--nm-hi); }
-    .feat-desc { font-size: 0.78rem; color: var(--nm-mid); line-height: 1.7; }
+    .feat-name { font-size: 0.88rem; font-weight: 600; margin-bottom: 6px; color: var(--hi); letter-spacing: -0.01em; }
+    .feat-desc { font-size: 0.76rem; color: var(--mid); line-height: 1.65; }
 
-    /* ── FOOTER ── */
+    /* FOOTER */
     footer {
-      border-top: 1px solid rgba(163,177,198,0.3); padding: 28px 48px;
+      border-top: 1px solid var(--bd); padding: 20px 24px;
       display: flex; align-items: center; justify-content: space-between;
-      background: rgba(221,225,231,0.6);
+      background: var(--bg1);
     }
-    .footer-text { font-family: var(--mono); font-size: 0.58rem; color: var(--nm-low); letter-spacing: 0.06em; }
-    .pill {
-      display: inline-block; font-family: var(--mono); font-size: 0.52rem; font-weight: 500;
-      letter-spacing: 0.1em; padding: 3px 10px; border-radius: 99px;
-      background: var(--nm-bg); box-shadow: var(--s-out);
+    .footer-text { font-family: var(--mono); font-size: 0.6rem; color: var(--low); letter-spacing: 0.06em; }
+    .footer-badge {
+      font-family: var(--mono); font-size: 0.58rem; color: var(--ok);
+      background: rgba(5,150,105,0.08); border: 1px solid rgba(5,150,105,0.2);
+      padding: 3px 10px; border-radius: 99px; display: flex; align-items: center; gap: 6px;
     }
-    .pill-live { color: var(--nm-ok); }
+    .footer-dot { width: 5px; height: 5px; background: var(--ok); border-radius: 50%; animation: pulse 2s infinite; }
 
-    /* ── MODAL (Neumorphic) ── */
+    /* MODAL */
     .modal-overlay {
       position: fixed; inset: 0; z-index: 500;
-      background: rgba(163,177,198,0.4); backdrop-filter: blur(20px);
+      background: rgba(9,9,11,0.5); backdrop-filter: blur(8px);
       display: flex; align-items: center; justify-content: center; padding: 24px;
-      opacity: 0; pointer-events: none; transition: opacity 0.25s;
+      opacity: 0; pointer-events: none; transition: opacity 0.2s;
     }
+    [data-theme="dark"] .modal-overlay { background: rgba(0,0,0,0.7); }
     .modal-overlay.open { opacity: 1; pointer-events: all; }
     .modal {
-      background: var(--nm-bg); border-radius: 32px; padding: 44px 40px;
-      width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto;
-      box-shadow: var(--s-out-lg);
-      transform: translateY(20px) scale(0.97);
-      transition: transform 0.3s cubic-bezier(0.16,1,0.3,1), opacity 0.3s;
-      opacity: 0; position: relative;
+      background: var(--bg1); border: 1px solid var(--bd); border-radius: 16px;
+      padding: 36px 32px; width: 100%; max-width: 400px; max-height: 90vh;
+      overflow-y: auto; position: relative;
+      transform: translateY(12px) scale(0.98);
+      transition: transform 0.25s cubic-bezier(0.16,1,0.3,1), opacity 0.2s;
+      opacity: 0;
     }
     .modal-overlay.open .modal { transform: translateY(0) scale(1); opacity: 1; }
     .modal-close {
-      position: absolute; top: 20px; right: 20px; background: var(--nm-bg);
-      border: none; color: var(--nm-mid); font-family: var(--mono); font-size: 0.58rem;
-      padding: 6px 12px; cursor: pointer; border-radius: 10px;
-      box-shadow: 4px 4px 8px var(--sh-dark), -4px -4px 8px var(--sh-light);
-      transition: all 0.2s;
+      position: absolute; top: 16px; right: 16px; background: none;
+      border: 1px solid var(--bd); color: var(--low); font-family: var(--mono);
+      font-size: 0.58rem; padding: 3px 8px; cursor: pointer; border-radius: 5px; transition: all 0.15s;
     }
-    .modal-close:hover { color: var(--nm-danger); }
+    .modal-close:hover { border-color: var(--danger); color: var(--danger); }
     .modal-eyebrow {
-      font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.12em;
-      color: var(--nm-acc); margin-bottom: 8px;
+      font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.1em;
+      color: var(--acc); margin-bottom: 4px;
     }
-    .modal-title {
-      font-family: var(--display); font-size: 1.5rem; font-weight: 700;
-      letter-spacing: -0.02em; margin-bottom: 6px; color: var(--nm-hi);
+    .modal-title { font-size: 1.3rem; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 4px; color: var(--hi); }
+    .modal-sub { font-size: 0.8rem; color: var(--mid); margin-bottom: 28px; line-height: 1.6; }
+    .hint-box {
+      background: var(--bg2); border: 1px solid var(--bd); border-radius: 8px;
+      padding: 12px 14px; font-family: var(--mono); font-size: 0.62rem; color: var(--mid);
+      line-height: 1.8; margin-bottom: 20px;
     }
-    .modal-sub { font-size: 0.82rem; color: var(--nm-mid); margin-bottom: 32px; line-height: 1.6; }
-
-    .form-group { margin-bottom: 18px; }
+    .form-group { margin-bottom: 14px; }
     .form-label {
-      display: block; font-family: var(--mono); font-size: 0.56rem; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--nm-low); margin-bottom: 8px;
+      display: block; font-size: 0.75rem; font-weight: 500; color: var(--mid);
+      margin-bottom: 6px; letter-spacing: -0.01em;
     }
     .field {
-      width: 100%; padding: 12px 16px; background: var(--nm-bg);
-      border: none; border-radius: 16px; color: var(--nm-hi);
-      font-family: var(--sans); font-size: 0.9rem; outline: none;
-      box-shadow: var(--s-in);
-      transition: box-shadow 0.25s;
+      width: 100%; padding: 9px 12px; background: var(--bg);
+      border: 1px solid var(--bd); border-radius: 8px; color: var(--hi);
+      font-family: var(--sans); font-size: 0.875rem; outline: none; transition: border-color 0.15s;
     }
-    .field:focus { box-shadow: var(--s-in-deep); }
-    .field::placeholder { color: var(--nm-low); }
-
-    .hint-box {
-      background: var(--nm-bg); border-radius: 16px; padding: 14px 18px;
-      font-family: var(--mono); font-size: 0.62rem; color: var(--nm-mid);
-      line-height: 1.8; margin-bottom: 24px;
-      box-shadow: var(--s-in);
-    }
+    .field:focus { border-color: var(--acc); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+    .field::placeholder { color: var(--low); }
     .error-msg {
-      background: rgba(224,82,96,0.08); border-radius: 12px;
-      padding: 10px 16px; font-family: var(--mono); font-size: 0.68rem;
-      color: var(--nm-danger); margin-bottom: 16px; display: none;
+      background: rgba(220,38,38,0.06); border: 1px solid rgba(220,38,38,0.2); border-radius: 7px;
+      padding: 9px 12px; font-size: 0.78rem; color: var(--danger); margin-bottom: 14px; display: none;
     }
     .error-msg.show { display: block; }
     .success-msg {
-      background: rgba(56,178,172,0.08); border-radius: 12px;
-      padding: 10px 16px; font-family: var(--mono); font-size: 0.68rem;
-      color: var(--nm-ok); margin-bottom: 16px; display: none; line-height: 1.6;
+      background: rgba(5,150,105,0.06); border: 1px solid rgba(5,150,105,0.2); border-radius: 7px;
+      padding: 9px 12px; font-size: 0.78rem; color: var(--ok); margin-bottom: 14px;
+      display: none; line-height: 1.6;
     }
     .success-msg.show { display: block; }
-
     .btn-submit {
-      width: 100%; justify-content: center; font-size: 0.78rem;
-      padding: 14px; border-radius: 20px; font-weight: 700;
-      background: var(--nm-acc); color: #fff; border: none; cursor: pointer;
-      box-shadow: 6px 6px 14px rgba(79,110,247,0.35), -3px -3px 10px rgba(255,255,255,0.5);
-      transition: all 0.25s ease-out; display: flex; align-items: center; gap: 8px;
-      font-family: var(--mono); letter-spacing: 0.04em;
+      width: 100%; justify-content: center; font-size: 0.875rem; padding: 10px;
+      border-radius: 8px; font-weight: 600; background: var(--acc); color: #fff;
+      border: none; cursor: pointer; transition: all 0.15s; display: flex; align-items: center;
+      font-family: var(--sans); letter-spacing: -0.01em;
     }
-    .btn-submit:hover {
-      background: #3d5be8; transform: translateY(-1px);
-      box-shadow: 8px 8px 18px rgba(79,110,247,0.45), -4px -4px 12px rgba(255,255,255,0.55);
-    }
-    .btn-submit:active { transform: translateY(0.5px); box-shadow: var(--s-in); }
-
-    .modal-footer {
-      margin-top: 18px; text-align: center; font-family: var(--mono);
-      font-size: 0.62rem; color: var(--nm-low);
-    }
-    .modal-footer a { color: var(--nm-acc); cursor: pointer; text-decoration: none; }
+    .btn-submit:hover { background: var(--acc2); }
+    .btn-submit:active { transform: scale(0.99); }
+    .modal-footer { margin-top: 16px; text-align: center; font-size: 0.78rem; color: var(--low); }
+    .modal-footer a { color: var(--acc); cursor: pointer; text-decoration: none; font-weight: 500; }
     .modal-footer a:hover { text-decoration: underline; }
-
     .password-wrapper { position: relative; }
-    .password-wrapper input { padding-right: 44px; }
-    .toggle-eye {
-      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-      cursor: pointer; display: flex; align-items: center;
-    }
-    .toggle-eye svg { width: 16px; height: 16px; stroke: var(--nm-low); fill: none; stroke-width: 1.8; transition: 0.15s; }
-    .toggle-eye:hover svg { stroke: var(--nm-hi); }
+    .password-wrapper input { padding-right: 40px; }
+    .toggle-eye { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; display: flex; align-items: center; }
+    .toggle-eye svg { width: 15px; height: 15px; stroke: var(--low); fill: none; stroke-width: 1.8; transition: 0.15s; }
+    .toggle-eye:hover svg { stroke: var(--hi); }
+    .step-dots { display: flex; gap: 6px; margin-bottom: 20px; }
+    .step-dot { height: 3px; width: 20px; background: var(--bd2); border-radius: 2px; transition: all 0.2s; }
+    .step-dot.active { background: var(--acc); width: 32px; }
+    .step-dot.done { background: var(--ok); }
 
-    .step-dots { display: flex; gap: 8px; margin-bottom: 24px; }
-    .step-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(163,177,198,0.5); transition: all 0.2s; }
-    .step-dot.active { background: var(--nm-acc); width: 24px; border-radius: 4px; }
-    .step-dot.done { background: var(--nm-ok); }
-
-    /* ── RESPONSIVE ── */
+    /* RESPONSIVE */
     @media (max-width: 768px) {
-      nav { padding: 0 20px; }
+      nav { padding: 0 16px; }
       .nav-center { display: none; }
-      .nav-right { gap: 8px; }
-      .hero { padding: 100px 24px 60px; }
+      .nav-right { gap: 6px; }
+      .btn { padding: 6px 12px; font-size: 0.75rem; }
+      .hero { padding: 100px 20px 60px; }
       .hero-title { font-size: clamp(1.9rem, 8vw, 2.8rem); }
-      .hero::before { width: 160px; height: 160px; top: 8%; right: 4%; }
-      .hero::after { width: 100px; height: 100px; }
+      .hero-sub { font-size: 0.93rem; }
       .hero-actions { flex-direction: column; align-items: stretch; }
       .btn-lg { text-align: center; justify-content: center; }
-      .metrics-strip { border-radius: 18px; }
-      .roles-section, .features-section { padding: 0 20px 60px; }
+      .section { padding: 0 20px 60px; }
       .roles-grid { grid-template-columns: 1fr; }
-      .feat-grid { grid-template-columns: repeat(2,1fr); gap: 14px; }
-      .role-card { padding: 28px 24px; }
-      .modal { padding: 32px 24px; border-radius: 24px; }
+      .feat-grid { grid-template-columns: repeat(2,1fr); }
+      .role-card { padding: 24px 20px; }
+      .modal { padding: 28px 24px; border-radius: 12px; }
     }
     @media (max-width: 480px) {
-      nav { padding: 0 14px; }
-      .nav-right { gap: 6px; }
-      .btn { padding: 8px 12px; font-size: 0.6rem; }
+      nav { padding: 0 12px; }
       .btn-solid .portal-text { display: none; }
       .theme-toggle span { display: none; }
+      .section { padding: 0 14px 48px; }
       .feat-grid { grid-template-columns: 1fr; }
-      .feat-cell { padding: 20px 18px; }
-      .roles-section, .features-section { padding: 0 14px 48px; }
     }
   </style>
 </head>
@@ -429,7 +337,7 @@
   <nav>
     <a class="nav-logo" href="#">
       <div class="logo-mark"><svg viewBox="0 0 12 14"><path d="M6 0L0 2.5v4.5C0 10.5 6 14 6 14s6-3.5 6-7V2.5L6 0z"/></svg></div>
-      <span class="logo-name">EXAM<b>GUARD</b></span>
+      <span class="logo-name">Exam<b>Guard</b></span>
     </a>
     <div class="nav-center">
       <a href="#features" class="nav-link">Detection</a>
@@ -437,7 +345,7 @@
     </div>
     <div class="nav-right">
       <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">
-        <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.5 3.5l1.4 1.4M11.1 11.1l1.4 1.4M3.5 12.5l1.4-1.4M11.1 4.9l1.4-1.4"/><circle cx="8" cy="8" r="3"/></svg>
+        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.5 3.5l1.4 1.4M11.1 11.1l1.4 1.4M3.5 12.5l1.4-1.4M11.1 4.9l1.4-1.4"/><circle cx="8" cy="8" r="3"/></svg>
         <span id="themeLabel">Dark</span>
       </button>
       <button class="btn btn-ghost" onclick="openModal('student')">Student</button>
@@ -447,13 +355,13 @@
 
   <section class="hero">
     <div class="hero-inner">
-      <div class="status-pill"><span class="pulse-dot"></span> MONITORING SYSTEM ACTIVE · v2.1</div>
+      <div class="status-pill"><span class="pulse-dot"></span>Monitoring system active · v2.1</div>
       <h1 class="hero-title">Exam integrity,<br><span class="hl">verified in real time.</span></h1>
-      <p class="hero-sub">Computer vision proctoring, behavioral analysis, auto-grading, and instant alerts — built for secure, transparent, modern education.</p>
+      <p class="hero-sub">Computer vision proctoring, behavioral analysis, auto-grading, and instant alerts — built for secure, transparent education.</p>
       <div class="hero-actions">
         <button class="btn btn-solid btn-lg" onclick="openModal('teacher')">
           Teacher Portal
-          <svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg>
         </button>
         <button class="btn btn-ghost btn-lg" onclick="openModal('student')">Take an Exam</button>
       </div>
@@ -466,29 +374,29 @@
     </div>
   </section>
 
-  <section class="roles-section" id="roles">
-    <div class="section-label">ACCESS CONTROL</div>
+  <div class="section" id="roles">
+    <div class="section-label">Access control</div>
     <div class="section-title">Select your role</div>
     <div class="roles-grid">
       <a class="role-card" href="#" onclick="event.preventDefault(); openModal('teacher')">
-        <span class="role-card-num">01 / INSTRUCTOR</span>
+        <span class="role-card-badge">01 · INSTRUCTOR</span>
         <div class="role-icon"><svg viewBox="0 0 16 16"><rect x="1" y="2" width="14" height="10" rx="1"/><path d="M5 14h6M8 12v2"/></svg></div>
         <div class="role-name">Teacher Portal</div>
-        <p class="role-desc">Create exams, manage students, monitor live sessions, review reports, and manage the archive.</p>
+        <p class="role-desc">Create exams, manage students, monitor live sessions, and review session reports.</p>
         <ul class="role-features">
           <li>Create and manage exam question banks with auto-grading</li>
           <li>Live student grid monitoring via WebSocket</li>
           <li>Archive system — restore deleted exams and sessions</li>
-          <li>Full session reports with JSON and CSV export</li>
           <li>Analytics dashboard — pass rates, risk distribution</li>
+          <li>Push notifications for high-risk sessions</li>
         </ul>
-        <div class="role-cta">Enter Teacher Portal →</div>
+        <div class="role-cta">Enter Teacher Portal <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
       </a>
       <a class="role-card" href="#" onclick="event.preventDefault(); openModal('student')">
-        <span class="role-card-num">02 / EXAMINEE</span>
+        <span class="role-card-badge">02 · EXAMINEE</span>
         <div class="role-icon"><svg viewBox="0 0 16 16"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"/></svg></div>
         <div class="role-name">Student Access</div>
-        <p class="role-desc">View assigned exams, complete them under fair webcam monitoring, and see your graded results.</p>
+        <p class="role-desc">View assigned exams, complete them under fair monitoring, and see your graded results.</p>
         <ul class="role-features">
           <li>View assigned and upcoming scheduled exams</li>
           <li>Consent-first camera and audio setup flow</li>
@@ -496,14 +404,14 @@
           <li>Auto-graded results after submission</li>
           <li>Transparent monitoring — no hidden recording</li>
         </ul>
-        <div class="role-cta">Start Exam →</div>
+        <div class="role-cta">Start Exam <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 6h8M6 2l4 4-4 4"/></svg></div>
       </a>
     </div>
-  </section>
+  </div>
 
-  <section class="features-section" id="features">
-    <div class="section-label">DETECTION CAPABILITIES</div>
-    <div class="section-title" style="margin-bottom:28px">What ExamGuard monitors</div>
+  <div class="section" id="features">
+    <div class="section-label">Detection capabilities</div>
+    <div class="section-title">What ExamGuard monitors</div>
     <div class="feat-grid">
       <div class="feat-cell"><div class="feat-tag">NO_FACE</div><div class="feat-name">Face Absence</div><p class="feat-desc">Flags when no face is detected for more than 5 consecutive seconds. High severity.</p></div>
       <div class="feat-cell"><div class="feat-tag">MULTIPLE_FACES</div><div class="feat-name">Multiple Persons</div><p class="feat-desc">Detects when more than one person appears in frame. Critical — immediate alert.</p></div>
@@ -512,27 +420,22 @@
       <div class="feat-cell"><div class="feat-tag">AUDIO_ANOMALY</div><div class="feat-name">Audio Monitoring</div><p class="feat-desc">Web Audio API detects sustained loud noise or speech patterns above threshold.</p></div>
       <div class="feat-cell"><div class="feat-tag">RISK_SCORE</div><div class="feat-name">Risk Assessment</div><p class="feat-desc">Weighted behavioral scoring: Low / Medium / High. All flags require human review.</p></div>
     </div>
-  </section>
+  </div>
 
   <footer>
     <span class="footer-text">EXAMGUARD v2.1 · SECURE EXAM MONITORING</span>
-    <span class="pill pill-live">SYSTEM ACTIVE</span>
+    <span class="footer-badge"><span class="footer-dot"></span>System Active</span>
   </footer>
 
   <!-- MODAL -->
   <div class="modal-overlay" id="loginModal">
     <div class="modal">
       <button class="modal-close" onclick="closeModal()">ESC</button>
-
       <div id="stepLogin">
         <div class="modal-eyebrow" id="modalEyebrow">TEACHER ACCESS</div>
-        <div class="modal-title" id="modalTitle">Sign In</div>
+        <div class="modal-title" id="modalTitle">Sign in</div>
         <div class="modal-sub" id="modalSub">Access the ExamGuard teacher portal</div>
-        <div class="hint-box" id="demoHint" style="display:none">
-          DEMO CREDENTIALS<br>
-          teacher@school.edu / teacher123<br>
-          student@school.edu / student123
-        </div>
+        <div class="hint-box" id="demoHint" style="display:none">Demo credentials<br>teacher@school.edu / teacher123<br>student@school.edu / student123</div>
         <div class="error-msg" id="errorMsg"></div>
         <div class="form-group"><label class="form-label">Email</label><input type="email" class="field" id="loginEmail" placeholder="you@school.edu"/></div>
         <div class="form-group">
@@ -541,64 +444,50 @@
             <input type="password" class="field" id="loginPassword" placeholder="••••••••"/>
             <span class="toggle-eye" onclick="togglePassword('loginPassword','eyeOpen','eyeClosed')">
               <svg id="eyeOpen" viewBox="0 0 24 24"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="3"/></svg>
-              <svg id="eyeClosed" viewBox="0 0 24 24" style="display:none;"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-6 0-10-7-10-7a21.77 21.77 0 0 1 5.06-5.94"/><path d="M1 1l22 22"/><path d="M9.9 4.24A10.94 10.94 0 0 1 12 5c6 0 10 7 10 7a21.77 21.77 0 0 1-4.24 5.27"/></svg>
+              <svg id="eyeClosed" viewBox="0 0 24 24" style="display:none;"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-6 0-10-7-10-7a21.77 21.77 0 0 1 5.06-5.94"/><path d="M1 1l22 22"/></svg>
             </span>
           </div>
         </div>
         <div class="form-group" id="nameGroup" style="display:none"><label class="form-label">Full Name</label><input type="text" class="field" id="loginName" placeholder="Your full name"/></div>
         <div class="form-group" id="sidGroup" style="display:none"><label class="form-label">Student ID</label><input type="text" class="field" id="loginSid" placeholder="STU-001"/></div>
-        <button class="btn-submit" id="loginBtn" onclick="handleLogin()">Sign In</button>
-        <div class="modal-footer" style="margin-top:14px">
-          <a id="forgotLink" onclick="goToForgot()" style="color:var(--nm-mid);font-size:0.58rem">Forgot password?</a>
-        </div>
+        <button class="btn-submit" id="loginBtn" onclick="handleLogin()">Sign in</button>
+        <div class="modal-footer" style="margin-top:12px"><a id="forgotLink" onclick="goToForgot()" style="color:var(--mid);font-weight:400;font-size:0.75rem">Forgot password?</a></div>
         <div class="modal-footer"><span id="switchText">New here?</span> <a id="switchLink" onclick="toggleRegister()">Create account</a></div>
       </div>
 
       <div id="stepForgot" style="display:none">
         <div class="modal-eyebrow">ACCOUNT RECOVERY</div>
-        <div class="modal-title">Reset Password</div>
+        <div class="modal-title">Reset password</div>
         <div class="modal-sub">Enter your email and we will send a reset link.</div>
-        <div class="step-dots">
-          <div class="step-dot active" id="dot1"></div>
-          <div class="step-dot" id="dot2"></div>
-        </div>
+        <div class="step-dots"><div class="step-dot active"></div><div class="step-dot"></div></div>
         <div class="error-msg" id="forgotError"></div>
         <div class="success-msg" id="forgotSuccess"></div>
-        <div class="form-group"><label class="form-label">Email Address</label><input type="email" class="field" id="forgotEmail" placeholder="you@school.edu"/></div>
-        <button class="btn-submit" id="forgotBtn" onclick="handleForgot()">Send Reset Link</button>
-        <div class="modal-footer" style="margin-top:14px"><a onclick="backToLogin()">← Back to login</a></div>
+        <div class="form-group"><label class="form-label">Email address</label><input type="email" class="field" id="forgotEmail" placeholder="you@school.edu"/></div>
+        <button class="btn-submit" id="forgotBtn" onclick="handleForgot()">Send reset link</button>
+        <div class="modal-footer" style="margin-top:12px"><a onclick="backToLogin()">← Back to login</a></div>
       </div>
 
       <div id="stepReset" style="display:none">
         <div class="modal-eyebrow">SET NEW PASSWORD</div>
-        <div class="modal-title">New Password</div>
+        <div class="modal-title">New password</div>
         <div class="modal-sub">Enter a strong password for your account.</div>
-        <div class="step-dots">
-          <div class="step-dot done" id="dot1r"></div>
-          <div class="step-dot active" id="dot2r"></div>
-        </div>
+        <div class="step-dots"><div class="step-dot done"></div><div class="step-dot active"></div></div>
         <div class="error-msg" id="resetError"></div>
         <div class="success-msg" id="resetSuccess"></div>
-        <div class="form-group" id="resetTokenDisplay" style="display:none">
-          <label class="form-label">Reset Token</label>
-          <input type="text" class="field" id="resetTokenInput" readonly style="font-family:var(--mono);font-size:0.68rem;color:var(--nm-mid)"/>
-        </div>
+        <div class="form-group" id="resetTokenDisplay" style="display:none"><label class="form-label">Reset token</label><input type="text" class="field" id="resetTokenInput" readonly style="font-family:var(--mono);font-size:0.72rem;color:var(--mid)"/></div>
         <div class="form-group">
-          <label class="form-label">New Password</label>
+          <label class="form-label">New password</label>
           <div class="password-wrapper">
             <input type="password" class="field" id="newPassword" placeholder="Min. 6 characters"/>
             <span class="toggle-eye" onclick="togglePassword('newPassword','eyeOpen2','eyeClosed2')">
               <svg id="eyeOpen2" viewBox="0 0 24 24"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="3"/></svg>
-              <svg id="eyeClosed2" viewBox="0 0 24 24" style="display:none;"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-6 0-10-7-10-7a21.77 21.77 0 0 1 5.06-5.94"/><path d="M1 1l22 22"/><path d="M9.9 4.24A10.94 10.94 0 0 1 12 5c6 0 10 7 10 7a21.77 21.77 0 0 1-4.24 5.27"/></svg>
+              <svg id="eyeClosed2" viewBox="0 0 24 24" style="display:none;"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-6 0-10-7-10-7a21.77 21.77 0 0 1 5.06-5.94"/><path d="M1 1l22 22"/></svg>
             </span>
           </div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Confirm Password</label>
-          <input type="password" class="field" id="confirmPassword" placeholder="Repeat new password"/>
-        </div>
-        <button class="btn-submit" id="resetBtn" onclick="handleReset()">Update Password</button>
-        <div class="modal-footer" style="margin-top:14px"><a onclick="backToLogin()">← Back to login</a></div>
+        <div class="form-group"><label class="form-label">Confirm password</label><input type="password" class="field" id="confirmPassword" placeholder="Repeat new password"/></div>
+        <button class="btn-submit" id="resetBtn" onclick="handleReset()">Update password</button>
+        <div class="modal-footer" style="margin-top:12px"><a onclick="backToLogin()">← Back to login</a></div>
       </div>
     </div>
   </div>
@@ -613,39 +502,29 @@
     const savedTheme = localStorage.getItem('eg_theme') || 'light';
     if (savedTheme === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
-      document.addEventListener('DOMContentLoaded', () => {
-        const lbl = document.getElementById('themeLabel');
-        if (lbl) lbl.textContent = 'Light';
-      });
+      document.addEventListener('DOMContentLoaded', () => { const l = document.getElementById('themeLabel'); if(l) l.textContent='Light'; });
     }
 
     fetch('/api/dashboard_stats').then(r=>r.json()).then(d=>{
       const animate = (el, val) => {
-        let startTime = null; const dur = 900;
-        const step = ts => {
-          if (!startTime) startTime = ts;
-          const p = Math.min((ts - startTime) / dur, 1);
-          const ease = 1 - Math.pow(1 - p, 3);
-          el.textContent = Math.floor(ease * val);
-          if (p < 1) requestAnimationFrame(step);
-          else el.textContent = val;
-        };
+        let st=null; const dur=800;
+        const step=ts=>{ if(!st)st=ts; const p=Math.min((ts-st)/dur,1); const e=1-Math.pow(1-p,3);
+          el.textContent=Math.floor(e*val); if(p<1)requestAnimationFrame(step); else el.textContent=val; };
         requestAnimationFrame(step);
       };
-      animate(document.getElementById('m-sessions'), d.total_sessions || 0);
-      animate(document.getElementById('m-students'), d.total_students || 0);
-      animate(document.getElementById('m-exams'),    d.total_exams || 0);
-      animate(document.getElementById('m-flags'),    d.total_violations || 0);
+      animate(document.getElementById('m-sessions'), d.total_sessions||0);
+      animate(document.getElementById('m-students'), d.total_students||0);
+      animate(document.getElementById('m-exams'),    d.total_exams||0);
+      animate(document.getElementById('m-flags'),    d.total_violations||0);
     }).catch(()=>{});
 
-    let currentRole = 'teacher', isRegister = false, currentResetToken = '';
+    let currentRole='teacher', isRegister=false, currentResetToken='';
 
     function openModal(role) {
-      currentRole = role; isRegister = false;
-      showStep('login');
-      const isT = role === 'teacher';
+      currentRole=role; isRegister=false; showStep('login');
+      const isT=role==='teacher';
       document.getElementById('modalEyebrow').textContent = isT ? 'TEACHER ACCESS' : 'STUDENT ACCESS';
-      document.getElementById('modalTitle').textContent   = 'Sign In';
+      document.getElementById('modalTitle').textContent   = 'Sign in';
       document.getElementById('modalSub').textContent     = isT ? 'Access the ExamGuard teacher portal' : 'Sign in to view your assigned exams';
       document.getElementById('demoHint').style.display   = 'none';
       document.getElementById('nameGroup').style.display  = 'none';
@@ -653,170 +532,114 @@
       document.getElementById('errorMsg').classList.remove('show');
       document.getElementById('switchText').textContent   = isT ? 'New teacher?' : 'New student?';
       document.getElementById('switchLink').textContent   = 'Create account';
-      document.getElementById('loginBtn').textContent     = 'Sign In';
+      document.getElementById('loginBtn').textContent     = 'Sign in';
       document.getElementById('forgotLink').style.display = 'inline';
       document.getElementById('loginModal').classList.add('open');
     }
-    function closeModal() {
-      document.getElementById('loginModal').classList.remove('open');
-      showStep('login');
-    }
-    function showStep(step) {
-      document.getElementById('stepLogin').style.display  = step === 'login'  ? 'block' : 'none';
-      document.getElementById('stepForgot').style.display = step === 'forgot' ? 'block' : 'none';
-      document.getElementById('stepReset').style.display  = step === 'reset'  ? 'block' : 'none';
+    function closeModal() { document.getElementById('loginModal').classList.remove('open'); showStep('login'); }
+    function showStep(s) {
+      document.getElementById('stepLogin').style.display  = s==='login'  ? 'block':'none';
+      document.getElementById('stepForgot').style.display = s==='forgot' ? 'block':'none';
+      document.getElementById('stepReset').style.display  = s==='reset'  ? 'block':'none';
     }
     function toggleRegister() {
-      isRegister = !isRegister;
-      const isT = currentRole === 'teacher';
-      document.getElementById('modalTitle').textContent   = isRegister ? 'Create Account' : 'Sign In';
-      document.getElementById('loginBtn').textContent     = isRegister ? 'Create Account' : 'Sign In';
-      document.getElementById('nameGroup').style.display  = isRegister ? 'block' : 'none';
-      document.getElementById('sidGroup').style.display   = (isRegister && !isT) ? 'block' : 'none';
-      document.getElementById('demoHint').style.display   = isRegister ? 'none' : 'block';
-      document.getElementById('switchLink').textContent   = isRegister ? 'Back to login' : 'Create account';
-      document.getElementById('switchText').textContent   = isRegister ? 'Already registered?' : (isT ? 'New teacher?' : 'New student?');
-      document.getElementById('forgotLink').style.display = isRegister ? 'none' : 'inline';
+      isRegister=!isRegister; const isT=currentRole==='teacher';
+      document.getElementById('modalTitle').textContent  = isRegister ? 'Create account' : 'Sign in';
+      document.getElementById('loginBtn').textContent    = isRegister ? 'Create account' : 'Sign in';
+      document.getElementById('nameGroup').style.display = isRegister ? 'block':'none';
+      document.getElementById('sidGroup').style.display  = (isRegister&&!isT) ? 'block':'none';
+      document.getElementById('demoHint').style.display  = isRegister ? 'none':'block';
+      document.getElementById('switchLink').textContent  = isRegister ? 'Back to login':'Create account';
+      document.getElementById('switchText').textContent  = isRegister ? 'Already registered?':(isT?'New teacher?':'New student?');
+      document.getElementById('forgotLink').style.display= isRegister ? 'none':'inline';
       document.getElementById('errorMsg').classList.remove('show');
     }
     async function handleLogin() {
-      const email = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPassword').value;
-      if (!email || !password) { showError('errorMsg', 'Please fill in all fields.'); return; }
-      const btn = document.getElementById('loginBtn');
-      btn.textContent = isRegister ? 'Creating...' : 'Signing in...'; btn.disabled = true;
+      const email=document.getElementById('loginEmail').value.trim();
+      const password=document.getElementById('loginPassword').value;
+      if(!email||!password){showError('errorMsg','Please fill in all fields.');return;}
+      const btn=document.getElementById('loginBtn');
+      btn.textContent=isRegister?'Creating...':'Signing in...'; btn.disabled=true;
       try {
-        const data = await fetch('/api/login', {
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ email, password, role:currentRole, register:isRegister,
-            name: document.getElementById('loginName').value,
-            student_id: document.getElementById('loginSid').value })
-        }).then(r=>r.json());
-        if (data.success) {
-          if (data.token) {
-            localStorage.setItem('eg_token', data.token);
-            document.cookie = `eg_token=${data.token}; path=/; max-age=28800; SameSite=Lax`;
-          }
-          localStorage.setItem('eg_role', currentRole);
-          localStorage.setItem('eg_name', data.name || email);
-          if (data.user_id) localStorage.setItem('eg_user_id', data.user_id);
-          window.location.href = currentRole === 'teacher' ? '/teacher/dashboard' : '/student/dashboard';
+        const data=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({email,password,role:currentRole,register:isRegister,
+            name:document.getElementById('loginName').value,
+            student_id:document.getElementById('loginSid').value})}).then(r=>r.json());
+        if(data.success){
+          if(data.token){localStorage.setItem('eg_token',data.token);document.cookie=`eg_token=${data.token};path=/;max-age=28800;SameSite=Lax`;}
+          localStorage.setItem('eg_role',currentRole);
+          localStorage.setItem('eg_name',data.name||email);
+          if(data.user_id)localStorage.setItem('eg_user_id',data.user_id);
+          window.location.href=currentRole==='teacher'?'/teacher/dashboard':'/student/dashboard';
         } else {
-          showError('errorMsg', data.error || 'Invalid credentials.');
-          btn.textContent = isRegister ? 'Create Account' : 'Sign In'; btn.disabled = false;
+          showError('errorMsg',data.error||'Invalid credentials.');
+          btn.textContent=isRegister?'Create account':'Sign in'; btn.disabled=false;
         }
-      } catch(e) {
-        showError('errorMsg', 'Connection error. Please try again.');
-        btn.textContent = isRegister ? 'Create Account' : 'Sign In'; btn.disabled = false;
-      }
+      } catch(e){showError('errorMsg','Connection error. Please try again.');btn.textContent=isRegister?'Create account':'Sign in';btn.disabled=false;}
     }
-    function goToForgot() {
-      showStep('forgot');
-      document.getElementById('forgotEmail').value = document.getElementById('loginEmail').value || '';
+    function goToForgot(){showStep('forgot');document.getElementById('forgotEmail').value=document.getElementById('loginEmail').value||'';document.getElementById('forgotError').classList.remove('show');document.getElementById('forgotSuccess').classList.remove('show');}
+    function backToLogin(){showStep('login');}
+    async function handleForgot(){
+      const email=document.getElementById('forgotEmail').value.trim();
+      if(!email){showError('forgotError','Please enter your email address.');return;}
+      const btn=document.getElementById('forgotBtn');
+      btn.textContent='Sending...';btn.disabled=true;
       document.getElementById('forgotError').classList.remove('show');
       document.getElementById('forgotSuccess').classList.remove('show');
-    }
-    function backToLogin() { showStep('login'); }
-    async function handleForgot() {
-      const email = document.getElementById('forgotEmail').value.trim();
-      if (!email) { showError('forgotError', 'Please enter your email address.'); return; }
-      const btn = document.getElementById('forgotBtn');
-      btn.textContent = 'Sending...'; btn.disabled = true;
-      document.getElementById('forgotError').classList.remove('show');
-      document.getElementById('forgotSuccess').classList.remove('show');
-      try {
-        const data = await fetch('/api/forgot_password', {
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ email, role: currentRole })
-        }).then(r=>r.json());
-        btn.textContent = 'Send Reset Link'; btn.disabled = false;
-        if (data.success) {
-          const el = document.getElementById('forgotSuccess');
-          el.innerHTML = data.mail_not_configured
-            ? `<strong>Email not configured.</strong><br>Reset link generated but could not be emailed. Add MAIL_USER and MAIL_PASS to your .env file.`
-            : `<strong>Reset link sent!</strong><br>Check your inbox at <strong>${email}</strong>. The link expires in 1 hour.`;
+      try{
+        const data=await fetch('/api/forgot_password',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({email,role:currentRole})}).then(r=>r.json());
+        btn.textContent='Send reset link';btn.disabled=false;
+        if(data.success){
+          const el=document.getElementById('forgotSuccess');
+          el.innerHTML=data.mail_not_configured
+            ?'<strong>Email not configured.</strong><br>Add MAIL_USER and MAIL_PASS to your .env file.'
+            :`<strong>Reset link sent!</strong><br>Check your inbox at <strong>${email}</strong>. Link expires in 1 hour.`;
           el.classList.add('show');
-        } else {
-          showError('forgotError', data.error || 'Something went wrong.');
-        }
-      } catch(e) {
-        btn.textContent = 'Send Reset Link'; btn.disabled = false;
-        showError('forgotError', 'Connection error. Please try again.');
-      }
+        } else {showError('forgotError',data.error||'Something went wrong.');}
+      }catch(e){btn.textContent='Send reset link';btn.disabled=false;showError('forgotError','Connection error.');}
     }
-    function useToken(token) {
-      currentResetToken = token;
-      showStep('reset');
-      document.getElementById('resetTokenInput').value = token;
-      document.getElementById('resetTokenDisplay').style.display = 'block';
+    function useToken(token){currentResetToken=token;showStep('reset');document.getElementById('resetTokenInput').value=token;document.getElementById('resetTokenDisplay').style.display='block';document.getElementById('resetError').classList.remove('show');document.getElementById('resetSuccess').classList.remove('show');}
+    async function handleReset(){
+      const token=document.getElementById('resetTokenInput').value.trim()||currentResetToken;
+      const password=document.getElementById('newPassword').value;
+      const confirm=document.getElementById('confirmPassword').value;
+      if(!token){showError('resetError','Reset token is missing.');return;}
+      if(!password){showError('resetError','Please enter a new password.');return;}
+      if(password.length<6){showError('resetError','Password must be at least 6 characters.');return;}
+      if(password!==confirm){showError('resetError','Passwords do not match.');return;}
+      const btn=document.getElementById('resetBtn');
+      btn.textContent='Updating...';btn.disabled=true;
       document.getElementById('resetError').classList.remove('show');
-      document.getElementById('resetSuccess').classList.remove('show');
+      try{
+        const data=await fetch('/api/reset_password',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({token,password})}).then(r=>r.json());
+        btn.textContent='Update password';btn.disabled=false;
+        if(data.success){document.getElementById('resetSuccess').textContent=data.message+' Redirecting...';document.getElementById('resetSuccess').classList.add('show');setTimeout(()=>showStep('login'),2500);}
+        else{showError('resetError',data.error||'Reset failed.');}
+      }catch(e){btn.textContent='Update password';btn.disabled=false;showError('resetError','Connection error.');}
     }
-    async function handleReset() {
-      const token    = document.getElementById('resetTokenInput').value.trim() || currentResetToken;
-      const password = document.getElementById('newPassword').value;
-      const confirm  = document.getElementById('confirmPassword').value;
-      if (!token)    { showError('resetError', 'Reset token is missing.'); return; }
-      if (!password) { showError('resetError', 'Please enter a new password.'); return; }
-      if (password.length < 6) { showError('resetError', 'Password must be at least 6 characters.'); return; }
-      if (password !== confirm) { showError('resetError', 'Passwords do not match.'); return; }
-      const btn = document.getElementById('resetBtn');
-      btn.textContent = 'Updating...'; btn.disabled = true;
-      document.getElementById('resetError').classList.remove('show');
-      try {
-        const data = await fetch('/api/reset_password', {
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({ token, password })
-        }).then(r=>r.json());
-        btn.textContent = 'Update Password'; btn.disabled = false;
-        if (data.success) {
-          document.getElementById('resetSuccess').textContent = data.message + ' Redirecting to login...';
-          document.getElementById('resetSuccess').classList.add('show');
-          setTimeout(() => { showStep('login'); }, 2500);
-        } else {
-          showError('resetError', data.error || 'Reset failed. Token may be expired.');
-        }
-      } catch(e) {
-        btn.textContent = 'Update Password'; btn.disabled = false;
-        showError('resetError', 'Connection error. Please try again.');
-      }
+    function showError(id,msg){const el=document.getElementById(id);el.textContent=msg;el.classList.add('show');}
+    function togglePassword(inputId,openId,closedId){
+      const input=document.getElementById(inputId);
+      const open=document.getElementById(openId);const closed=document.getElementById(closedId);
+      if(input.type==='password'){input.type='text';open.style.display='none';closed.style.display='block';}
+      else{input.type='password';open.style.display='block';closed.style.display='none';}
     }
-    function showError(id, msg) {
-      const el = document.getElementById(id);
-      el.textContent = msg; el.classList.add('show');
-    }
-    function togglePassword(inputId, openId, closedId) {
-      const input = document.getElementById(inputId);
-      const open  = document.getElementById(openId);
-      const closed = document.getElementById(closedId);
-      if (input.type === 'password') {
-        input.type = 'text'; open.style.display = 'none'; closed.style.display = 'block';
-      } else {
-        input.type = 'password'; open.style.display = 'block'; closed.style.display = 'none';
-      }
-    }
-    document.getElementById('loginModal').addEventListener('click', e => {
-      if (e.target === document.getElementById('loginModal')) closeModal();
-    });
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') closeModal();
-      if (e.key === 'Enter' && document.getElementById('loginModal').classList.contains('open')) {
-        const step = document.getElementById('stepLogin').style.display !== 'none' ? 'login' :
-                     document.getElementById('stepForgot').style.display !== 'none' ? 'forgot' : 'reset';
-        if (step === 'login') handleLogin();
-        else if (step === 'forgot') handleForgot();
-        else handleReset();
+    document.getElementById('loginModal').addEventListener('click',e=>{if(e.target===document.getElementById('loginModal'))closeModal();});
+    document.addEventListener('keydown',e=>{
+      if(e.key==='Escape')closeModal();
+      if(e.key==='Enter'&&document.getElementById('loginModal').classList.contains('open')){
+        const s=document.getElementById('stepLogin').style.display!=='none'?'login':document.getElementById('stepForgot').style.display!=='none'?'forgot':'reset';
+        if(s==='login')handleLogin();else if(s==='forgot')handleForgot();else handleReset();
       }
     });
-    window.addEventListener('DOMContentLoaded', () => {
-      const params = new URLSearchParams(window.location.search);
-      const urlToken = params.get('token');
-      if (urlToken) {
-        document.getElementById('loginModal').classList.add('open');
-        useToken(urlToken);
-      }
+    window.addEventListener('DOMContentLoaded',()=>{
+      const params=new URLSearchParams(window.location.search);
+      const urlToken=params.get('token');
+      if(urlToken){document.getElementById('loginModal').classList.add('open');useToken(urlToken);}
     });
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/static/sw.js', { scope: '/' }).catch(()=>{});
+    if('serviceWorker'in navigator)navigator.serviceWorker.register('/static/sw.js',{scope:'/'}).catch(()=>{});
   </script>
 </body>
 </html>
