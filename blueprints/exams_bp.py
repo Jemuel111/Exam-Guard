@@ -132,6 +132,8 @@ def create_exam():
             q.get('correct_answer', 0),
             int(q.get('points', 1)), i + 1
         ))
+
+    enrolled_ids = []
     for sid in data.get('enroll_students', []):
         try:
             token = hashlib.sha256(
@@ -139,9 +141,38 @@ def create_exam():
             ).hexdigest()
             db.execute('INSERT INTO exam_enrollments (exam_id,student_id,token) VALUES (?,?,?)',
                        (exam_id, sid, token))
+            enrolled_ids.append(sid)
         except sqlite3.IntegrityError:
             pass
     db.commit()
+
+    # Notify enrolled students when exam is created (scheduled or active)
+    status = data.get('status', 'draft')
+    if status in ('scheduled', 'active') and enrolled_ids:
+        scheduled_start = data.get('scheduled_start')
+        if status == 'scheduled' and scheduled_start:
+            notif_title = 'New Exam Scheduled'
+            notif_body  = f'{data["title"]} has been scheduled for {scheduled_start}. Duration: {data.get("duration_minutes", 60)} min.'
+        elif status == 'active':
+            notif_title = 'Exam is Now Live'
+            notif_body  = f'{data["title"]} is now available. Open ExamGuard to begin.'
+        else:
+            notif_title = 'New Exam Uploaded'
+            notif_body  = f'{data["title"]} has been added to your exams. Check ExamGuard for details.'
+
+        for sid in enrolled_ids:
+            try:
+                send_push_to_user(
+                    user_id=sid,
+                    title=notif_title,
+                    body=notif_body,
+                    url='/student/dashboard',
+                    tag=f'exam-created-{exam_id}',
+                    require_interaction=True,
+                )
+            except Exception as e:
+                logger.warning('Push to student %s failed: %s', sid, e)
+
     return jsonify({'success': True, 'exam_id': exam_id})
 
 
@@ -163,21 +194,33 @@ def update_exam(exam_id):
     ))
     db.commit()
 
-    # Notify enrolled students when exam goes active
-    if data.get('status') == 'active':
-        exam = db.execute('SELECT * FROM exams WHERE id=?', (exam_id,)).fetchone()
+    # Notify enrolled students when exam status changes
+    new_status = data.get('status')
+    if new_status in ('active', 'scheduled'):
+        exam     = db.execute('SELECT * FROM exams WHERE id=?', (exam_id,)).fetchone()
         enrolled = db.execute(
             'SELECT student_id FROM exam_enrollments WHERE exam_id=?', (exam_id,)
         ).fetchall()
+
+        if new_status == 'active':
+            notif_title = 'Exam is Now Live'
+            notif_body  = f'{exam["title"]} is now available. Open ExamGuard to begin.'
+            tag         = f'exam-start-{exam_id}'
+        else:
+            scheduled_start = data.get('scheduled_start') or exam['scheduled_start']
+            notif_title = 'Exam Scheduled'
+            notif_body  = f'{exam["title"]} has been scheduled for {scheduled_start}. Duration: {exam["duration_minutes"]} min.'
+            tag         = f'exam-scheduled-{exam_id}'
+
         for row in enrolled:
             if row['student_id']:
                 try:
                     send_push_to_user(
                         user_id=row['student_id'],
-                        title='📝 Exam Started',
-                        body=f'{exam["title"]} is now live. Open ExamGuard to begin.',
+                        title=notif_title,
+                        body=notif_body,
                         url='/student/dashboard',
-                        tag=f'exam-start-{exam_id}',
+                        tag=tag,
                         require_interaction=True,
                     )
                 except Exception as e:
@@ -214,6 +257,34 @@ def enroll_students(exam_id):
         except sqlite3.IntegrityError:
             pass
     db.commit()
+
+    # Notify newly enrolled students
+    if enrolled:
+        exam = db.execute('SELECT * FROM exams WHERE id=?', (exam_id,)).fetchone()
+        if exam:
+            if exam['status'] == 'active':
+                notif_title = 'Exam is Now Live'
+                notif_body  = f'You have been enrolled in {exam["title"]}. It is currently active — open ExamGuard to begin.'
+            elif exam['status'] == 'scheduled' and exam['scheduled_start']:
+                notif_title = 'New Exam Scheduled'
+                notif_body  = f'You have been enrolled in {exam["title"]}, scheduled for {exam["scheduled_start"]}.'
+            else:
+                notif_title = 'New Exam Uploaded'
+                notif_body  = f'You have been enrolled in {exam["title"]}. Check ExamGuard for details.'
+
+            for sid in enrolled:
+                try:
+                    send_push_to_user(
+                        user_id=sid,
+                        title=notif_title,
+                        body=notif_body,
+                        url='/student/dashboard',
+                        tag=f'exam-enroll-{exam_id}',
+                        require_interaction=True,
+                    )
+                except Exception as e:
+                    logger.warning('Push to student %s failed: %s', sid, e)
+
     return jsonify({'success': True, 'enrolled': enrolled})
 
 
