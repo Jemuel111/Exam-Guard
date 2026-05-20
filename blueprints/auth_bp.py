@@ -340,9 +340,8 @@ def forgot_password():
     if mail_sent:
         return generic_ok
 
-    # Mail not configured — inform admin/dev without leaking the token to the
-    # browser. Log the reset link server-side so it can be used during local dev.
-    reset_link = f"http://localhost:5000/?token={token}"
+    # Mail not configured — log the reset link server-side for local dev
+    reset_link = f"https://examguardapp.duckdns.org/?token={token}"
     logger.info(
         'EMAIL NOT CONFIGURED — reset link for %s: %s',
         email, reset_link
