@@ -6596,3 +6596,57 @@ Response body:push subscription has unsubscribed or expired.
 2026-05-20 16:36:33,642 [INFO] 127.0.0.1 - - [20/May/2026 16:36:33] "GET /api/archive/count HTTP/1.1" 200 -
 2026-05-20 16:36:33,646 [INFO] 127.0.0.1 - - [20/May/2026 16:36:33] "GET /api/dashboard_stats HTTP/1.1" 200 -
 2026-05-20 16:36:38,617 [INFO] 127.0.0.1 - - [20/May/2026 16:36:38] "GET /socket.io/?EIO=4&transport=websocket&sid=gmi1kl5pymqJRPf5AAAA HTTP/1.1" 200 -
+2026-05-21 22:03:25,117 [INFO] Database initialized ✓
+2026-05-21 22:03:25,119 [INFO] Push subscriptions table ready
+2026-05-21 22:03:25,119 [INFO] ExamGuard v2.1 starting at http://localhost:5000
+2026-05-21 22:03:25,373 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.100.2:5000
+2026-05-21 22:03:25,374 [INFO] [33mPress CTRL+C to quit[0m
+2026-05-21 22:03:32,788 [INFO] 127.0.0.1 - - [21/May/2026 22:03:32] "GET / HTTP/1.1" 200 -
+2026-05-21 22:03:32,818 [INFO] 127.0.0.1 - - [21/May/2026 22:03:32] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-21 22:03:33,070 [INFO] 127.0.0.1 - - [21/May/2026 22:03:33] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2026-05-21 22:03:33,083 [INFO] 127.0.0.1 - - [21/May/2026 22:03:33] "GET /manifest.json HTTP/1.1" 200 -
+2026-05-21 22:03:33,181 [INFO] 127.0.0.1 - - [21/May/2026 22:03:33] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-21 22:03:33,192 [INFO] 127.0.0.1 - - [21/May/2026 22:03:33] "[36mGET /static/icons/icon-512.png HTTP/1.1[0m" 304 -
+2026-05-21 22:03:33,196 [INFO] 127.0.0.1 - - [21/May/2026 22:03:33] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-21 22:03:34,566 [INFO] 127.0.0.1 - - [21/May/2026 22:03:34] "[36mGET /static/sw.js HTTP/1.1[0m" 304 -
+2026-05-21 22:03:44,545 [INFO] 127.0.0.1 - - [21/May/2026 22:03:44] "POST /api/login HTTP/1.1" 200 -
+2026-05-21 22:03:44,653 [INFO] 127.0.0.1 - - [21/May/2026 22:03:44] "GET /teacher/dashboard HTTP/1.1" 200 -
+2026-05-21 22:03:44,693 [INFO] 127.0.0.1 - - [21/May/2026 22:03:44] "[36mGET /static/archive_patch.js HTTP/1.1[0m" 304 -
+2026-05-21 22:03:44,694 [INFO] 127.0.0.1 - - [21/May/2026 22:03:44] "[36mGET /static/push.js HTTP/1.1[0m" 304 -
+2026-05-21 22:03:44,901 [INFO] 127.0.0.1 - - [21/May/2026 22:03:44] "GET /socket.io/?EIO=4&transport=polling&t=PvAsN5y HTTP/1.1" 200 -
+2026-05-21 22:03:44,904 [INFO] 127.0.0.1 - - [21/May/2026 22:03:44] "GET /api/exams HTTP/1.1" 200 -
+2026-05-21 22:03:44,907 [INFO] 127.0.0.1 - - [21/May/2026 22:03:44] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-21 22:03:44,911 [INFO] 127.0.0.1 - - [21/May/2026 22:03:44] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-21 22:03:44,979 [INFO] 127.0.0.1 - - [21/May/2026 22:03:44] "GET /api/me HTTP/1.1" 200 -
+2026-05-21 22:03:45,060 [INFO] 127.0.0.1 - - [21/May/2026 22:03:45] "POST /socket.io/?EIO=4&transport=polling&t=PvAsN8B&sid=zYornSq8VOxEMGtnAAAA HTTP/1.1" 200 -
+2026-05-21 22:03:45,061 [INFO] 127.0.0.1 - - [21/May/2026 22:03:45] "GET /socket.io/?EIO=4&transport=polling&t=PvAsN8E&sid=zYornSq8VOxEMGtnAAAA HTTP/1.1" 200 -
+2026-05-21 22:03:45,065 [INFO] 127.0.0.1 - - [21/May/2026 22:03:45] "[36mGET /manifest.json HTTP/1.1[0m" 304 -
+2026-05-21 22:03:45,078 [INFO] 127.0.0.1 - - [21/May/2026 22:03:45] "[36mGET /static/icons/icon-192.png HTTP/1.1[0m" 304 -
+2026-05-21 22:03:45,300 [INFO] 127.0.0.1 - - [21/May/2026 22:03:45] "GET /api/archive/count HTTP/1.1" 200 -
+2026-05-21 22:03:46,613 [INFO] 127.0.0.1 - - [21/May/2026 22:03:46] "[36mGET /static/sw.js HTTP/1.1[0m" 304 -
+2026-05-21 22:03:47,047 [ERROR] Exception on /api/students [GET]
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.11/lib/python3.11/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/macbook/Downloads/examguard/blueprints/admin_bp.py", line 30, in get_students
+    s['name']       = decrypt(s['name'])
+                      ^^^^^^^
+NameError: name 'decrypt' is not defined
+2026-05-21 22:03:47,052 [INFO] 127.0.0.1 - - [21/May/2026 22:03:47] "[35m[1mGET /api/students HTTP/1.1[0m" 500 -
+2026-05-21 22:03:49,657 [INFO] 127.0.0.1 - - [21/May/2026 22:03:49] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-21 22:03:54,904 [INFO] 127.0.0.1 - - [21/May/2026 22:03:54] "GET /api/sessions HTTP/1.1" 200 -
+2026-05-21 22:03:54,906 [INFO] 127.0.0.1 - - [21/May/2026 22:03:54] "GET /api/dashboard_stats HTTP/1.1" 200 -
+2026-05-21 22:03:55,322 [INFO] 127.0.0.1 - - [21/May/2026 22:03:55] "GET /socket.io/?EIO=4&transport=websocket&sid=zYornSq8VOxEMGtnAAAA HTTP/1.1" 200 -

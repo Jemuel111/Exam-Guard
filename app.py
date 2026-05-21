@@ -16,6 +16,7 @@ from config import config as app_configs
 from database import get_db, close_db, init_db
 from blueprints import bp_auth, bp_exams, bp_sessions, bp_admin, bp_archive
 from auth import get_token_from_request, verify_token
+from crypto import decrypt
 from blueprints.push_bp import bp_push, init_push_table
 
 
@@ -134,7 +135,7 @@ def report(session_id):
 
         report_data = {
             'session_id':       row['session_id'],
-            'student_name':     row['student_name'],
+            'student_name':     decrypt(row['student_name']) if row['student_name'] else '',
             'exam_date':        row['created_at'][:10],
             'start_time':       row['start_time'],
             'end_time':         row['end_time'],
