@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -219,15 +220,14 @@
 
     .student-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:10px; }
 
-    .student-tile { background:var(--bg1); border:1px solid var(--bd); overflow:hidden; position:relative; cursor:pointer;
+    .student-tile { background:var(--bg1); border:1px solid var(--bd); overflow:hidden; position:relative;
       transition:border-color 0.2s, transform 0.2s; cursor:pointer;
       box-shadow:0 1px 3px rgba(15,23,42,0.06); }
     [data-theme="dark"] .student-tile { background:var(--bg); box-shadow:none; }
     .student-tile:hover { transform:translateY(-2px); }
     .student-tile.tile-ok     { border-left:3px solid var(--ok); }
     .student-tile.tile-warn   { border-left:3px solid var(--warn); }
-    .student-tile.tile-danger { border-left:3px solid var(--danger); animation:tile-flash 2s ease infinite; box-shadow:0 0 0 0 rgba(239,68,68,0.15); }
-    @keyframes tile-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.2)} 50%{box-shadow:0 0 0 8px rgba(239,68,68,0)} }
+    .student-tile.tile-danger { border-left:3px solid var(--danger); animation:tile-flash 1.5s ease infinite; }
     @keyframes tile-flash { 0%,100%{border-color:var(--danger)} 50%{border-color:rgba(220,38,38,0.3)} }
 
     .tile-header { padding:10px 12px 8px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--bd); }
@@ -373,20 +373,7 @@
     .student-check-item:last-child { border-bottom:none; }
     .student-check-item input { accent-color:var(--acc); }
 
-    .empty-state { text-align:center; padding:48px 24px; color:var(--low); font-size:0.82rem; }
-    .empty-state-icon { width:44px; height:44px; border:1px solid var(--bd); display:flex;
-      align-items:center; justify-content:center; margin:0 auto 12px; background:var(--bg2); }
-    .empty-state-icon svg { width:18px; height:18px; stroke:var(--low); fill:none; stroke-width:1.5; stroke-linecap:round; }
-    .empty-state-title { font-size:0.82rem; font-weight:600; color:var(--mid); margin-bottom:4px; }
-    .empty-state-sub { font-family:var(--mono); font-size:0.58rem; color:var(--low); line-height:1.8; }
-    /* ── SKELETON ── */
-    .skeleton { background:linear-gradient(90deg,var(--bg2) 25%,var(--bg1) 50%,var(--bg2) 75%);
-      background-size:200% 100%; animation:shimmer 1.5s infinite; display:block; }
-    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-    /* ── STAT CARD ANIMATION ── */
-    .stat-card { transition:transform 0.15s, box-shadow 0.15s; }
-    .stat-card:hover { transform:translateY(-2px); box-shadow:0 4px 20px rgba(0,0,0,0.08); }
-    [data-theme="dark"] .stat-card:hover { box-shadow:0 4px 20px rgba(0,0,0,0.3); }
+    .empty-state { text-align:center; padding:48px; color:var(--low); font-size:0.82rem; }
 
     /* RT toast */
     .rt-toast-container { position:fixed; top:70px; right:24px; z-index:200; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
@@ -399,7 +386,6 @@
     .rt-toast-name { font-weight:600; color:var(--hi); margin-bottom:2px; }
     .rt-toast-msg { font-family:var(--mono); font-size:0.62rem; color:var(--mid); }
 
-    @keyframes page-fade { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
     ::-webkit-scrollbar { width:3px; height:3px; }
     ::-webkit-scrollbar-track { background:transparent; }
     ::-webkit-scrollbar-thumb { background:var(--bg3); }
@@ -604,26 +590,61 @@
 
     <!-- ANALYTICS -->
     <div class="page" id="page-analytics">
-      <div class="charts-row">
+      <div class="topbar-inner"><span class="page-title">Analytics</span></div>
+
+      <!-- Row 1: Sessions line chart + Risk donut -->
+      <div class="charts-row" style="margin-bottom:16px">
         <div class="chart-panel">
           <div class="panel-hd"><span class="panel-title">SESSIONS — LAST 14 DAYS</span></div>
-          <div class="chart-area">
-            <div class="bar-chart" id="dailyChart"><div style="color:var(--low);font-size:0.7rem">Loading...</div></div>
+          <div class="chart-area" style="height:200px;position:relative">
+            <canvas id="dailySessionsChart"></canvas>
           </div>
         </div>
         <div class="chart-panel">
           <div class="panel-hd"><span class="panel-title">RISK DISTRIBUTION</span></div>
-          <div class="donut-wrap">
-            <svg width="80" height="80" viewBox="0 0 80 80" id="donutSvg"><circle cx="40" cy="40" r="30" fill="none" stroke="var(--bd)" stroke-width="14"/></svg>
-            <div class="donut-legend" id="donutLegend"><div style="color:var(--low);font-size:0.7rem">Loading...</div></div>
+          <div class="chart-area" style="height:200px;position:relative;display:flex;align-items:center;justify-content:center;gap:20px">
+            <div style="position:relative;width:140px;height:140px;flex-shrink:0">
+              <canvas id="riskDonutChart"></canvas>
+              <div id="riskDonutCenter" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none">
+                <span style="font-family:var(--mono);font-size:1.1rem;font-weight:700;color:var(--hi)" id="riskTotalNum">0</span>
+                <span style="font-family:var(--mono);font-size:0.52rem;color:var(--low);letter-spacing:0.06em">SESSIONS</span>
+              </div>
+            </div>
+            <div id="riskLegend" style="display:flex;flex-direction:column;gap:8px"></div>
           </div>
         </div>
       </div>
-      <div class="analytics-grid">
-        <div class="panel"><div class="panel-hd"><span class="panel-title">FLAGS BY TYPE</span></div><div id="flagsByType" style="padding:12px"></div></div>
-        <div class="panel"><div class="panel-hd"><span class="panel-title">TOP FLAGGED STUDENTS</span></div><div id="topFlagged" style="padding:12px"></div></div>
-        <div class="panel"><div class="panel-hd"><span class="panel-title">EXAM PERFORMANCE</span></div><div id="examPerf" style="padding:12px"></div></div>
+
+      <!-- Row 2: Violations by type bar + Flags by severity -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+        <div class="panel">
+          <div class="panel-hd"><span class="panel-title">FLAGS BY TYPE</span></div>
+          <div style="padding:16px;height:220px;position:relative">
+            <canvas id="violationTypeChart"></canvas>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-hd"><span class="panel-title">EXAM PASS RATES</span></div>
+          <div style="padding:16px;height:220px;position:relative">
+            <canvas id="examPassRateChart"></canvas>
+          </div>
+        </div>
       </div>
+
+      <!-- Row 3: Top flagged students + Avg score per exam -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+        <div class="panel">
+          <div class="panel-hd"><span class="panel-title">TOP FLAGGED STUDENTS</span></div>
+          <div id="topFlaggedList" style="padding:12px"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-hd"><span class="panel-title">AVERAGE SCORE PER EXAM</span></div>
+          <div style="padding:16px;height:220px;position:relative">
+            <canvas id="avgScoreChart"></canvas>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- LIVE MONITOR -->
@@ -897,7 +918,7 @@ function buildTile(s) {
     </div>
     <div class="tile-footer">
       <span class="tile-elapsed">${elapsed}</span>
-      <span class="tile-risk ${riskLevel}" style="font-family:var(--mono);font-size:0.5rem;letter-spacing:0.08em;padding:2px 6px;border:1px solid ${riskLevel==="High"?"rgba(239,68,68,0.4)":riskLevel==="Medium"?"rgba(245,158,11,0.4)":"rgba(34,197,94,0.3)"};color:${riskLevel==="High"?"var(--danger)":riskLevel==="Medium"?"var(--warn)":"var(--ok)"}">${riskLevel.toUpperCase()}</span>
+      <span class="tile-risk ${riskLevel}">${riskLevel}</span>
     </div>
   </div>`;
 }
@@ -1130,11 +1151,7 @@ async function loadRecentExams() {
   const exams = await api('/api/exams');
   if (!exams) return;
   const el = document.getElementById('recentExams');
-  if (!exams.length) { el.innerHTML=`<div class="empty-state">
-          <div class="empty-state-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg></div>
-          <div class="empty-state-title">No exams yet</div>
-          <div class="empty-state-sub">Create your first exam to get started.</div>
-        </div>`; return; }
+  if (!exams.length) { el.innerHTML='<div class="empty-state">No exams yet</div>'; return; }
   el.innerHTML = exams.slice(0,4).map(e=>`
     <div class="exam-row">
       <div><div class="exam-row-name">${e.title}</div>
@@ -1147,11 +1164,7 @@ async function loadRecentSessions() {
   const sessions = await api('/api/sessions');
   if (!sessions) return;
   const el = document.getElementById('recentSessions');
-  if (!sessions.length) { el.innerHTML=`<div class="empty-state">
-          <div class="empty-state-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
-          <div class="empty-state-title">No sessions yet</div>
-          <div class="empty-state-sub">Sessions will appear here when students start exams.</div>
-        </div>`; return; }
+  if (!sessions.length) { el.innerHTML='<div class="empty-state">No sessions yet</div>'; return; }
   el.innerHTML = sessions.slice(0,4).map(s=>`
     <div class="alert-item">
       <div class="alert-stripe ${s.risk_level==='High'?'high':s.risk_level==='Medium'?'medium':'low'}"></div>
@@ -1167,7 +1180,7 @@ async function loadRecentSessions() {
 async function loadExams() {
   const exams = await api('/api/exams');
   const tbody = document.getElementById('examsTableBody');
-  if (!exams||!exams.length) { tbody.innerHTML='<tr><td colspan="8"><div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg></div><div class="empty-state-title">No exams yet</div><div class="empty-state-sub">Click &ldquo;+ New Exam&rdquo; to create your first exam.</div></div></td></tr>'; return; }
+  if (!exams||!exams.length) { tbody.innerHTML='<tr><td colspan="8"><div class="empty-state">No exams yet. Click "Create Exam" to start.</div></td></tr>'; return; }
   tbody.innerHTML = exams.map(e=>`
     <tr>
       <td><strong>${e.title}</strong></td><td>${e.subject||'—'}</td>
@@ -1185,7 +1198,7 @@ async function loadExams() {
 async function loadStudents() {
   const students = await api('/api/students');
   const tbody = document.getElementById('studentsTableBody');
-  if (!students||!students.length) { tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="empty-state-title">No students registered</div><div class="empty-state-sub">Add students via the &ldquo;Add Student&rdquo; button above.</div></div></td></tr>'; return; }
+  if (!students||!students.length) { tbody.innerHTML='<tr><td colspan="6"><div class="empty-state">No students registered.</div></td></tr>'; return; }
   tbody.innerHTML = students.map(s=>`
     <tr>
       <td style="font-family:var(--mono);font-size:0.62rem;color:var(--low)">${s.student_id||'—'}</td>
@@ -1209,7 +1222,7 @@ async function loadSubmissions() {
     sBadge.textContent = newSubs;
     sBadge.style.display = '';
   }
-  if (!res.length) { tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/></svg></div><div class="empty-state-title">No submissions yet</div><div class="empty-state-sub">Submissions will appear here after students complete exams.</div></div></td></tr>'; return; }
+  if (!res.length) { tbody.innerHTML='<tr><td colspan="7"><div class="empty-state">No submissions yet.</div></td></tr>'; return; }
   tbody.innerHTML = res.map(s => {
     const pct = s.percentage ? parseFloat(s.percentage).toFixed(1) : null;
     const cls = !pct ? '' : pct>=75?'':'warn';
@@ -1227,7 +1240,7 @@ async function loadSubmissions() {
 async function loadReports() {
   const sessions = await api('/api/sessions');
   const tbody = document.getElementById('reportsTableBody');
-  if (!sessions||!sessions.length) { tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><div class="empty-state-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><div class="empty-state-title">No sessions recorded</div><div class="empty-state-sub">Sessions appear here after students start monitored exams.</div></div></td></tr>'; return; }
+  if (!sessions||!sessions.length) { tbody.innerHTML='<tr><td colspan="7"><div class="empty-state">No sessions yet.</div></td></tr>'; return; }
   tbody.innerHTML = sessions.map(s=>`
     <tr>
       <td><strong>${s.student_name}</strong></td>
@@ -1243,38 +1256,192 @@ async function loadReports() {
     </tr>`).join('');
 }
 
+// Chart instances — destroy before recreating to avoid canvas reuse error
+const _charts = {};
+function _mkChart(id, config) {
+  if (_charts[id]) { _charts[id].destroy(); }
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  _charts[id] = new Chart(ctx, config);
+}
+
+function chartColors() {
+  const dark = document.documentElement.getAttribute('data-theme') === 'dark';
+  return {
+    text:    dark ? '#a1a1aa' : '#52525b',
+    grid:    dark ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)',
+    acc:     '#3b82f6',
+    ok:      '#10b981',
+    warn:    '#f59e0b',
+    danger:  '#ef4444',
+    mid:     dark ? '#3f3f46' : '#e4e4e7',
+  };
+}
+
 async function loadAnalytics() {
+  const c = chartColors();
+
+  // 1 ── Daily sessions line chart ─────────────────────────────────────────
   const daily = await api('/api/analytics/daily_sessions');
   if (daily && daily.length) {
-    const max = Math.max(...daily.map(d=>d.count), 1);
-    document.getElementById('dailyChart').innerHTML = daily.slice(0,14).reverse().map(d=>`
-      <div class="bar-col">
-        <div class="bar-fill" style="height:${Math.max((d.count/max)*70,2)}px" title="${d.day}: ${d.count}"></div>
-        <span class="bar-label">${d.day.slice(5)}</span>
-      </div>`).join('');
+    const sorted = daily.slice().reverse();
+    _mkChart('dailySessionsChart', {
+      type: 'line',
+      data: {
+        labels: sorted.map(d => d.day.slice(5)),
+        datasets: [{
+          label: 'Sessions',
+          data: sorted.map(d => d.count),
+          borderColor: c.acc,
+          backgroundColor: 'rgba(59,130,246,0.08)',
+          borderWidth: 2,
+          pointRadius: 3,
+          pointBackgroundColor: c.acc,
+          fill: true,
+          tension: 0.4,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: c.text, font: { family: 'JetBrains Mono', size: 10 } }, grid: { color: c.grid } },
+          y: { ticks: { color: c.text, font: { family: 'JetBrains Mono', size: 10 }, stepSize: 1 }, grid: { color: c.grid }, beginAtZero: true },
+        }
+      }
+    });
   }
+
+  // 2 ── Risk distribution donut ────────────────────────────────────────────
   const risk = await api('/api/analytics/risk_distribution');
   if (risk && risk.length) {
-    const colors = {Low:'var(--ok)', Medium:'var(--warn)', High:'var(--danger)'};
-    const total = risk.reduce((a,r)=>a+r.count,0);
-    let offset = 0; const r=30, circ=2*Math.PI*r;
-    const segs = risk.map(item => {
-      const pct = item.count/total; const dash = pct*circ; const gap = circ-dash;
-      const seg = `<circle cx="40" cy="40" r="${r}" fill="none" stroke="${colors[item.level]||'var(--mid)'}" stroke-width="14" stroke-dasharray="${dash} ${gap}" stroke-dashoffset="${-offset}" transform="rotate(-90 40 40)"/>`;
-      offset += dash; return seg;
+    const riskColors = { Low: c.ok, Medium: c.warn, High: c.danger, null: c.mid };
+    const total = risk.reduce((a, r) => a + r.count, 0);
+    document.getElementById('riskTotalNum').textContent = total;
+    _mkChart('riskDonutChart', {
+      type: 'doughnut',
+      data: {
+        labels: risk.map(r => r.level || 'Unknown'),
+        datasets: [{
+          data: risk.map(r => r.count),
+          backgroundColor: risk.map(r => riskColors[r.level] || c.mid),
+          borderWidth: 0,
+          hoverOffset: 4,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false, cutout: '70%',
+        plugins: { legend: { display: false } },
+      }
     });
-    document.getElementById('donutSvg').innerHTML = `<circle cx="40" cy="40" r="30" fill="none" stroke="var(--bd)" stroke-width="14"/>${segs.join('')}`;
-    document.getElementById('donutLegend').innerHTML = risk.map(item=>`
-      <div class="legend-item"><div class="legend-dot" style="background:${colors[item.level]||'var(--mid)'}"></div>${item.level}: ${item.count} (${Math.round(item.count/total*100)}%)</div>`).join('');
+    document.getElementById('riskLegend').innerHTML = risk.map(r => `
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.75rem;color:var(--mid)">
+        <div style="width:10px;height:10px;border-radius:2px;background:${riskColors[r.level]||c.mid};flex-shrink:0"></div>
+        <span>${r.level||'Unknown'}</span>
+        <span style="font-family:var(--mono);color:var(--hi);font-weight:600">${r.count}</span>
+        <span style="color:var(--low)">(${Math.round(r.count/total*100)}%)</span>
+      </div>`).join('');
   }
+
+  // 3 ── Violations by type horizontal bar ──────────────────────────────────
   const flags = await api('/api/analytics/violations_by_type');
   if (flags && flags.length) {
-    const maxF = Math.max(...flags.map(f=>f.count),1);
-    document.getElementById('flagsByType').innerHTML = flags.map(f=>`
-      <div style="margin-bottom:10px">
-        <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:0.6rem;color:var(--mid);margin-bottom:4px"><span>${f.type}</span><span>${f.count}</span></div>
-        <div style="height:4px;background:var(--bd)"><div style="height:100%;width:${f.count/maxF*100}%;background:var(--danger);transition:width 0.5s"></div></div>
+    const typeLabels = { NO_FACE:'Face Absence', MULTIPLE_FACES:'Multi-Face', LOOK_AWAY:'Gaze Deviation', TAB_SWITCH:'Tab Switch', AUDIO_ANOMALY:'Audio Anomaly' };
+    _mkChart('violationTypeChart', {
+      type: 'bar',
+      data: {
+        labels: flags.map(f => typeLabels[f.type] || f.type),
+        datasets: [{
+          label: 'Flags',
+          data: flags.map(f => f.count),
+          backgroundColor: [c.danger, c.warn, c.acc, '#8b5cf6', '#06b6d4', c.ok],
+          borderRadius: 4, borderSkipped: false,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: c.text, font: { family: 'JetBrains Mono', size: 10 } }, grid: { color: c.grid }, beginAtZero: true },
+          y: { ticks: { color: c.text, font: { size: 11 } }, grid: { display: false } },
+        }
+      }
+    });
+  }
+
+  // 4 ── Exam pass rates bar chart ───────────────────────────────────────────
+  const exams = await api('/api/analytics/exam_performance');
+  if (exams && exams.length) {
+    _mkChart('examPassRateChart', {
+      type: 'bar',
+      data: {
+        labels: exams.map(e => e.title.length > 14 ? e.title.slice(0,14)+'…' : e.title),
+        datasets: [
+          { label: 'Pass Rate %', data: exams.map(e => e.pass_rate), backgroundColor: 'rgba(16,185,129,0.8)', borderRadius: 4, borderSkipped: false },
+          { label: 'Passing Score %', data: exams.map(e => e.passing_score), backgroundColor: 'rgba(239,68,68,0.3)', borderRadius: 4, borderSkipped: false, type: 'line', borderColor: c.danger, borderWidth: 1.5, pointRadius: 0 },
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color: c.text, font: { size: 11 }, boxWidth: 10 } } },
+        scales: {
+          x: { ticks: { color: c.text, font: { size: 10 } }, grid: { display: false } },
+          y: { ticks: { color: c.text, font: { family: 'JetBrains Mono', size: 10 } }, grid: { color: c.grid }, beginAtZero: true, max: 100 },
+        }
+      }
+    });
+  }
+
+  // 5 ── Average score per exam ─────────────────────────────────────────────
+  if (exams && exams.length) {
+    _mkChart('avgScoreChart', {
+      type: 'bar',
+      data: {
+        labels: exams.map(e => e.title.length > 14 ? e.title.slice(0,14)+'…' : e.title),
+        datasets: [{
+          label: 'Avg Score %',
+          data: exams.map(e => e.avg_score),
+          backgroundColor: exams.map(e => e.avg_score >= e.passing_score ? 'rgba(59,130,246,0.8)' : 'rgba(245,158,11,0.8)'),
+          borderRadius: 4, borderSkipped: false,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: c.text, font: { size: 10 } }, grid: { display: false } },
+          y: { ticks: { color: c.text, font: { family: 'JetBrains Mono', size: 10 } }, grid: { color: c.grid }, beginAtZero: true, max: 100 },
+        }
+      }
+    });
+  }
+
+  // 6 ── Top flagged students list ───────────────────────────────────────────
+  const flagged = await api('/api/analytics/top_flagged');
+  const el = document.getElementById('topFlaggedList');
+  if (flagged && flagged.length) {
+    const maxF = Math.max(...flagged.map(f => f.flag_count), 1);
+    const riskColors = { Low: '#10b981', Medium: '#f59e0b', High: '#ef4444' };
+    el.innerHTML = flagged.map(f => `
+      <div style="padding:8px 0;border-bottom:1px solid var(--bd)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+          <span style="font-size:0.8rem;font-weight:500;color:var(--hi)">${f.student_name}</span>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-family:var(--mono);font-size:0.65rem;color:${riskColors[f.risk_level]||'var(--mid)'};background:${riskColors[f.risk_level]||'var(--mid)'}18;padding:1px 6px;border-radius:3px">${f.risk_level||'—'}</span>
+            <span style="font-family:var(--mono);font-size:0.72rem;color:var(--danger);font-weight:700">${f.flag_count} flags</span>
+          </div>
+        </div>
+        <div style="height:3px;background:var(--bd);border-radius:2px">
+          <div style="height:100%;width:${f.flag_count/maxF*100}%;background:var(--danger);border-radius:2px;transition:width 0.6s"></div>
+        </div>
       </div>`).join('');
+  } else {
+    el.innerHTML = `<div class="empty-state">
+      <div class="empty-state-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+      <div class="empty-state-title">No flagged students</div>
+      <div class="empty-state-sub">Session violation data will appear here.</div>
+    </div>`;
   }
 }
 

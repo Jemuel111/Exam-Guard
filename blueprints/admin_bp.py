@@ -126,6 +126,51 @@ def daily_sessions():
     return jsonify([dict(r) for r in rows])
 
 
+@bp_admin.get('/api/analytics/exam_performance')
+def exam_performance():
+    db   = get_db()
+    rows = db.execute('''
+        SELECT e.title, e.passing_score,
+               COUNT(es.id) as total,
+               SUM(CASE WHEN es.passed=1 THEN 1 ELSE 0 END) as passed,
+               AVG(es.score) as avg_score
+        FROM exams e
+        LEFT JOIN exam_submissions es ON es.exam_id = e.id
+        WHERE COALESCE(e.is_archived,0)=0
+        GROUP BY e.id
+        ORDER BY total DESC
+        LIMIT 8
+    ''').fetchall()
+    result = []
+    for r in rows:
+        d = dict(r)
+        d['pass_rate'] = round(d['passed'] / d['total'] * 100, 1) if d['total'] else 0
+        d['avg_score'] = round(d['avg_score'], 1) if d['avg_score'] else 0
+        result.append(d)
+    return jsonify(result)
+
+
+@bp_admin.get('/api/analytics/top_flagged')
+def top_flagged():
+    db   = get_db()
+    rows = db.execute('''
+        SELECT s.student_name, COUNT(v.id) as flag_count,
+               s.risk_level, s.risk_score
+        FROM sessions s
+        LEFT JOIN violations v ON v.session_id = s.session_id
+        WHERE COALESCE(s.is_archived,0)=0
+        GROUP BY s.session_id
+        ORDER BY flag_count DESC
+        LIMIT 8
+    ''').fetchall()
+    result = []
+    for r in rows:
+        d = dict(r)
+        d['student_name'] = decrypt(d['student_name']) if d.get('student_name') else 'Unknown'
+        result.append(d)
+    return jsonify(result)
+
+
 @bp_admin.get('/api/notifications')
 def get_notifications():
     db   = get_db()
