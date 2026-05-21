@@ -154,6 +154,23 @@
     .panels-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
     .panel { background:var(--bg1); border:1px solid var(--bd); overflow:hidden;
       box-shadow:0 1px 3px rgba(15,23,42,0.06); }
+    /* Table scroll wrapper — overrides panel overflow so tables can scroll horizontally */
+    .tbl-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+    .tbl-scroll .tbl { min-width:600px; }
+    /* Scroll-shadow hint: fades in a right edge when content overflows */
+    @supports (background: paint(scroll-shadow)) {}
+    .tbl-scroll { position:relative; }
+    .tbl-scroll::after {
+      content:'';
+      position:absolute;
+      top:0; right:0; bottom:0;
+      width:24px;
+      background:linear-gradient(to right, transparent, rgba(15,23,42,0.06));
+      pointer-events:none;
+      opacity:0;
+      transition:opacity 0.2s;
+    }
+    [data-theme="dark"] .tbl-scroll::after { background:linear-gradient(to right, transparent, rgba(0,0,0,0.18)); }
     [data-theme="dark"] .panel { box-shadow:none; }
 
     /* Table */
@@ -500,8 +517,8 @@
       /* Table action cells: allow wrap instead of overflow */
       .tbl td[style*="display:flex"] { flex-wrap: wrap; }
       /* Ensure all tables scroll horizontally */
-      .panel > div[style*="overflow-x:auto"],
-      .panel > div > div[style*="overflow-x:auto"] { -webkit-overflow-scrolling: touch; }
+      .tbl-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .tbl-scroll .tbl { min-width: 520px; }
       /* Risk donut: stack vertically on small screens */
       .donut-wrap { flex-direction: column; align-items: center; }
       /* Live layout single column already set, but ensure feed isn't cut off */
@@ -765,8 +782,8 @@
     <!-- EXAMS -->
     <div class="page" id="page-exams">
       <div class="section-controls"><button class="btn btn-primary btn-sm" onclick="showModal('createExam')">+ Create Exam</button></div>
-      <div class="panel"><div style="overflow-x:auto">
-        <table class="tbl">
+      <div class="panel"><div class="tbl-scroll">
+        <table class="tbl" style="min-width:680px">
           <thead><tr><th>Title</th><th>Subject</th><th>Questions</th><th>Enrolled</th><th>Duration</th><th>Status</th><th>Scheduled</th><th>Actions</th></tr></thead>
           <tbody id="examsTableBody"><tr><td colspan="8" style="text-align:center;padding:32px;color:var(--low)">Loading...</td></tr></tbody>
         </table>
@@ -776,8 +793,8 @@
     <!-- STUDENTS -->
     <div class="page" id="page-students">
       <div class="section-controls"><button class="btn btn-primary btn-sm" onclick="showModal('addStudent')">+ Add Student</button></div>
-      <div class="panel"><div style="overflow-x:auto">
-        <table class="tbl">
+      <div class="panel"><div class="tbl-scroll">
+        <table class="tbl" style="min-width:520px">
           <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Registered</th><th>Sessions</th><th>Actions</th></tr></thead>
           <tbody id="studentsTableBody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--low)">Loading...</td></tr></tbody>
         </table>
@@ -786,8 +803,8 @@
 
     <!-- SUBMISSIONS -->
     <div class="page" id="page-submissions">
-      <div class="panel"><div style="overflow-x:auto">
-        <table class="tbl">
+      <div class="panel"><div class="tbl-scroll">
+        <table class="tbl" style="min-width:560px">
           <thead><tr><th>Student</th><th>Exam</th><th>Score</th><th>%</th><th>Result</th><th>Submitted</th><th>Actions</th></tr></thead>
           <tbody id="submissionsTableBody"><tr><td colspan="7" style="text-align:center;padding:32px;color:var(--low)">Loading...</td></tr></tbody>
         </table>
@@ -796,8 +813,8 @@
 
     <!-- REPORTS -->
     <div class="page" id="page-reports">
-      <div class="panel"><div style="overflow-x:auto">
-        <table class="tbl">
+      <div class="panel"><div class="tbl-scroll">
+        <table class="tbl" style="min-width:580px">
           <thead><tr><th>Student</th><th>Session ID</th><th>Date</th><th>Duration</th><th>Flags</th><th>Risk</th><th>Actions</th></tr></thead>
           <tbody id="reportsTableBody"><tr><td colspan="7" style="text-align:center;padding:32px;color:var(--low)">Loading...</td></tr></tbody>
         </table>
