@@ -327,6 +327,77 @@ def send_push_to_teachers(title, body, url='/teacher/dashboard', tag='examguard-
 
     return sent, errors
 
+def send_push_to_all_students(title, body, url='/student/dashboard', tag='examguard-student', require_interaction=False):
+    """Broadcast a push notification to ALL subscribed students."""
+    webpush, WebPushException = _get_webpush()
+    if not webpush:
+        return 0, 0
+
+    vapid_private = os.environ.get('VAPID_PRIVATE_KEY', '')
+    vapid_email   = os.environ.get('VAPID_CLAIMS_EMAIL', 'mailto:admin@examguard.local')
+
+    if not vapid_private:
+        logger.warning('VAPID_PRIVATE_KEY not set — push not sent')
+        return 0, 0
+
+    from flask import current_app
+    with current_app.app_context():
+        db = get_db()
+        subs = db.execute(
+            "SELECT * FROM push_subscriptions WHERE role='student'"
+        ).fetchall()
+
+    payload = json.dumps({
+        'title': title,
+        'body': body,
+        'url': url,
+        'tag': tag,
+        'requireInteraction': require_interaction,
+        'icon': '/static/icons/icon-192.png',
+    })
+
+    sent = 0
+    errors = 0
+    for sub in subs:
+        try:
+            webpush(
+                subscription_info={
+                    'endpoint': sub['endpoint'],
+                    'keys': {'p256dh': sub['p256dh'], 'auth': sub['auth']},
+                },
+                data=payload,
+                vapid_private_key=vapid_private,
+                vapid_claims={'sub': vapid_email},
+            )
+            sent += 1
+        except WebPushException as e:
+            logger.error('Push failed for sub %s: %s', sub['id'], e)
+            if e.response and e.response.status_code in (404, 410):
+                db = get_db()
+                db.execute('DELETE FROM push_subscriptions WHERE id=?', (sub['id'],))
+                db.commit()
+            errors += 1
+
+    # Also send via FCM/Expo to all students
+    try:
+        from flask import current_app
+        with current_app.app_context():
+            db = get_db()
+            fcm_tokens = db.execute(
+                "SELECT fcm_token FROM fcm_tokens WHERE role='student'"
+            ).fetchall()
+        for row in fcm_tokens:
+            token = row['fcm_token']
+            if token.startswith('ExponentPushToken'):
+                if send_expo_push(token, title, body):
+                    sent += 1
+    except Exception as e:
+        logger.warning('FCM broadcast to students failed: %s', e)
+
+    logger.info('Broadcast to all students: sent=%d errors=%d', sent, errors)
+    return sent, errors
+
+
 def send_expo_push(token, title, body, data=None):
     """Send push via Expo Push API — works with Expo Go during development."""
     import urllib.request, json as _json

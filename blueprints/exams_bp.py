@@ -18,7 +18,7 @@ from flask import Blueprint, request, jsonify, g
 from auth import login_required, get_token_from_request, verify_token
 from database import get_db
 from grading import grade_submission
-from blueprints.push_bp import send_push_to_user
+from blueprints.push_bp import send_push_to_user, send_push_to_all_students
 
 logger   = logging.getLogger(__name__)
 bp_exams = Blueprint('exams', __name__)
@@ -146,9 +146,9 @@ def create_exam():
             pass
     db.commit()
 
-    # Notify enrolled students when exam is created (scheduled or active)
+    # Notify students when exam is created (scheduled or active)
     status = data.get('status', 'draft')
-    if status in ('scheduled', 'active') and enrolled_ids:
+    if status in ('scheduled', 'active'):
         scheduled_start = data.get('scheduled_start')
         if status == 'scheduled' and scheduled_start:
             notif_title = 'New Exam Scheduled'
@@ -157,13 +157,27 @@ def create_exam():
             notif_title = 'Exam is Now Live'
             notif_body  = f'{data["title"]} is now available. Open ExamGuard to begin.'
         else:
-            notif_title = 'New Exam Uploaded'
-            notif_body  = f'{data["title"]} has been added to your exams. Check ExamGuard for details.'
+            notif_title = 'New Exam Posted'
+            notif_body  = f'{data["title"]} has been added. Check ExamGuard for details.'
 
-        for sid in enrolled_ids:
+        if enrolled_ids:
+            # Exam has specific enrollments — notify only those students
+            for sid in enrolled_ids:
+                try:
+                    send_push_to_user(
+                        user_id=sid,
+                        title=notif_title,
+                        body=notif_body,
+                        url='/student/dashboard',
+                        tag=f'exam-created-{exam_id}',
+                        require_interaction=True,
+                    )
+                except Exception as e:
+                    logger.warning('Push to student %s failed: %s', sid, e)
+        else:
+            # Open exam (no specific enrollments) — broadcast to ALL students
             try:
-                send_push_to_user(
-                    user_id=sid,
+                send_push_to_all_students(
                     title=notif_title,
                     body=notif_body,
                     url='/student/dashboard',
@@ -171,7 +185,7 @@ def create_exam():
                     require_interaction=True,
                 )
             except Exception as e:
-                logger.warning('Push to student %s failed: %s', sid, e)
+                logger.warning('Broadcast push to all students failed: %s', e)
 
     return jsonify({'success': True, 'exam_id': exam_id})
 
