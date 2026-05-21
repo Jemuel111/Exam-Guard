@@ -254,6 +254,13 @@
     .tv-critical { color:#dc2626;       border-color:rgba(185,28,28,0.5); }
     [data-theme="dark"] .tv-critical { color:#fca5a5; }
 
+    .tile-cam-wrap { position:relative; width:100%; background:#000; overflow:hidden; aspect-ratio:4/3; }
+    .tile-cam { width:100%; height:100%; object-fit:cover; display:block; }
+    .tile-cam-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#111; color:#555; font-family:var(--mono); font-size:0.55rem; letter-spacing:0.08em; }
+    .tile-cam-badge { position:absolute; top:5px; right:5px; font-family:var(--mono); font-size:0.48rem; font-weight:700; padding:2px 6px; border-radius:3px; color:#fff; letter-spacing:0.06em; }
+    .tile-cam-badge.Low    { background:rgba(22,163,74,0.85); }
+    .tile-cam-badge.Medium { background:rgba(217,119,6,0.85); }
+    .tile-cam-badge.High   { background:rgba(220,38,38,0.85); }
     .tile-footer { padding:6px 12px; border-top:1px solid var(--bd); display:flex; align-items:center; justify-content:space-between; }
     .tile-elapsed { font-family:var(--mono); font-size:0.55rem; color:var(--low); }
     .tile-risk { font-family:var(--mono); font-size:0.55rem; font-weight:700; }
@@ -901,7 +908,16 @@ function buildTile(s) {
   const tabSw      = stats.tab_switches || 0;
   const lookAway   = stats.look_away_events || 0;
   const flagColor  = violations > 3 ? 'danger' : violations > 0 ? 'warn' : 'ok';
+  const camId = `cam-${s.session_id}`;
   return `<div class="student-tile ${tileClass}" onclick="openSessionModal('${s.session_id}')" title="Click for details">
+    <div class="tile-cam-wrap">
+      ${isLive
+        ? `<img id="${camId}" class="tile-cam" src="" alt="live feed" onerror="this.style.display='none';document.getElementById('${camId}-ph').style.display='flex'">
+           <div id="${camId}-ph" class="tile-cam-placeholder" style="display:none">NO SIGNAL</div>`
+        : `<div class="tile-cam-placeholder">SESSION ENDED</div>`
+      }
+      <span class="tile-cam-badge ${riskLevel}">${riskLevel.toUpperCase()}</span>
+    </div>
     <div class="tile-header">
       <div class="tile-name">${s.student_name || '—'}</div>
       <div class="tile-status-dot ${dotClass}"></div>
@@ -1054,6 +1070,17 @@ try {
   });
   socket.on('connect', () => { console.log('[ExamGuard] SocketIO connected'); });
   socket.on('disconnect', () => { console.log('[ExamGuard] SocketIO disconnected'); });
+
+  // Live camera feed — update the <img> inside each student tile
+  socket.on('live_frame', data => {
+    const { session_id, frame } = data;
+    const img = document.getElementById('cam-' + session_id);
+    if (!img) return;
+    img.src = frame;
+    img.style.display = 'block';
+    const ph = document.getElementById('cam-' + session_id + '-ph');
+    if (ph) ph.style.display = 'none';
+  });
 } catch(e) { console.warn('SocketIO unavailable:', e); }
 
 function pushRtToast(studentName, v) {

@@ -132,6 +132,14 @@ def analyze():
         return jsonify({'status': 'error', 'message': 'No frame'}), 400
 
     from app import socketio
+
+    # Rebroadcast frame to teacher dashboard for live camera feed
+    socketio.emit('live_frame', {
+        'session_id':   session_id,
+        'student_name': session.student_name,
+        'frame':        frame,
+    }, room='teachers')
+
     return jsonify(process_frame(session, frame, socketio))
 
 
