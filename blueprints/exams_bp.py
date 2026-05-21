@@ -151,13 +151,13 @@ def create_exam():
     if status in ('scheduled', 'active'):
         scheduled_start = data.get('scheduled_start')
         if status == 'scheduled' and scheduled_start:
-            notif_title = 'New Exam Scheduled'
-            notif_body  = f'{data["title"]} has been scheduled for {scheduled_start}. Duration: {data.get("duration_minutes", 60)} min.'
+            notif_title = '📅 New Exam Scheduled'
+            notif_body  = f'{data["title"]} has been scheduled for {scheduled_start}. Duration: {data.get("duration_minutes", 60)} min. Get ready!'
         elif status == 'active':
-            notif_title = 'Exam is Now Live'
-            notif_body  = f'{data["title"]} is now available. Open ExamGuard to begin.'
+            notif_title = '📝 Exam is Now Live'
+            notif_body  = f'{data["title"]} is now available. Open ExamGuard to begin!'
         else:
-            notif_title = 'New Exam Posted'
+            notif_title = '📢 New Exam Posted'
             notif_body  = f'{data["title"]} has been added. Check ExamGuard for details.'
 
         if enrolled_ids:
@@ -208,7 +208,7 @@ def update_exam(exam_id):
     ))
     db.commit()
 
-    # Notify enrolled students when exam status changes
+    # Notify students when exam status changes to active or scheduled
     new_status = data.get('status')
     if new_status in ('active', 'scheduled'):
         exam     = db.execute('SELECT * FROM exams WHERE id=?', (exam_id,)).fetchone()
@@ -217,20 +217,23 @@ def update_exam(exam_id):
         ).fetchall()
 
         if new_status == 'active':
-            notif_title = 'Exam is Now Live'
-            notif_body  = f'{exam["title"]} is now available. Open ExamGuard to begin.'
+            notif_title = '📝 Exam is Now Live'
+            notif_body  = f'{exam["title"]} is now available. Open ExamGuard to begin!'
             tag         = f'exam-start-{exam_id}'
         else:
             scheduled_start = data.get('scheduled_start') or exam['scheduled_start']
-            notif_title = 'Exam Scheduled'
+            notif_title = '📅 Exam Scheduled'
             notif_body  = f'{exam["title"]} has been scheduled for {scheduled_start}. Duration: {exam["duration_minutes"]} min.'
             tag         = f'exam-scheduled-{exam_id}'
 
-        for row in enrolled:
-            if row['student_id']:
+        enrolled_ids = [row['student_id'] for row in enrolled if row['student_id']]
+
+        if enrolled_ids:
+            # Specific enrollments — notify only those students
+            for sid in enrolled_ids:
                 try:
                     send_push_to_user(
-                        user_id=row['student_id'],
+                        user_id=sid,
                         title=notif_title,
                         body=notif_body,
                         url='/student/dashboard',
@@ -238,7 +241,19 @@ def update_exam(exam_id):
                         require_interaction=True,
                     )
                 except Exception as e:
-                    logger.warning('Push to student %s failed: %s', row['student_id'], e)
+                    logger.warning('Push to student %s failed: %s', sid, e)
+        else:
+            # Open exam (no specific enrollments) — broadcast to ALL students
+            try:
+                send_push_to_all_students(
+                    title=notif_title,
+                    body=notif_body,
+                    url='/student/dashboard',
+                    tag=tag,
+                    require_interaction=True,
+                )
+            except Exception as e:
+                logger.warning('Broadcast push to all students failed: %s', e)
 
     return jsonify({'success': True})
 

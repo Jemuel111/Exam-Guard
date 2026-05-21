@@ -380,12 +380,10 @@ def send_push_to_all_students(title, body, url='/student/dashboard', tag='examgu
 
     # Also send via FCM/Expo to all students
     try:
-        from flask import current_app
-        with current_app.app_context():
-            db = get_db()
-            fcm_tokens = db.execute(
-                "SELECT fcm_token FROM fcm_tokens WHERE role='student'"
-            ).fetchall()
+        db = get_db()
+        fcm_tokens = db.execute(
+            "SELECT fcm_token FROM fcm_tokens WHERE role='student'"
+        ).fetchall()
         for row in fcm_tokens:
             token = row['fcm_token']
             if token.startswith('ExponentPushToken'):

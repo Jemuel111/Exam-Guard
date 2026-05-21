@@ -20,6 +20,10 @@ from cv_engine import process_frame
 from database import get_db
 from session_model import ExamSession
 from blueprints.push_bp import send_push_to_teachers, send_fcm_to_teachers
+
+# Track which sessions have already sent a mid-exam high-risk alert
+# (so we don't spam the teacher every single frame)
+_high_risk_alerted: set = set()
 from crypto import encrypt, decrypt
 from crypto import encrypt, decrypt
 
@@ -140,7 +144,32 @@ def analyze():
         'frame':        frame,
     }, room='teachers')
 
-    return jsonify(process_frame(session, frame, socketio))
+    result = process_frame(session, frame, socketio)
+
+    # Real-time high-risk push to teachers once the session crosses High risk
+    risk = session.compute_risk()
+    if (risk['level'] == 'High'
+            and session_id not in _high_risk_alerted
+            and len(session.violations) >= 3):
+        _high_risk_alerted.add(session_id)
+        try:
+            send_push_to_teachers(
+                title='⚠️ High Risk Detected (Live)',
+                body=f'{session.student_name} — Risk Score {risk["score"]} · {len(session.violations)} flags so far',
+                url=f'/report/{session_id}',
+                tag=f'session-live-{session_id}',
+                require_interaction=True,
+            )
+            send_fcm_to_teachers(
+                title='⚠️ High Risk Detected (Live)',
+                body=f'{session.student_name} — Risk Score {risk["score"]} · {len(session.violations)} flags so far',
+                data={'url': f'/report/{session_id}', 'session_id': session_id},
+            )
+            logger.info('Real-time high-risk push sent for session %s', session_id)
+        except Exception as e:
+            logger.warning('Real-time high-risk push failed for %s: %s', session_id, e)
+
+    return jsonify(result)
 
 
 @bp_sessions.post('/api/tab_switch')
@@ -156,6 +185,27 @@ def tab_switch():
     from app import socketio
     session.stats['tab_switches'] += 1
     v = session.log_violation('TAB_SWITCH', 'Student switched browser tab or window', 'high', socketio)
+
+    # Alert teacher immediately on tab switch (high severity)
+    tab_count = session.stats['tab_switches']
+    if tab_count in (1, 3, 5) or tab_count % 5 == 0:
+        try:
+            alert_suffix = f' (#{tab_count})' if tab_count > 1 else ''
+            send_push_to_teachers(
+                title=f'🔀 Tab Switch Detected{alert_suffix}',
+                body=f'{session.student_name} switched tabs during the exam. Total tab switches: {tab_count}.',
+                url=f'/report/{session.session_id}',
+                tag=f'tab-switch-{session.session_id}',
+                require_interaction=False,
+            )
+            send_fcm_to_teachers(
+                title=f'🔀 Tab Switch Detected{alert_suffix}',
+                body=f'{session.student_name} switched tabs. Total: {tab_count}.',
+                data={'session_id': session.session_id},
+            )
+        except Exception as e:
+            logger.warning('Tab switch push failed: %s', e)
+
     return jsonify({'logged': True, 'violation': v})
 
 
@@ -192,22 +242,36 @@ def end_session():
     db = get_db()
     session.save_to_db(db)
 
-    # Auto push to teachers if high risk
+    # Clean up mid-exam alert tracker
+    _high_risk_alerted.discard(session_id)
+
+    # Push summary to teachers on session end — always for High, opt-in for Medium
     risk = session.compute_risk()
 
     if risk['level'] == 'High':
-        from blueprints.push_bp import send_push_to_teachers
-
         send_push_to_teachers(
-            title='⚠ High Risk Session Detected',
-            body=f'{session.student_name} — Risk Score {risk["score"]} · {len(session.violations)} flags',
+            title='🚨 High Risk Session Ended',
+            body=f'{session.student_name} finished with Risk Score {risk["score"]} · {len(session.violations)} total flags. Tap to review.',
             url=f'/report/{session_id}',
-            tag=f'session-{session_id}',
+            tag=f'session-end-{session_id}',
             require_interaction=True,
         )
         send_fcm_to_teachers(
-            title='⚠ High Risk Session Detected',
-            body=f'{session.student_name} — Risk Score {risk["score"]} · {len(session.violations)} flags',
+            title='🚨 High Risk Session Ended',
+            body=f'{session.student_name} finished with Risk Score {risk["score"]} · {len(session.violations)} total flags.',
+            data={'url': f'/report/{session_id}', 'session_id': session_id},
+        )
+    elif risk['level'] == 'Medium' and len(session.violations) > 0:
+        send_push_to_teachers(
+            title='⚠️ Medium Risk Session Ended',
+            body=f'{session.student_name} finished with Risk Score {risk["score"]} · {len(session.violations)} flags. Tap to review.',
+            url=f'/report/{session_id}',
+            tag=f'session-end-{session_id}',
+            require_interaction=False,
+        )
+        send_fcm_to_teachers(
+            title='⚠️ Medium Risk Session Ended',
+            body=f'{session.student_name} finished with Risk Score {risk["score"]} · {len(session.violations)} flags.',
             data={'url': f'/report/{session_id}', 'session_id': session_id},
         )
 
