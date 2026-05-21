@@ -277,5 +277,6 @@ if __name__ == '__main__':
         init_db(app)
         init_push_table(app)
     logger.info('ExamGuard v2.1 starting at http://localhost:5000')
-    socketio.run(app, debug=app.config.get('DEBUG', True),
-                 host='0.0.0.0', port=5000)
+    socketio.run(app, debug=False,
+             host='0.0.0.0', port=5000,
+             allow_unsafe_werkzeug=True)
