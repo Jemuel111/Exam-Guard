@@ -5,12 +5,18 @@ CHANGES:
 - DELETE /api/students/<id> now soft-archives instead of hard-deletes
 - Analytics queries exclude archived items
 """
+import hashlib
 import sqlite3
 import logging
 from flask import Blueprint, request, jsonify
 
 from auth import hash_password
+from crypto import encrypt, decrypt
 from database import get_db
+
+
+def _email_hash(email: str) -> str:
+    return hashlib.sha256(email.lower().strip().encode()).hexdigest()
 
 logger   = logging.getLogger(__name__)
 bp_admin = Blueprint('admin', __name__)
