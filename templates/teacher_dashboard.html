@@ -475,6 +475,45 @@
       .content { padding: 12px; }
       .qa-card { padding: 12px; }
     }
+
+    /* ── ANALYTICS INLINE GRIDS — mobile override ── */
+    @media (max-width: 768px) {
+      /* Analytics page rows that use inline grid styles */
+      .analytics-row-2,
+      .analytics-row-3 {
+        grid-template-columns: 1fr !important;
+      }
+      .charts-row { grid-template-columns: 1fr !important; }
+      /* Form rows in modals stack on mobile */
+      .form-row { grid-template-columns: 1fr !important; }
+      /* Panel header: keep title + link on one line but allow wrap */
+      .panel-hd { flex-wrap: wrap; gap: 4px; min-height: 44px; height: auto; padding: 8px 16px; }
+      /* Table action cells: allow wrap instead of overflow */
+      .tbl td[style*="display:flex"] { flex-wrap: wrap; }
+      /* Ensure all tables scroll horizontally */
+      .panel > div[style*="overflow-x:auto"],
+      .panel > div > div[style*="overflow-x:auto"] { -webkit-overflow-scrolling: touch; }
+      /* Risk donut: stack vertically on small screens */
+      .donut-wrap { flex-direction: column; align-items: center; }
+      /* Live layout single column already set, but ensure feed isn't cut off */
+      .live-feed-panel { max-height: 250px; }
+    }
+
+    @media (max-width: 480px) {
+      /* Analytics page rows: always single column */
+      .analytics-row-2,
+      .analytics-row-3 {
+        grid-template-columns: 1fr !important;
+      }
+      /* Chart panels full height on mobile */
+      .chart-panel .chart-area[style*="height:200px"] { height: 180px !important; }
+      /* Modal padding reduce */
+      .modal { padding: 20px !important; }
+      /* Table text smaller to fit */
+      .tbl td, .tbl th { padding: 8px 10px; font-size: 0.72rem; }
+      /* Tile name max-width expand */
+      .tile-name { max-width: 100px; }
+    }
   </style>
 </head>
 <body>
@@ -628,7 +667,7 @@
       </div>
 
       <!-- Row 2: Violations by type bar + Flags by severity -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div class="analytics-row-2" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
         <div class="panel">
           <div class="panel-hd"><span class="panel-title">FLAGS BY TYPE</span></div>
           <div style="padding:16px;height:220px;position:relative">
@@ -644,7 +683,7 @@
       </div>
 
       <!-- Row 3: Top flagged students + Avg score per exam -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+      <div class="analytics-row-3" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
         <div class="panel">
           <div class="panel-hd"><span class="panel-title">TOP FLAGGED STUDENTS</span></div>
           <div id="topFlaggedList" style="padding:12px"></div>
@@ -1220,7 +1259,7 @@ async function loadExams() {
       <td>${e.duration_minutes}min</td>
       <td><span class="badge ${e.status==='active'?'b-live':e.status==='scheduled'?'b-sched':e.status==='draft'?'b-draft':'b-ended'}">${e.status.toUpperCase()}</span></td>
       <td style="font-family:var(--mono);font-size:0.62rem;color:var(--low)">${e.scheduled_start?e.scheduled_start.slice(0,16):'—'}</td>
-      <td style="display:flex;gap:6px">
+      <td style="display:flex;gap:6px;flex-wrap:wrap">
         <button class="btn btn-ghost btn-sm" onclick="showPage('live')">Monitor</button>
         <button class="btn btn-danger btn-sm" onclick="deleteExam(${e.id})">Del</button>
       </td>
@@ -1281,7 +1320,7 @@ async function loadReports() {
       <td style="font-family:var(--mono);font-size:0.65rem">${parseFloat(s.duration_minutes||0).toFixed(1)}m</td>
       <td style="font-family:var(--mono);font-size:0.72rem;color:${(s.total_violations||s.vcount||0)>3?'var(--danger)':(s.total_violations||s.vcount||0)>0?'var(--warn)':'var(--ok)'}">${s.total_violations||s.vcount||0}</td>
       <td><span class="badge ${s.risk_level==='High'?'b-high':s.risk_level==='Medium'?'b-medium':'b-low'}">${s.risk_level||'Low'}</span></td>
-      <td style="display:flex;gap:4px">
+      <td style="display:flex;gap:4px;flex-wrap:wrap">
         <a href="/report/${s.session_id}" class="btn btn-primary btn-sm" style="text-decoration:none">View</a>
         <a href="/api/download_csv/${s.session_id}" class="btn btn-ghost btn-sm">CSV</a>
       </td>
