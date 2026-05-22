@@ -929,7 +929,14 @@ async function loadLiveMonitor() {
   grid.innerHTML = '<div class="live-loading"><div class="live-loading-dot"></div><div class="live-loading-dot"></div><div class="live-loading-dot"></div></div>';
   try {
     const sessions = await fetch('/api/sessions', {headers:authHeader}).then(r=>r.json()).catch(()=>[]);
-    const activeSessions = sessions.filter(s => s.is_active || s.risk_level);
+    // Only show: (1) live sessions, OR (2) sessions ended within last 5 minutes
+    const fiveMinAgo = Date.now() - 5 * 60 * 1000;
+    const activeSessions = sessions.filter(s => {
+      if (s.is_active) return true;
+      const ts = s.end_time || s.updated_at || s.created_at;
+      if (ts) { return new Date(ts).getTime() >= fiveMinAgo; }
+      return false;
+    });
     const enriched = await Promise.all(activeSessions.map(async (s) => {
       if (s.is_active) {
         try {
