@@ -782,43 +782,23 @@
     <!-- EXAMS -->
     <div class="page" id="page-exams">
       <div class="section-controls"><button class="btn btn-primary btn-sm" onclick="showModal('createExam')">+ Create Exam</button></div>
-      <div class="panel"><div class="tbl-scroll">
-        <table class="tbl" style="min-width:680px">
-          <thead><tr><th>Title</th><th>Subject</th><th>Questions</th><th>Enrolled</th><th>Duration</th><th>Status</th><th>Scheduled</th><th>Actions</th></tr></thead>
-          <tbody id="examsTableBody"><tr><td colspan="8" style="text-align:center;padding:32px;color:var(--low)">Loading...</td></tr></tbody>
-        </table>
-      </div></div>
+      <div id="examsCardList"><div class="empty-state" style="padding:32px;text-align:center;color:var(--low)">Loading...</div></div>
     </div>
 
     <!-- STUDENTS -->
     <div class="page" id="page-students">
       <div class="section-controls"><button class="btn btn-primary btn-sm" onclick="showModal('addStudent')">+ Add Student</button></div>
-      <div class="panel"><div class="tbl-scroll">
-        <table class="tbl" style="min-width:520px">
-          <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Registered</th><th>Sessions</th><th>Actions</th></tr></thead>
-          <tbody id="studentsTableBody"><tr><td colspan="6" style="text-align:center;padding:32px;color:var(--low)">Loading...</td></tr></tbody>
-        </table>
-      </div></div>
+      <div id="studentsCardList"><div class="empty-state" style="padding:32px;text-align:center;color:var(--low)">Loading...</div></div>
     </div>
 
     <!-- SUBMISSIONS -->
     <div class="page" id="page-submissions">
-      <div class="panel"><div class="tbl-scroll">
-        <table class="tbl" style="min-width:560px">
-          <thead><tr><th>Student</th><th>Exam</th><th>Score</th><th>%</th><th>Result</th><th>Submitted</th><th>Actions</th></tr></thead>
-          <tbody id="submissionsTableBody"><tr><td colspan="7" style="text-align:center;padding:32px;color:var(--low)">Loading...</td></tr></tbody>
-        </table>
-      </div></div>
+      <div id="submissionsCardList"><div class="empty-state" style="padding:32px;text-align:center;color:var(--low)">Loading...</div></div>
     </div>
 
     <!-- REPORTS -->
     <div class="page" id="page-reports">
-      <div class="panel"><div class="tbl-scroll">
-        <table class="tbl" style="min-width:580px">
-          <thead><tr><th>Student</th><th>Session ID</th><th>Date</th><th>Duration</th><th>Flags</th><th>Risk</th><th>Actions</th></tr></thead>
-          <tbody id="reportsTableBody"><tr><td colspan="7" style="text-align:center;padding:32px;color:var(--low)">Loading...</td></tr></tbody>
-        </table>
-      </div></div>
+      <div id="reportsCardList"><div class="empty-state" style="padding:32px;text-align:center;color:var(--low)">Loading...</div></div>
     </div>
 
   </div>
@@ -929,14 +909,7 @@ async function loadLiveMonitor() {
   grid.innerHTML = '<div class="live-loading"><div class="live-loading-dot"></div><div class="live-loading-dot"></div><div class="live-loading-dot"></div></div>';
   try {
     const sessions = await fetch('/api/sessions', {headers:authHeader}).then(r=>r.json()).catch(()=>[]);
-    // Only show: (1) live sessions, OR (2) sessions ended within last 5 minutes
-    const fiveMinAgo = Date.now() - 5 * 60 * 1000;
-    const activeSessions = sessions.filter(s => {
-      if (s.is_active) return true;
-      const ts = s.end_time || s.updated_at || s.created_at;
-      if (ts) { return new Date(ts).getTime() >= fiveMinAgo; }
-      return false;
-    });
+    const activeSessions = sessions.filter(s => s.is_active || s.risk_level);
     const enriched = await Promise.all(activeSessions.map(async (s) => {
       if (s.is_active) {
         try {
@@ -1283,40 +1256,48 @@ async function loadRecentSessions() {
 
 async function loadExams() {
   const exams = await api('/api/exams');
-  const tbody = document.getElementById('examsTableBody');
-  if (!exams||!exams.length) { tbody.innerHTML='<tr><td colspan="8"><div class="empty-state">No exams yet. Click "Create Exam" to start.</div></td></tr>'; return; }
-  tbody.innerHTML = exams.map(e=>`
-    <tr>
-      <td><strong>${e.title}</strong></td><td>${e.subject||'—'}</td>
-      <td>${e.question_count||0}</td><td>${e.enrolled_count||0}</td>
-      <td>${e.duration_minutes}min</td>
-      <td><span class="badge ${e.status==='active'?'b-live':e.status==='scheduled'?'b-sched':e.status==='draft'?'b-draft':'b-ended'}">${e.status.toUpperCase()}</span></td>
-      <td style="font-family:var(--mono);font-size:0.62rem;color:var(--low)">${e.scheduled_start?e.scheduled_start.slice(0,16):'—'}</td>
-      <td style="display:flex;gap:6px;flex-wrap:wrap">
-        <button class="btn btn-ghost btn-sm" onclick="showPage('live')">Monitor</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteExam(${e.id})">Del</button>
-      </td>
-    </tr>`).join('');
+  const el = document.getElementById('examsCardList');
+  if (!exams||!exams.length) { el.innerHTML='<div class="empty-state" style="padding:32px;text-align:center;color:var(--low)">No exams yet. Click "Create Exam" to start.</div>'; return; }
+  el.innerHTML = exams.map(e => {
+    const badgeCls = e.status==='active'?'b-live':e.status==='scheduled'?'b-sched':e.status==='draft'?'b-draft':'b-ended';
+    const sched = e.scheduled_start ? e.scheduled_start.slice(0,16) : null;
+    return `<div class="panel" style="margin-bottom:10px;padding:14px 16px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;font-size:0.95rem;color:var(--hi);margin-bottom:4px;word-break:break-word">${e.title}</div>
+          <div style="font-size:0.72rem;color:var(--mid);margin-bottom:6px">${e.subject||'—'} · ${e.question_count||0} questions · ${e.enrolled_count||0} enrolled · ${e.duration_minutes}min</div>
+          ${sched ? `<div style="font-size:0.68rem;color:var(--low);font-family:var(--mono)">⏰ ${sched}</div>` : ''}
+        </div>
+        <span class="badge ${badgeCls}" style="flex-shrink:0">${e.status.toUpperCase()}</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn btn-ghost btn-sm" style="flex:1" onclick="showPage('live')">Monitor</button>
+        <button class="btn btn-danger btn-sm" style="flex:1" onclick="deleteExam(${e.id})">Delete</button>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 async function loadStudents() {
   const students = await api('/api/students');
-  const tbody = document.getElementById('studentsTableBody');
-  if (!students||!students.length) { tbody.innerHTML='<tr><td colspan="6"><div class="empty-state">No students registered.</div></td></tr>'; return; }
-  tbody.innerHTML = students.map(s=>`
-    <tr>
-      <td style="font-family:var(--mono);font-size:0.62rem;color:var(--low)">${s.student_id||'—'}</td>
-      <td><strong>${s.name}</strong></td>
-      <td style="font-family:var(--mono);font-size:0.68rem;color:var(--mid)">${s.email}</td>
-      <td style="font-family:var(--mono);font-size:0.65rem">${s.created_at?s.created_at.split('T')[0]:'—'}</td>
-      <td>—</td>
-      <td><button class="btn btn-danger btn-sm" onclick="deleteStudent(${s.id})">Remove</button></td>
-    </tr>`).join('');
+  const el = document.getElementById('studentsCardList');
+  if (!students||!students.length) { el.innerHTML='<div class="empty-state" style="padding:32px;text-align:center;color:var(--low)">No students registered.</div>'; return; }
+  el.innerHTML = students.map(s => `
+    <div class="panel" style="margin-bottom:10px;padding:14px 16px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;font-size:0.9rem;color:var(--hi)">${s.name}</div>
+          <div style="font-size:0.72rem;color:var(--mid);margin-top:2px;word-break:break-all">${s.email}</div>
+          <div style="font-size:0.65rem;color:var(--low);margin-top:2px;font-family:var(--mono)">ID: ${s.student_id||'—'} · Joined: ${s.created_at?s.created_at.split('T')[0]:'—'}</div>
+        </div>
+        <button class="btn btn-danger btn-sm" style="flex-shrink:0" onclick="deleteStudent(${s.id})">Remove</button>
+      </div>
+    </div>`).join('');
 }
 
 async function loadSubmissions() {
   const res = await fetch('/api/sessions', {headers:authHeader}).then(r=>r.json()).catch(()=>[]);
-  const tbody = document.getElementById('submissionsTableBody');
+  const el = document.getElementById('submissionsCardList');
   const lastSeenSubs = parseInt(sessionStorage.getItem('subs_last_seen') || '0');
   const totalSubs = res.length || 0;
   const newSubs = Math.max(0, totalSubs - lastSeenSubs);
@@ -1326,38 +1307,60 @@ async function loadSubmissions() {
     sBadge.textContent = newSubs;
     sBadge.style.display = '';
   }
-  if (!res.length) { tbody.innerHTML='<tr><td colspan="7"><div class="empty-state">No submissions yet.</div></td></tr>'; return; }
-  tbody.innerHTML = res.map(s => {
+  if (!res.length) { el.innerHTML='<div class="empty-state" style="padding:32px;text-align:center;color:var(--low)">No submissions yet.</div>'; return; }
+  el.innerHTML = res.map(s => {
     const pct = s.percentage ? parseFloat(s.percentage).toFixed(1) : null;
     const cls = !pct ? '' : pct>=75?'':'warn';
-    return `<tr>
-      <td><strong>${s.student_name}</strong></td>
-      <td style="font-family:var(--mono);font-size:0.62rem;color:var(--low)">${s.session_id||'—'}</td>
-      <td>${s.score!=null?s.score+'/'+s.max_score:'—'}</td>
-      <td>${pct!=null?pct+'%':'—'}${pct!=null?`<div class="score-bar"><div class="score-fill ${cls}" style="width:${pct}%"></div></div>`:''}</td>
-      <td>${s.passed!=null?`<span class="badge ${s.passed?'b-pass':'b-fail'}">${s.passed?'PASSED':'FAILED'}</span>`:'—'}</td>
-      <td style="font-family:var(--mono);font-size:0.65rem">${(s.submitted_at||s.created_at||'').split(' ')[0]}</td>
-      <td><a href="/report/${s.session_id}" class="btn btn-primary btn-sm" style="text-decoration:none">Report</a></td>
-    </tr>`;}).join('');
+    const date = (s.submitted_at||s.created_at||'').split(' ')[0];
+    return `<div class="panel" style="margin-bottom:10px;padding:14px 16px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;font-size:0.9rem;color:var(--hi)">${s.student_name}</div>
+          <div style="font-size:0.68rem;color:var(--low);font-family:var(--mono);margin-top:2px">${s.session_id||'—'} · ${date}</div>
+          <div style="margin-top:6px">
+            ${pct!=null ? `<span style="font-size:0.85rem;font-weight:600;color:var(--hi)">${pct}%</span>
+            <span style="font-size:0.72rem;color:var(--mid);margin-left:4px">${s.score!=null?'('+s.score+'/'+s.max_score+' pts)':''}</span>
+            <div class="score-bar" style="margin-top:4px"><div class="score-fill ${cls}" style="width:${pct}%"></div></div>` : '<span style="color:var(--low)">Not graded</span>'}
+          </div>
+        </div>
+        <div style="flex-shrink:0;text-align:right">
+          ${s.passed!=null?`<span class="badge ${s.passed?'b-pass':'b-fail'}">${s.passed?'PASSED':'FAILED'}</span>`:''}
+        </div>
+      </div>
+      <div style="margin-top:10px">
+        <a href="/report/${s.session_id}" class="btn btn-primary btn-sm" style="text-decoration:none;width:100%;justify-content:center">View Report</a>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 async function loadReports() {
   const sessions = await api('/api/sessions');
-  const tbody = document.getElementById('reportsTableBody');
-  if (!sessions||!sessions.length) { tbody.innerHTML='<tr><td colspan="7"><div class="empty-state">No sessions yet.</div></td></tr>'; return; }
-  tbody.innerHTML = sessions.map(s=>`
-    <tr>
-      <td><strong>${s.student_name}</strong></td>
-      <td style="font-family:var(--mono);font-size:0.62rem;color:var(--low)">${s.session_id}</td>
-      <td style="font-family:var(--mono);font-size:0.65rem">${(s.created_at||'').split(' ')[0]}</td>
-      <td style="font-family:var(--mono);font-size:0.65rem">${parseFloat(s.duration_minutes||0).toFixed(1)}m</td>
-      <td style="font-family:var(--mono);font-size:0.72rem;color:${(s.total_violations||s.vcount||0)>3?'var(--danger)':(s.total_violations||s.vcount||0)>0?'var(--warn)':'var(--ok)'}">${s.total_violations||s.vcount||0}</td>
-      <td><span class="badge ${s.risk_level==='High'?'b-high':s.risk_level==='Medium'?'b-medium':'b-low'}">${s.risk_level||'Low'}</span></td>
-      <td style="display:flex;gap:4px;flex-wrap:wrap">
-        <a href="/report/${s.session_id}" class="btn btn-primary btn-sm" style="text-decoration:none">View</a>
-        <a href="/api/download_csv/${s.session_id}" class="btn btn-ghost btn-sm">CSV</a>
-      </td>
-    </tr>`).join('');
+  const el = document.getElementById('reportsCardList');
+  if (!sessions||!sessions.length) { el.innerHTML='<div class="empty-state" style="padding:32px;text-align:center;color:var(--low)">No sessions yet.</div>'; return; }
+  el.innerHTML = sessions.map(s => {
+    const flags = s.total_violations||s.vcount||0;
+    const flagColor = flags>3?'var(--danger)':flags>0?'var(--warn)':'var(--ok)';
+    const riskCls = s.risk_level==='High'?'b-high':s.risk_level==='Medium'?'b-medium':'b-low';
+    const date = (s.created_at||'').split(' ')[0];
+    return `<div class="panel" style="margin-bottom:10px;padding:14px 16px">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:700;font-size:0.9rem;color:var(--hi)">${s.student_name}</div>
+          <div style="font-size:0.68rem;color:var(--low);font-family:var(--mono);margin-top:2px">${s.session_id} · ${date}</div>
+          <div style="display:flex;gap:12px;margin-top:6px;align-items:center;flex-wrap:wrap">
+            <span style="font-size:0.78rem;color:${flagColor};font-weight:600">⚑ ${flags} flag${flags!==1?'s':''}</span>
+            <span style="font-size:0.72rem;color:var(--mid)">${parseFloat(s.duration_minutes||0).toFixed(1)} min</span>
+          </div>
+        </div>
+        <span class="badge ${riskCls}" style="flex-shrink:0">${s.risk_level||'Low'}</span>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <a href="/report/${s.session_id}" class="btn btn-primary btn-sm" style="text-decoration:none;flex:1;justify-content:center">View Report</a>
+        <a href="/api/download_csv/${s.session_id}" class="btn btn-ghost btn-sm" style="flex:1;justify-content:center">CSV</a>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // Chart instances — destroy before recreating to avoid canvas reuse error
