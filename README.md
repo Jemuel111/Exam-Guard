@@ -1,197 +1,229 @@
-# 🛡 ExamGuard — AI-Powered Online Exam Monitoring System
+# ExamGuard
 
-ExamGuard is a **decision-support tool** for online exam proctoring using real-time computer vision. It monitors student behavior during online examinations and generates transparent reports for instructor review — not automatic cheating verdicts.
+ExamGuard is a web-based exam proctoring system built with Flask. It monitors students during online exams using computer vision, logs behavioral events, and generates reports for instructor review. All flagged behavior requires human review — the system does not issue automated verdicts.
 
 ---
 
-## 📐 System Architecture
+## Project Status
+
+The core system is complete and functional. The one feature that was not implemented is real-time face streaming similar to what Google Meet does — where the teacher watches a live feed of the student's webcam during the exam. Instead, the system analyzes frames in the background and sends push notifications to the teacher when a high-risk event is detected.
+
+---
+
+## What's Built
+
+**Authentication and user management**
+- JWT-based login with bcrypt password hashing
+- Role-based access for teachers and students
+- Password reset via email token
+- Encrypted PII storage (student names stored via Fernet encryption)
+
+**Exam management (teacher side)**
+- Create, edit, archive, and end exams
+- Add multiple choice, true/false, fill-in-the-blank, and essay questions
+- Enroll specific students or open exams to all
+- Schedule exams with start and end times
+- Auto-grade objective questions; flag essays for manual grading
+
+**Exam taking (student side)**
+- Students see only exams assigned to them
+- One submission per exam enforced at the database level
+- Webcam consent prompt before the exam begins
+- Tab-switch detection via the Browser Visibility API
+
+**Proctoring and CV pipeline**
+- Frames captured from the browser every ~1.5 seconds via Canvas API and sent as base64 JPEG to the server
+- Face detection using MediaPipe (falls back to OpenCV Haar cascades if MediaPipe is unavailable)
+- Face mesh with 468 landmarks for gaze/head pose estimation
+- Lighting quality check (brightness + contrast via OpenCV)
+- Time-gated violation detection to reduce false positives
+
+| Event | Method | Threshold | Severity |
+|---|---|---|---|
+| No face detected | MediaPipe face detection | 5 seconds | High |
+| Multiple faces | MediaPipe face detection | 2 seconds | Critical |
+| Gaze deviation | Head pose via face mesh landmarks | 3 seconds | Medium |
+| Tab switch | Browser Visibility API | Immediate | High |
+| Poor lighting | OpenCV brightness/contrast | Per frame | Warning |
+
+**Risk scoring**
 
 ```
-exam_monitor/
-├── app.py                        # Flask backend + CV analysis (OpenCV + MediaPipe)
-├── requirements.txt              # Python dependencies
-├── templates/
-│   ├── index.html                # Landing & consent page
-│   ├── exam.html                 # Exam interface with live monitoring
-│   ├── report.html               # Instructor report view
-│   ├── teacher_dashboard.html    # Teacher portal
-│   └── student_dashboard.html   # Student portal
-├── logs/                         # Session logs (auto-created)
-└── reports/                      # JSON + CSV reports (auto-created)
+score = (face_absence_events × 15) + (multiple_face_events × 25)
+      + (look_away_events × 10)    + (tab_switch_events × 20)
+
+normalized = score / exam_duration_minutes
+
+Low:     < 5
+Medium:  5–15
+High:    > 15
+```
+
+**Reports and archiving**
+- Per-session JSON and CSV violation logs saved to disk
+- Instructor report view with timeline of events and risk assessment
+- Soft-archive for exams, sessions, and users (nothing is hard-deleted)
+- Audit log table for all significant actions
+
+**Push notifications**
+- Web Push (VAPID) for browser notifications to logged-in teachers
+- Firebase Cloud Messaging (FCM) support for mobile if a `serviceAccountKey.json` is provided
+- Teachers get notified mid-exam when a session crosses into High risk
+
+**Email**
+- Report summary email sent to the teacher when a session ends
+- Password reset emails via SMTP
+
+---
+
+## What's Not Implemented
+
+**Real-time webcam streaming to the teacher** — the original plan included a live video feed of the student during the exam, similar to how Google Meet works. This was not built. The teacher sees push notifications for high-risk events and can review the full violation log after the exam ends, but there is no live video panel.
+
+---
+
+## Project Structure
+
+```
+Exam-Guard-main/
+├── app.py                  # App factory, page routes, SocketIO setup, email
+├── auth.py                 # Token generation and verification, bcrypt hashing
+├── config.py               # Config classes for dev/production
+├── crypto.py               # Fernet encryption for PII fields
+├── cv_engine.py            # Frame analysis: face detection, gaze, lighting
+├── database.py             # SQLite setup, schema, migrations, seed data
+├── grading.py              # Auto-grading logic for objective questions
+├── session_model.py        # ExamSession class: state machine, report generation
+├── blueprints/
+│   ├── auth_bp.py          # /api/login, /api/register, /api/reset-password
+│   ├── exams_bp.py         # Exam CRUD, questions, enrollments, submissions
+│   ├── sessions_bp.py      # /api/start_session, /api/analyze_frame, /api/end_session
+│   ├── admin_bp.py         # User management for teachers
+│   ├── archive_bp.py       # Archive/restore endpoints
+│   └── push_bp.py          # Web Push and FCM notification endpoints
+├── static/
+│   ├── sw.js               # Service worker for PWA and push
+│   ├── manifest.json       # PWA manifest
+│   └── icons/              # App icons
+├── templates/              # Jinja2 HTML templates
+├── reports/                # Generated JSON and CSV session reports
+├── logs/                   # Application logs
+├── instance/
+│   └── examguard.db        # SQLite database
+└── requirements.txt
 ```
 
 ---
 
-## ✅ Current Status: ~45% Complete
+## Setup
 
-### Done ✓
-- Full Flask backend with all API endpoints
-- MediaPipe face detection + face mesh pipeline
-- Gaze analysis via landmark-based head pose estimation
-- Lighting quality checks via OpenCV
-- Tab-switch detection (Browser Visibility API)
-- Risk scoring engine
-- All HTML/CSS UI (Landing, Exam, Report, Teacher Dashboard, Student Dashboard)
-- Session logging (JSON + CSV export)
-- SocketIO real-time event streaming
-- Demo login system
+### Prerequisites
 
-### In Progress 🔄
-- Real authentication (currently mock/demo users)
-- Database integration (sessions stored in-memory only)
-- Teacher ↔ Student exam assignment flow
-
-### Planned 📋
-- SQLite/PostgreSQL persistent storage
-- Email report delivery
-- Audio monitoring (pyaudio)
-- Multi-exam support with scheduling
-- Student result viewing after instructor review
-
----
-
-## ⚙️ Setup Instructions
-
-### 1. Prerequisites
-- Python 3.9–3.11 (MediaPipe requires ≤ 3.11)
+- Python 3.9–3.11 (MediaPipe does not support 3.12 yet)
 - A working webcam
-- Modern browser (Chrome/Firefox recommended)
+- Chrome or Firefox
 
-### 2. Install Dependencies
+### Install
 
 ```bash
-cd examguard
+git clone <repo-url>
+cd Exam-Guard-main
 pip install -r requirements.txt
 ```
 
-> **Note on MediaPipe:** If you encounter issues on macOS Apple Silicon, use:
-> ```bash
-> pip install mediapipe-silicon
-> ```
+### Configure
 
-### 3. Run the Server
+Copy or edit `.env` with your own values:
+
+```env
+SECRET_KEY=your-secret-key
+DATABASE=instance/examguard.db
+ENCRYPTION_KEY=           # generate with: python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+
+MAIL_SERVER=smtp.gmail.com
+MAIL_PORT=587
+MAIL_USER=you@gmail.com
+MAIL_PASS=your-app-password
+
+VAPID_PUBLIC_KEY=          # generate with generate_vapid_keys.py
+VAPID_PRIVATE_KEY=
+VAPID_CLAIMS_EMAIL=mailto:you@domain.com
+```
+
+To generate VAPID keys:
+
+```bash
+python generate_vapid_keys.py
+```
+
+To enable FCM (optional): place your Firebase `serviceAccountKey.json` in the project root.
+
+### Run
 
 ```bash
 python app.py
 ```
 
-Server starts at: **http://localhost:5000**
+Server starts at `http://localhost:5000`.
 
 ---
 
-## 🔑 Demo Credentials
+## Default Credentials
 
-| Role    | Email                  | Password     |
-|---------|------------------------|--------------|
-| Teacher | teacher@school.edu     | teacher123   |
-| Student | student@school.edu     | student123   |
+| Role | Email | Password |
+|---|---|---|
+| Teacher | teacher@school.edu | teacher123 |
+| Student | student@school.edu | student123 |
 
-> Any email/password combination will also work in demo mode.
-
----
-
-## 🔍 Detection Capabilities
-
-| Detection Type       | Method                        | Threshold    | Severity |
-|----------------------|-------------------------------|--------------|----------|
-| No Face Present      | MediaPipe Face Detection      | 5 seconds    | High     |
-| Multiple Faces       | MediaPipe Face Detection      | 2 seconds    | Critical |
-| Gaze Deviation       | Face Mesh landmark analysis   | 3 seconds    | Medium   |
-| Tab Switch           | Browser Visibility API        | Immediate    | High     |
-| Poor Lighting        | OpenCV brightness/contrast    | Per frame    | Warning  |
+These are seeded automatically on first run.
 
 ---
 
-## 🔬 Technical Implementation
+## API Reference
 
-### Computer Vision Pipeline (per frame)
-1. **Frame Capture** — JavaScript captures webcam feed at ~1.5s intervals via Canvas API
-2. **Base64 Encoding** — Frame encoded as JPEG and sent to Flask `/api/analyze_frame`
-3. **Face Detection** — `mediapipe.solutions.face_detection` (Model 0, short-range)
-4. **Face Mesh** — `mediapipe.solutions.face_mesh` with 468 3D landmarks
-5. **Gaze Analysis** — Landmark-based head pose estimation using nose tip (1), eye (33, 263), and ear (234, 454) positions
-6. **Lighting Check** — OpenCV grayscale mean (brightness) + std dev (contrast)
-7. **Event Logging** — Time-gated violation detection with cooldown to avoid duplicate logs
-
-### Gaze Detection Logic
-```python
-face_width = |right_ear.x - left_ear.x|
-eye_center_x = (left_eye.x + right_eye.x) / 2
-nose_offset = (nose.x - eye_center_x) / face_width
-looking_away = |nose_offset| > 0.3 OR nose.y - eye_center_y < -0.05
-```
-
-### Risk Scoring
-```
-score = (face_absence_events × 15) + (multiple_face_events × 25)
-      + (look_away_events × 10)    + (tab_switches × 20)
-
-normalized_score = score / exam_duration_minutes
-
-Low:    < 5
-Medium: 5–15
-High:   > 15
-```
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/login` | Authenticate and receive a session token |
+| POST | `/api/register` | Register a new student account |
+| POST | `/api/forgot-password` | Send a password reset email |
+| POST | `/api/reset-password` | Set a new password using a reset token |
+| GET | `/api/exams` | List exams (teacher: all; student: assigned) |
+| POST | `/api/exams` | Create an exam |
+| PUT | `/api/exams/<id>` | Edit an exam |
+| DELETE | `/api/exams/<id>` | Soft-archive an exam |
+| POST | `/api/exams/<id>/questions` | Add questions to an exam |
+| POST | `/api/exams/<id>/enroll` | Enroll students |
+| POST | `/api/start_session` | Begin a monitoring session |
+| POST | `/api/analyze_frame` | Submit a base64 webcam frame for analysis |
+| POST | `/api/tab_switch` | Log a tab switch event |
+| POST | `/api/end_session` | End session and save report |
+| GET | `/api/status/<session_id>` | Get live session stats |
+| GET | `/api/sessions` | List all sessions |
+| GET | `/api/download_report/<id>` | Download session report as JSON |
+| GET | `/api/download_csv/<id>` | Download violations log as CSV |
+| POST | `/api/subscribe` | Register browser for Web Push |
+| POST | `/api/archive_session/<id>` | Soft-archive a session |
 
 ---
 
-## 🌐 API Endpoints
+## Known Limitations
 
-| Method | Endpoint                     | Description                          |
-|--------|------------------------------|--------------------------------------|
-| GET    | `/`                          | Landing page with consent form       |
-| GET    | `/exam`                      | Exam interface                       |
-| GET    | `/teacher/dashboard`         | Teacher portal                       |
-| GET    | `/student/dashboard`         | Student portal                       |
-| GET    | `/report/<session_id>`       | Instructor report page               |
-| POST   | `/api/login`                 | Login / register                     |
-| POST   | `/api/start_session`         | Initialize a monitoring session      |
-| POST   | `/api/analyze_frame`         | Analyze a base64 webcam frame        |
-| POST   | `/api/tab_switch`            | Log a tab switch event               |
-| POST   | `/api/end_session`           | End session and generate report      |
-| GET    | `/api/status/<session_id>`   | Get live session statistics          |
-| GET    | `/api/download_report/<id>`  | Download JSON report                 |
-| GET    | `/api/download_csv/<id>`     | Download CSV violations log          |
+| Limitation | Notes |
+|---|---|
+| No live webcam feed for teachers | High-risk events trigger push notifications instead |
+| Multiple monitors not detectable | Noted in generated reports |
+| Glasses can cause false gaze positives | Time-gating (3–5 second threshold) reduces this |
+| Token store is in-memory | Tokens are lost on server restart; use a persistent store before deploying |
+| MediaPipe limited to Python ≤ 3.11 | Use `mediapipe-silicon` on Apple Silicon if needed |
 
 ---
 
-## ⚠️ Known Limitations & Mitigations
+## Ethical Design
 
-| Limitation                  | Mitigation                                         |
-|-----------------------------|----------------------------------------------------|
-| Poor lighting               | Real-time brightness/contrast check + user warning |
-| Low camera quality          | Minimum 480p recommended; shown in UI              |
-| Network lag                 | Frame analysis batched every 1.5s, non-blocking    |
-| False positives (glasses)   | Time-gated events (≥3–5s) reduce false flags       |
-| Privacy concerns            | No raw video stored; only event logs saved         |
-| Multiple monitors           | Cannot detect; noted as limitation in report       |
+- Students are shown exactly what will be monitored before consenting
+- No raw video is stored — only event timestamps and metadata
+- All flags require instructor review before any action is taken
+- Reports include a disclaimer about environmental factors
+- Violations use time-gated thresholds to avoid penalizing brief, innocent movements
 
----
-
-## 🧭 Ethical Design Principles
-
-1. **Transparency** — Students are told exactly what is monitored before consenting
-2. **No Auto-Judgment** — All flags require human instructor review
-3. **No Video Storage** — Only event metadata is saved, never raw video
-4. **Contextual Awareness** — Reports include disclaimer about environmental limitations
-5. **Proportionality** — Only severe/sustained behaviors are flagged (time-gated thresholds)
-6. **Student Right to Explain** — Report encourages instructors to hear student perspective
-
----
-
-## 🚀 Next Steps to Complete
-
-- [ ] Add SQLite database for persistent sessions and users
-- [ ] Implement real JWT-based authentication
-- [ ] Build teacher → exam → student assignment flow
-- [ ] Add audio monitoring with `pyaudio`
-- [ ] Email report delivery with `smtplib`
-- [ ] Instructor real-time dashboard with WebSocket push
-
----
-
-## 📄 License & Responsible Use
-
-This software is intended for **educational institutions** as a **supplementary monitoring tool**. It must be used in compliance with applicable privacy laws (FERPA, GDPR, RA 10173 in the Philippines, etc.) and institutional policies. Students must provide informed consent before monitoring begins.
-
-**Never use this system as the sole basis for academic disciplinary action.**
+This system is intended as a supplementary tool for educational institutions. It should not be used as the sole basis for academic disciplinary action. Deployment must comply with applicable privacy laws (FERPA, GDPR, RA 10173, and any institutional policy that applies).

@@ -12,10 +12,6 @@ from flask import request, jsonify, g
 
 logger = logging.getLogger(__name__)
 
-# In-memory token store: token -> {user_id, role, name, exp}
-# In production, replace with Redis or a DB-backed session table.
-# Tokens are lost on server restart by design in dev; use a persistent
-# store (e.g. sessions table) before going to production.
 _active_tokens: dict = {}
 
 
@@ -47,12 +43,7 @@ def generate_token(user_id: int, role: str, name: str, ttl_hours: int = 8) -> st
 
 
 def verify_token(token: str) -> dict | None:
-    """
-    FIX: was not calling _prune_tokens, so expired tokens accumulated
-    indefinitely. Now prunes on every verify call (cheap: only removes
-    already-expired entries).
-    Also guards against None/empty token without a KeyError.
-    """
+  
     if not token:
         return None
     info = _active_tokens.get(token)
@@ -71,7 +62,7 @@ def revoke_token(token: str):
 
 
 def _prune_tokens():
-    """Remove expired tokens to prevent unbounded growth."""
+
     now = _utcnow()
     expired = [t for t, v in list(_active_tokens.items()) if now > v['exp']]
     for t in expired:
@@ -79,11 +70,7 @@ def _prune_tokens():
 
 
 def get_token_from_request() -> str:
-    """
-    FIX: added cookie fallback so the token survives a page refresh
-    where the JS hasn't yet re-attached the Authorization header.
-    Priority: Authorization header > query param > cookie.
-    """
+   
     auth = request.headers.get('Authorization', '')
     if auth.startswith('Bearer '):
         return auth[7:].strip()
@@ -98,13 +85,9 @@ def get_token_from_request() -> str:
 # ── Decorators ────────────────────────────────────────────────────────────────
 
 def login_required(role: str | None = None):
-    """
-    Require a valid token. Optionally enforce a specific role.
+    
 
-    FIX: demo-mode fallback now uses user_id=-1 (not None) so that
-    downstream code like `info['user_id'] > 0` works without a TypeError
-    when user_id is None.
-    """
+    
     def decorator(f):
         @wraps(f)
         def wrapped(*args, **kwargs):

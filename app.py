@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-ExamGuard v2.1 - Main application
-Clean factory pattern, blueprints, SocketIO, download routes, report routes.
-"""
+
 import json
 import logging
 import os

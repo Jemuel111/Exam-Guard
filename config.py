@@ -1,16 +1,4 @@
-"""
-ExamGuard — Configuration
-All tunable values live here. Set via environment variables or .env file.
 
-FIXES:
-- File was saved as "config,py" (comma instead of period) which would cause
-  an ImportError on any system that doesn't silently ignore the bad filename.
-  Renamed to config.py.
-- SECRET_KEY now falls back to a hardcoded dev key instead of os.urandom(),
-  which regenerated on every restart and invalidated all in-memory tokens
-  (logged-in users were silently de-authenticated after any server reload).
-  Set SECRET_KEY in your .env for production.
-"""
 import os
 from dotenv import load_dotenv
 
