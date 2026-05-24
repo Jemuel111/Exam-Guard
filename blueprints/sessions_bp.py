@@ -1,13 +1,3 @@
-"""
-ExamGuard — Sessions blueprint
-/api/start_session, /api/analyze_frame, /api/tab_switch,
-/api/audio_alert, /api/end_session, /api/status/<id>, /api/sessions
-/api/archive_session/<id>
-
-CHANGES:
-- /api/sessions excludes archived sessions by default
-- /api/archive_session/<id> soft-archives a session
-"""
 import json
 import logging
 import time

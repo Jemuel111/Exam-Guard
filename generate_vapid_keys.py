@@ -1,16 +1,3 @@
-"""
-ExamGuard — VAPID Key Generator
-Run this once to generate correctly formatted VAPID keys.
-
-Usage:
-    python3 generate_vapid_keys.py
-
-Then copy the output into your .env file.
-
-Requirements:
-    pip install pywebpush
-"""
-
 from py_vapid import Vapid
 import base64
 

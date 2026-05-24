@@ -1,10 +1,3 @@
-"""
-ExamGuard — Students & Analytics blueprint
-
-CHANGES:
-- DELETE /api/students/<id> now soft-archives instead of hard-deletes
-- Analytics queries exclude archived items
-"""
 import hashlib
 import sqlite3
 import logging

@@ -1,9 +1,3 @@
-"""
-ExamGuard — Auth blueprint
-POST /api/login, POST /api/logout, GET /api/me
-POST /api/forgot_password, POST /api/reset_password
-POST /api/validate_reset_token
-"""
 import logging
 import secrets
 import smtplib
@@ -303,10 +297,7 @@ def me():
 
 @bp_auth.post('/api/forgot_password')
 def forgot_password():
-    """
-    Generate a password-reset token and email it to the user.
-    Always returns the same success message to prevent email enumeration.
-    """
+    
     data  = request.get_json(silent=True) or {}
     email = (data.get('email') or '').lower().strip()
     role  = data.get('role', 'student')

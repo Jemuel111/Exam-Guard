@@ -1,22 +1,3 @@
-"""
-ExamGuard — Computer Vision
-Thread-safe face detection and gaze analysis.
-MediaPipe is initialized per-call (thread-safe); falls back to Haar cascades.
-
-FIXES:
-- no_face_frames now increments only once per distinct absence event
-  (when the absence timer first starts) rather than every frame, so the
-  stat matches face_absence_events in meaning.
-- look_away detection state is reset when the face disappears, preventing
-  a stale look_away_start from firing a LOOK_AWAY violation immediately
-  when the student's face returns after a long NO_FACE absence.
-- Gaze analysis is now skipped entirely when face_count == 0 (was already
-  gated on face_count == 1 but the early-return path could still reach
-  is_looking_away via the else branch in some edge cases).
-- decode_frame logs the exact exception and returns None cleanly; callers
-  already handle None but the silent failure made debugging hard.
-- Fixed duplicate 'if v:' block and corrected push_bp import path.
-"""
 import base64
 import logging
 import time
@@ -151,11 +132,7 @@ def decode_frame(frame_b64: str) -> np.ndarray | None:
 # ── Main analysis ─────────────────────────────────────────────────────────────
 
 def process_frame(session, frame_b64: str, socketio=None) -> dict:
-    """
-    Analyse one webcam frame against the given ExamSession.
-    Updates session.stats in-place and calls session.log_violation() as needed.
-    Returns a status dict suitable for JSON response.
-    """
+    
     if session.ended:
         return {'status': 'ended'}
 
@@ -232,10 +209,7 @@ def process_frame(session, frame_b64: str, socketio=None) -> dict:
         session.multi_face_start    = None
         session._multi_face_logged  = False
 
-    # ── Gaze ──────────────────────────────────────────────────────────────────
-    # FIX: explicitly gate on face_count == 1; skip gaze entirely if no face
-    # or multiple faces (both are already handled above and gaze would be
-    # meaningless / misleading in those states).
+    
     if face_count == 1:
         if is_looking_away(frame, faces[0]):
             session.stats['look_away_frames'] += 1

@@ -1,18 +1,3 @@
-"""
-ExamGuard — Push Notifications Blueprint
-Handles Web Push subscriptions and sending notifications via VAPID.
-
-Uses the `pywebpush` library (pip install pywebpush).
-
-Setup:
-1. pip install pywebpush
-2. Generate VAPID keys once:
-       python -c "from py_vapid import Vapid; v=Vapid(); v.generate_keys(); v.save_key('vapid_private.pem'); print(v.public_key)"
-3. Add to your .env file:
-       VAPID_PRIVATE_KEY=<contents of vapid_private.pem OR the raw base64 private key>
-       VAPID_PUBLIC_KEY=<the printed public key>
-       VAPID_CLAIMS_EMAIL=mailto:admin@yourdomain.com
-"""
 import json
 import logging
 import os

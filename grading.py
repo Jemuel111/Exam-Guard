@@ -1,18 +1,3 @@
-"""
-ExamGuard — Grading Engine
-Auto-grades MC and TF questions; marks essay/FITB for instructor review.
-
-FIXES:
-- answers.get(q['id']) with an integer key never matched because JSON
-  deserialisation always produces string keys. The fallback
-  `answers.get(q['id'], '')` was silently returning '' for every question,
-  making every MC answer appear unanswered. Now we always cast to str first.
-- Added a safety strip() + lower() normalisation for TF answers so that
-  "True" / "true" / "TRUE" all resolve correctly regardless of how the
-  frontend serialised the radio value.
-- essay min-length check changed from > 10 to >= 1 (after strip) so a
-  one-word answer isn't silently marked "Not answered".
-"""
 import json
 import logging
 
@@ -20,12 +5,7 @@ logger = logging.getLogger(__name__)
 
 
 def grade_submission(exam_id: int, answers: dict, db) -> dict:
-    """
-    Grade a student's answers against the stored question bank.
-
-    answers: {str(question_id): value}  — keys are ALWAYS strings from JSON.
-    Returns: {score, max_score, percentage, breakdown}
-    """
+    
     questions = db.execute(
         'SELECT * FROM questions WHERE exam_id=? ORDER BY order_num',
         (exam_id,)

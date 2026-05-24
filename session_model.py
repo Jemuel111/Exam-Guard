@@ -1,21 +1,3 @@
-"""
-ExamGuard — ExamSession model
-Thread-safe session state, violation logging, risk scoring, report generation.
-
-FIXES:
-- no_face_frames stat was incrementing every frame during a single prolonged
-  absence, making the number misleading. It now only increments once per
-  distinct absence event (same behaviour as face_absence_events counter).
-- audio_alerts was missing from the stats dict passed to generate_report /
-  save_to_db, so it always showed 0 in the JSON report and on the report page.
-- look_away state (_look_away_start, _look_away_logged) is now reset when the
-  face disappears entirely, preventing a stale look_away violation firing
-  immediately when the face returns after a long absence.
-- Tab-switch violations logged after session.ended=True are now silently
-  dropped inside log_violation (the guard was already there but the tab_switch
-  endpoint was incrementing stats before calling log_violation — fixed in
-  sessions_bp.py).
-"""
 import csv
 import json
 import logging
@@ -72,9 +54,7 @@ class ExamSession:
 
         self.violations: list[dict] = []
 
-        # FIX: audio_alerts was present here but the key name must match
-        # exactly what generate_report() reads — previously it was omitted
-        # from generate_report's stats copy, so reports always showed 0.
+        
         self.stats = {
             'total_frames':         0,
             'no_face_frames':       0,   # counts distinct absence events (not raw frames)
@@ -93,8 +73,7 @@ class ExamSession:
                       severity: str = 'medium', _socketio=None) -> dict | None:
         with self._lock:
             if self.ended:
-                # FIX: silently drop any violations logged after session ends
-                # (race condition between tab-switch browser event and end_session)
+                
                 return None
             entry = {
                 'timestamp':       datetime.now().strftime('%H:%M:%S'),
@@ -123,11 +102,7 @@ class ExamSession:
     # ── Detection state helpers ───────────────────────────────────────────────
 
     def reset_look_away_state(self):
-        """
-        FIX: called by cv_engine when face disappears so that a look_away
-        violation can't fire immediately when the face comes back after a
-        long absence (the look_away_start timestamp would be stale).
-        """
+        
         self.look_away_start   = None
         self._look_away_logged = False
 

@@ -1,20 +1,3 @@
-"""
-ExamGuard — Data-at-Rest Encryption
-Uses Fernet (AES-128-CBC + HMAC-SHA256) from the cryptography library.
-
-The ENCRYPTION_KEY must be a 32-byte URL-safe base64 key generated once
-and stored in .env as ENCRYPTION_KEY=<value>.
-
-Generate a new key:
-    python3 -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
-
-Fields encrypted:
-    users          → email, name, student_id
-    sessions       → student_name
-    violations     → details
-    exam_submissions → answers
-    audit_log      → ip, user_agent
-"""
 import os
 import logging
 from cryptography.fernet import Fernet, InvalidToken

@@ -1,9 +1,3 @@
-"""
-ExamGuard — Archive blueprint
-Soft-delete management for exams, students, and sessions.
-Items go to archive instead of permanent deletion.
-Teachers can restore or permanently delete from archive.
-"""
 import logging
 from flask import Blueprint, request, jsonify
 from database import get_db

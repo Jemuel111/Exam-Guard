@@ -1,4 +1,3 @@
-
 import secrets
 import logging
 from datetime import datetime, timedelta, timezone

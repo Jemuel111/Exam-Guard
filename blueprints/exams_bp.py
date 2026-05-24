@@ -1,12 +1,3 @@
-"""
-ExamGuard — Exams blueprint
-CRUD for exams, questions, enrollments, submissions, student exam list.
-
-CHANGES:
-- DELETE /api/exams/<id> now soft-archives instead of permanent deletion
-- GET /api/exams excludes archived exams
-- /api/student/exams excludes archived exams
-"""
 import hashlib
 import json
 import logging
